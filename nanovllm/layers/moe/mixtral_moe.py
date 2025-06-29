@@ -1,0 +1,170 @@
+import torch
+import torch.nn as nn
+from typing import Optional, List, Tuple
+
+# fused_experts 是一个底层的、用 Triton 或 cuBLAS 编写的高性能 CUDA 核
+from nanovllm.layers.moe.fused_moe import fused_experts, fused_topk
+import torch.distributed as dist
+class FusedMoE(nn.Module):
+    """
+    一个简化的、仅支持张量并行 (TP) 的 FusedMoE 层。
+
+    此实现移除了 Expert/Data Parallelism、多硬件支持和量化逻辑
+    专注于在 CUDA 上运行的未量化 Mixtral MoE 核心功能。
+
+    Args:
+        num_experts: 专家总数。
+        top_k: 每个 token 选择的专家数量。
+        hidden_size: 输入隐藏层维度。
+        intermediate_size: 专家网络中间层的维度。
+        tp_size: 张量并行的大小 (world size)。
+        params_dtype: 模型参数的数据类型。
+        renormalize: 是否在 top-k 选择后对路由权重进行重新归一化。
+        reduce_results: 是否在计算后对所有 TP rank 的结果进行 AllReduce。
+                         对于 MoE 通常在外部处理 默认为 False。
+    """
+    def __init__(
+        self,
+        num_experts: int,
+        top_k: int,
+        hidden_size: int,
+        intermediate_size: int,
+        tp_size: Optional[int] = None,
+        params_dtype: Optional[torch.dtype] = None,
+        renormalize: bool = True,
+        reduce_results: bool = False,
+    ):
+        super().__init__()
+
+        # 获取并行配置
+        self.tp_size = tp_size 
+        self.tp_rank = dist.get_rank()
+        
+        # 核心参数
+        self.num_experts = num_experts
+        self.top_k = top_k
+        self.hidden_size = hidden_size
+        self.intermediate_size = intermediate_size
+        self.renormalize = renormalize
+        self.reduce_results = reduce_results
+        self.params_dtype = params_dtype or torch.get_default_dtype()
+
+        # 验证 intermediate_size 可以被 tp_size 整除
+        if self.intermediate_size % self.tp_size != 0:
+            raise ValueError(
+                f"intermediate_size ({self.intermediate_size}) must be divisible by "
+                f"tp_size ({self.tp_size})"
+            )
+        self.intermediate_size_per_partition = self.intermediate_size // self.tp_size
+
+        # 创建权重
+        # w13_weight 融合了 gate_proj (w1) 和 up_proj (w3)
+        # 形状: (num_experts, 2 * intermediate_size_per_partition, hidden_size)
+        # 这是一个 ColumnParallelLinear 类型的权重
+        self.w13_weight = nn.Parameter(torch.empty(
+            self.num_experts,
+            2 * self.intermediate_size_per_partition,
+            self.hidden_size,
+            dtype=self.params_dtype
+        ), requires_grad=False)
+
+        # w2_weight 对应 down_proj
+        # 形状: (num_experts, hidden_size, intermediate_size_per_partition)
+        # 这是一个 RowParallelLinear 类型的权重
+        self.w2_weight = nn.Parameter(torch.empty(
+            self.num_experts,
+            self.hidden_size,
+            self.intermediate_size_per_partition,
+            dtype=self.params_dtype
+        ), requires_grad=False)
+
+    def forward(self, hidden_states: torch.Tensor, router_logits: torch.Tensor) -> torch.Tensor:
+        """
+        前向传播逻辑
+        """
+        # 1. 选择专家
+        # `fused_topk` 是一个优化的 CUDA kernel，用于执行 softmax 和 top-k 操作
+        # topk_weights代表所选专家的概率，topk_ids代表所选专家的全局id
+        # topk_weights, topk_ids  shape = (num_tokens, topk)
+        topk_weights, topk_ids = fused_topk(
+            hidden_states=hidden_states, #(num_tokens, hidden_state)
+            gating_output=router_logits, # (num_tokens, n_experts)
+            topk=self.top_k,
+            renormalize=self.renormalize
+        )
+
+        # 2. 调用核心的 MoE CUDA kernel 进行计算
+        # `fused_experts` 将所有计算（包括索引、矩阵乘法、激活函数等）融合在一起
+        final_hidden_states = fused_experts(
+            hidden_states=hidden_states,
+            w1=self.w13_weight,
+            w2=self.w2_weight,
+            topk_weights=topk_weights,
+            topk_ids=topk_ids,
+            inplace=True, # 原地修改
+            activation="silu" # Mixtral 使用 silu (SwiGLU)
+        )
+        
+        # 3. 如果需要，对 TP 的结果进行聚合
+        # 在标准的 MoE 实现中，这一步通常在更高层处理，但保留该选项
+        # dist.all_reduce(input_, group=self.device_group)
+        if self.reduce_results and self.tp_size > 1:
+            final_hidden_states = dist.all_reduce(final_hidden_states)
+
+        return final_hidden_states
+
+    def weight_loader(self, param: nn.Parameter, loaded_weight: torch.Tensor,
+                      weight_name: str, shard_id: str, expert_id: int):
+        """
+        自定义的权重加载器，用于将标准 Checkpoint 的权重加载到我们融合且分片的参数中。
+        """
+        tp_rank = self.tp_rank
+        tp_size = self.tp_size
+        
+        # 目标参数
+        param_data = param.data[expert_id]
+
+        if shard_id in ("w1", "w3"): # 对应 ColumnParallelLinear 的 w13
+            # 分割点在 intermediate_size 维度 (dim=0)
+            shard_size = self.intermediate_size_per_partition
+            # 加载当前 rank 对应的权重分片
+            loaded_shard = loaded_weight.narrow(0, shard_size * tp_rank, shard_size)
+            
+            if shard_id == "w1": # gate_proj
+                # 加载到 w13 的前半部分
+                param_data[:shard_size, :].copy_(loaded_shard)
+            else: # up_proj
+                # 加载到 w13 的后半部分
+                param_data[shard_size:, :].copy_(loaded_shard)
+
+        elif shard_id == "w2": # 对应 RowParallelLinear 的 w2
+            # 分割点在 intermediate_size 维度 (dim=1)
+            shard_size = self.intermediate_size_per_partition
+            # 加载当前 rank 对应的权重分片
+            loaded_shard = loaded_weight.narrow(1, shard_size * tp_rank, shard_size)
+            param_data.copy_(loaded_shard)
+        else:
+            raise ValueError(f"未知的 shard_id: {shard_id}")
+
+    @staticmethod
+    def make_expert_params_mapping(
+        ckpt_gate_proj_name: str, 
+        ckpt_down_proj_name: str,
+        ckpt_up_proj_name: str,
+        num_experts: int
+    ) -> List[Tuple[str, str, int, str]]:
+        """
+        一个辅助函数，生成权重加载所需的映射规则。
+        这部分逻辑与 vLLM 原始代码保持一致，因为它对于上层模型的加载器至关重要。
+        """
+        # 返回: (param_name, weight_name, expert_id, shard_id)
+        # 例如: ('experts.w13_weight', 'experts.0.gate_proj.', 0, 'w1')
+        return [
+            ("w13_weight" if shard_id != "w2" else "w2_weight",
+             f"experts.{expert_id}.{weight_name}", expert_id, shard_id)
+            for expert_id in range(num_experts) for shard_id, weight_name in [
+                ("w1", ckpt_gate_proj_name), # e.g., "gate_proj"
+                ("w2", ckpt_down_proj_name), # e.g., "down_proj"
+                ("w3", ckpt_up_proj_name),  # e.g., "up_proj"
+            ]
+        ]
