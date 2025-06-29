@@ -53,7 +53,7 @@ class BlockManager:
         assert self.blocks[block_id].ref_count == 0
         self.used_block_ids.remove(block_id)
         self.free_block_ids.append(block_id)
- 
+
     def can_allocate(self, seq: Sequence) -> bool:
         return len(self.free_block_ids) >= seq.num_blocks
 
@@ -79,9 +79,7 @@ class BlockManager:
                     block = self._allocate_block(block_id)
             if h != -1:
                 block.update(h, token_ids)
-                # Question：在cache命中的时候，会更新block的hash和token_ids. 
-                # 导致hash_to_block_id[old_hash]返回更新后的block.
-                self.hash_to_block_id[h] = block_id 
+                self.hash_to_block_id[h] = block_id
             seq.block_table.append(block_id)
 
     def deallocate(self, seq: Sequence):

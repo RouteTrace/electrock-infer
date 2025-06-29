@@ -73,11 +73,11 @@ class ModelRunner:
         return method_name, args
 
     def write_shm(self, method_name, *args):
-        assert self.world_size > 1 and not self.rank #必须是主进程
+        assert self.world_size > 1 and not self.rank
         data = pickle.dumps([method_name, *args])
         n = len(data)
         assert n + 4 <= self.shm.size
-        self.shm.buf[0:4] = n.to_bytes(4, "little") #前4字节，表示data的字节长度
+        self.shm.buf[0:4] = n.to_bytes(4, "little")
         self.shm.buf[4:n+4] = data
         for event in self.event:
             event.set()
@@ -143,13 +143,11 @@ class ModelRunner:
         assert len(input_ids) == len(slot_mapping)
         if cu_seqlens_k[-1] > cu_seqlens_q[-1]:    # prefix cache
             block_tables = self.prepare_block_tables(seqs)
-
         input_ids = torch.tensor(input_ids, dtype=torch.int64, pin_memory=True).cuda(non_blocking=True)
         positions = torch.tensor(positions, dtype=torch.int64, pin_memory=True).cuda(non_blocking=True)
         cu_seqlens_q = torch.tensor(cu_seqlens_q, dtype=torch.int32, pin_memory=True).cuda(non_blocking=True)
         cu_seqlens_k = torch.tensor(cu_seqlens_k, dtype=torch.int32, pin_memory=True).cuda(non_blocking=True)
         slot_mapping = torch.tensor(slot_mapping, dtype=torch.int32, pin_memory=True).cuda(non_blocking=True)
-        
         set_context(True, cu_seqlens_q, cu_seqlens_k, max_seqlen_q, max_seqlen_k, slot_mapping, None, block_tables)
         return input_ids, positions
 

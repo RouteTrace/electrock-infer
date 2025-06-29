@@ -47,8 +47,8 @@ class ParallelLMHead(VocabParallelEmbedding):
 
     def __init__(
         self,
-        num_embeddings: int, # vocab_size
-        embedding_dim: int, # hidden
+        num_embeddings: int,
+        embedding_dim: int,
         bias: bool = False,
     ):
         super().__init__(num_embeddings, embedding_dim)

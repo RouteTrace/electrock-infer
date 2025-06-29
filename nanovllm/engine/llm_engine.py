@@ -15,30 +15,22 @@ from nanovllm.engine.model_runner import ModelRunner
 class LLMEngine:
 
     def __init__(self, model, **kwargs):
-        # 配置参数
         config_fields = {field.name for field in fields(Config)}
         config_kwargs = {k: v for k, v in kwargs.items() if k in config_fields}
         config = Config(model, **config_kwargs)
-
         self.ps = []
         self.events = []
         ctx = mp.get_context("spawn")
-
-        # 根据tensor_parallel_size启动子进程，range从1开始
         for i in range(1, config.tensor_parallel_size):
             event = ctx.Event()
             process = ctx.Process(target=ModelRunner, args=(config, i, event))
             process.start()
             self.ps.append(process)
             self.events.append(event)
-        
-
         self.model_runner = ModelRunner(config, 0, self.events)
         self.tokenizer = AutoTokenizer.from_pretrained(config.model, use_fast=True)
         config.eos = self.tokenizer.eos_token_id
-
         self.scheduler = Scheduler(config)
-
         atexit.register(self.exit)
 
     def exit(self):
@@ -74,12 +66,8 @@ class LLMEngine:
             pbar = tqdm(total=len(prompts), desc="Generating", dynamic_ncols=True)
         if not isinstance(sampling_params, list):
             sampling_params = [sampling_params] * len(prompts)
-        
-        #将batch加入到scheduler中， prompt可以是token_ids 也可以是str
         for prompt, sp in zip(prompts, sampling_params):
             self.add_request(prompt, sp)
-
-
         outputs = {}
         prefill_throughput = decode_throughput = 0.
         while not self.is_finished():

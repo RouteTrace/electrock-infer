@@ -28,19 +28,17 @@ class Scheduler:
         num_batched_tokens = 0
         while self.waiting and num_seqs < self.max_num_seqs:
             seq = self.waiting[0]
-            # 分配token budget / block memory
             if num_batched_tokens + len(seq) > self.max_num_batched_tokens or not self.block_manager.can_allocate(seq):
                 break
             num_seqs += 1
             self.block_manager.allocate(seq)
             num_batched_tokens += len(seq) - seq.num_cached_tokens
-            seq.status = SequenceStatus.RUNNING # 至此，该seq调度成功
+            seq.status = SequenceStatus.RUNNING
             self.waiting.popleft()
             self.running.append(seq)
             scheduled_seqs.append(seq)
-            
         if scheduled_seqs:
-            return scheduled_seqs, True # is_prefill , 从这里可以看出是优先prefill
+            return scheduled_seqs, True
 
         # decode
         while self.running and num_seqs < self.max_num_seqs:
@@ -63,7 +61,6 @@ class Scheduler:
         seq.status = SequenceStatus.WAITING
         self.block_manager.deallocate(seq)
         self.waiting.appendleft(seq)
-
 
     def postprocess(self, seqs: list[Sequence], token_ids: list[int]) -> list[bool]:
         for seq, token_id in zip(seqs, token_ids):
