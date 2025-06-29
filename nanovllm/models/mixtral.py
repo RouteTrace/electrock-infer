@@ -27,24 +27,24 @@ from typing import Iterable, Optional, Set, Tuple, Union
 import torch
 from torch import nn
 from transformers import MixtralConfig
-
+from torch import distributed as dist
 from vllm.attention import Attention
 from vllm.compilation.decorators import support_torch_compile
 from vllm.config import CacheConfig, VllmConfig
-from vllm.distributed import get_pp_group, get_tensor_model_parallel_world_size
+# from vllm.distributed import get_pp_group, get_tensor_model_parallel_world_size
 # from vllm.model_executor.layers.fused_moe import FusedMoE
 # from vllm.model_executor.layers.layernorm import RMSNorm
 # from vllm.model_executor.layers.linear import (QKVParallelLinear,
 #                                                ReplicatedLinear,
 #                                                RowParallelLinear)
-from vllm.model_executor.layers.logits_processor import LogitsProcessor
-from vllm.model_executor.layers.quantization import QuantizationConfig
-from vllm.model_executor.layers.rotary_embedding import get_rope
+# from vllm.model_executor.layers.logits_processor import LogitsProcessor
+# from vllm.model_executor.layers.quantization import QuantizationConfig
+# from vllm.model_executor.layers.rotary_embedding import get_rope
 # from vllm.model_executor.layers.vocab_parallel_embedding import (
 #     DEFAULT_VOCAB_PADDING_SIZE, ParallelLMHead, VocabParallelEmbedding)
-from vllm.model_executor.model_loader.weight_utils import (
-    default_weight_loader, maybe_remap_kv_scale_name)
-from vllm.model_executor.sampling_metadata import SamplingMetadata
+# from vllm.model_executor.model_loader.weight_utils import (
+    # default_weight_loader, maybe_remap_kv_scale_name)
+# from vllm.model_executor.sampling_metadata import SamplingMetadata
 # from vllm.sequence import IntermediateTensors
 
 # from .interfaces import SupportsLoRA, SupportsPP
@@ -58,6 +58,7 @@ from nanovllm.layers.layernorm import RMSNorm
 from nanovllm.layers.linear import (ReplicatedLinear, RowParallelLinear, ColumnParallelLinear,
                                     MergedColumnParallelLinear, QKVParallelLinear)
 from nanovllm.layers.moe.mixtral_moe import FusedMoE
+from nanovllm.layers.rotary_embedding import RotaryEmbedding, get_rope
 
 
 class MixtralMoE(nn.Module):
@@ -75,9 +76,7 @@ class MixtralMoE(nn.Module):
                  hidden_size: int,
                  intermediate_size: int,
                  params_dtype: Optional[torch.dtype] = None,
-                 quant_config: Optional[QuantizationConfig] = None,
                  tp_size: Optional[int] = None,
-                 dp_size: Optional[int] = None,
                  prefix: str = ""):
         super().__init__()
         self.hidden_size = hidden_size
@@ -102,10 +101,7 @@ class MixtralMoE(nn.Module):
                                 params_dtype=params_dtype,
                                 reduce_results=True,
                                 renormalize=True,
-                                quant_config=quant_config,
-                                tp_size=tp_size,
-                                dp_size=dp_size,
-                                prefix=f"{prefix}.experts")
+                                tp_size=tp_size)
 
     def forward(self, hidden_states: torch.Tensor) -> torch.Tensor:
         # NOTE: hidden_states can have either 1D or 2D shape.
@@ -121,19 +117,17 @@ class MixtralAttention(nn.Module):
 
     def __init__(
         self,
-        config: MixtralConfig,
+        hf_config: MixtralConfig,
         hidden_size: int,
-        num_heads: int,
+        num_heads: int, # num_attention_heads
         num_kv_heads: int,
         max_position: int = 4096 * 32,
         rope_theta: float = 10000,
-        cache_config: Optional[CacheConfig] = None,
-        quant_config: Optional[QuantizationConfig] = None,
         prefix: str = "",
     ) -> None:
         super().__init__()
         self.hidden_size = hidden_size
-        tp_size = get_tensor_model_parallel_world_size()
+        tp_size = dist.get_world_size()
         self.total_num_heads = num_heads
         assert self.total_num_heads % tp_size == 0
         self.num_heads = self.total_num_heads // tp_size
@@ -148,7 +142,7 @@ class MixtralAttention(nn.Module):
             assert tp_size % self.total_num_kv_heads == 0
         self.num_kv_heads = max(1, self.total_num_kv_heads // tp_size)
         # MixtralConfig has an optional head_dim argument
-        self.head_dim = getattr(config, "head_dim",
+        self.head_dim = getattr(hf_config, "head_dim",
                                 self.hidden_size // self.total_num_heads)
         self.q_size = self.num_heads * self.head_dim
         self.kv_size = self.num_kv_heads * self.head_dim
@@ -161,15 +155,11 @@ class MixtralAttention(nn.Module):
             self.total_num_heads,
             self.total_num_kv_heads,
             bias=False,
-            quant_config=quant_config,
-            prefix=f"{prefix}.qkv_proj",
         )
         self.o_proj = RowParallelLinear(
             self.total_num_heads * self.head_dim,
             hidden_size,
             bias=False,
-            quant_config=quant_config,
-            prefix=f"{prefix}.o_proj",
         )
         self.rotary_emb = get_rope(
             self.head_dim,
@@ -182,8 +172,6 @@ class MixtralAttention(nn.Module):
                               self.head_dim,
                               self.scaling,
                               num_kv_heads=self.num_kv_heads,
-                              cache_config=cache_config,
-                              quant_config=quant_config,
                               prefix=f"{prefix}.attn")
 
     def forward(
@@ -204,8 +192,6 @@ class MixtralDecoderLayer(nn.Module):
     def __init__(
         self,
         hf_config: MixtralConfig,
-        # cache_config: Optional[CacheConfig] = None,
-        # quant_config: Optional[QuantizationConfig] = None,
         prefix: str = "",
     ) -> None:
         super().__init__()
@@ -220,15 +206,12 @@ class MixtralDecoderLayer(nn.Module):
             max_position=hf_config.max_position_embeddings,
             num_kv_heads=hf_config.num_key_value_heads,
             rope_theta=rope_theta,
-            cache_config=hf_config,
-            quant_config=hf_config,
             prefix=f"{prefix}.self_attn")
         self.block_sparse_moe = MixtralMoE(
             num_experts=hf_config.num_local_experts,
             top_k=hf_config.num_experts_per_tok,
             hidden_size=hf_config.hidden_size,
             intermediate_size=hf_config.intermediate_size,
-            quant_config=hf_config,
             prefix=f"{prefix}.block_sparse_moe")
         
         self.input_layernorm = RMSNorm(hf_config.hidden_size,
