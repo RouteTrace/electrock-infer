@@ -1,7 +1,7 @@
 import torch
 import torch.nn as nn
 from typing import Optional, List, Tuple
-
+import re
 # fused_experts 是一个底层的、用 Triton 或 cuBLAS 编写的高性能 CUDA 核
 from nanovllm.layers.moe.fused_moe import fused_experts, fused_topk
 import torch.distributed as dist
@@ -78,6 +78,8 @@ class FusedMoE(nn.Module):
             dtype=self.params_dtype
         ), requires_grad=False)
 
+        self.w13_weight.weight_loader = self.weight_loader
+        self.w2_weight.weight_loader = self.weight_loader
     def forward(self, hidden_states: torch.Tensor, router_logits: torch.Tensor) -> torch.Tensor:
         """
         前向传播逻辑
@@ -114,14 +116,14 @@ class FusedMoE(nn.Module):
         return final_hidden_states
 
     def weight_loader(self, param: nn.Parameter, loaded_weight: torch.Tensor,
-                      weight_name: str, shard_id: str, expert_id: int):
+                       shard_id: str, expert_id: int):
         """
         自定义的权重加载器，用于将标准 Checkpoint 的权重加载到我们融合且分片的参数中。
         """
         tp_rank = self.tp_rank
         tp_size = self.tp_size
         
-        # 目标参数
+        # 目标参数 , 对应的专家 
         param_data = param.data[expert_id]
 
         if shard_id in ("w1", "w3"): # 对应 ColumnParallelLinear 的 w13
@@ -146,25 +148,3 @@ class FusedMoE(nn.Module):
         else:
             raise ValueError(f"未知的 shard_id: {shard_id}")
 
-    @staticmethod
-    def make_expert_params_mapping(
-        ckpt_gate_proj_name: str, 
-        ckpt_down_proj_name: str,
-        ckpt_up_proj_name: str,
-        num_experts: int
-    ) -> List[Tuple[str, str, int, str]]:
-        """
-        一个辅助函数，生成权重加载所需的映射规则。
-        这部分逻辑与 vLLM 原始代码保持一致，因为它对于上层模型的加载器至关重要。
-        """
-        # 返回: (param_name, weight_name, expert_id, shard_id)
-        # 例如: ('experts.w13_weight', 'experts.0.gate_proj.', 0, 'w1')
-        return [
-            ("w13_weight" if shard_id != "w2" else "w2_weight",
-             f"experts.{expert_id}.{weight_name}", expert_id, shard_id)
-            for expert_id in range(num_experts) for shard_id, weight_name in [
-                ("w1", ckpt_gate_proj_name), # e.g., "gate_proj"
-                ("w2", ckpt_down_proj_name), # e.g., "down_proj"
-                ("w3", ckpt_up_proj_name),  # e.g., "up_proj"
-            ]
-        ]

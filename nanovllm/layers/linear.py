@@ -28,12 +28,13 @@ class LinearBase(nn.Module):
         raise NotImplementedError
 
 
+#    ReplicatedLinear : only used by Moe's gate
 class ReplicatedLinear(LinearBase):
-
+    
     def __init__(
         self,
-        input_size: int,
-        output_size: int,
+        input_size: int, # hidden_size :4096
+        output_size: int,  # num_experts :8 
         bias: bool = False,
     ):
         super().__init__(input_size, output_size)
@@ -61,7 +62,7 @@ class ColumnParallelLinear(LinearBase):
         output_size: int,
         bias: bool = False,
     ):
-        super().__init__(input_size, output_size, 0)
+        super().__init__(input_size, output_size, tp_dim=0) # self.tp_dim = 0
         self.input_size_per_partition = input_size
         self.output_size_per_partition = divide(output_size, self.tp_size)
 
@@ -152,7 +153,7 @@ class RowParallelLinear(LinearBase):
         output_size: int,
         bias: bool = False,
     ):
-        super().__init__(input_size, output_size, 1)
+        super().__init__(input_size, output_size, tp_dim=1) # self.tp_dim=1
         self.input_size_per_partition = divide(input_size, self.tp_size)
         self.output_size_per_partition = output_size
 

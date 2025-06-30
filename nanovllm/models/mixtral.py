@@ -275,8 +275,8 @@ class MixtralModel(nn.Module):
         #     make_empty_intermediate_tensors_factory(
         #         ["hidden_states", "residual"], config.hidden_size))
 
-    def get_input_embeddings(self, input_ids: torch.Tensor) -> torch.Tensor:
-        return self.embed_tokens(input_ids)
+    # def get_input_embeddings(self, input_ids: torch.Tensor) -> torch.Tensor:
+    #     return self.embed_tokens(input_ids)
 
     def forward(
         self,
@@ -294,7 +294,8 @@ class MixtralModel(nn.Module):
         #     hidden_states = intermediate_tensors["hidden_states"]
         #     residual = intermediate_tensors["residual"]
         residual = None
-        hidden_states = self.get_input_embeddings(input_ids)
+        # hidden_states = self.get_input_embeddings(input_ids)
+        hidden_states = self.embed_tokens(input_ids)
         for layer in self.layers:
             hidden_states, residual = layer(positions, hidden_states, residual)
         # if not get_pp_group().is_last_rank:
@@ -305,117 +306,123 @@ class MixtralModel(nn.Module):
         hidden_states, _ = self.norm(hidden_states, residual)
         return hidden_states
 
-    def load_weights(self, weights: Iterable[Tuple[str,
-                                                   torch.Tensor]]) -> Set[str]:
-        stacked_params_mapping = [
-            # (param_name, shard_name, shard_id)
-            ("qkv_proj", "q_proj", "q"),
-            ("qkv_proj", "k_proj", "k"),
-            ("qkv_proj", "v_proj", "v"),
-        ]
+    # def load_weights(self, weights: Iterable[Tuple[str,
+    #                                                torch.Tensor]]) -> Set[str]:
 
-        # Params for weights, fp8 weight scales, fp8 activation scales
-        # (param_name, weight_name, expert_id, shard_id)
-        expert_params_mapping = FusedMoE.make_expert_params_mapping(
-            ckpt_gate_proj_name="w1",
-            ckpt_down_proj_name="w2",
-            ckpt_up_proj_name="w3",
-            num_experts=self.config.num_local_experts)
 
-        params_dict = dict(self.named_parameters())
-        loaded_params: Set[str] = set()
-        for name, loaded_weight in weights:
-            if (self.quant_config is not None and
-                (scale_name := self.quant_config.get_cache_scale(name))):
-                # Loading kv cache quantization scales
-                param = params_dict[scale_name]
-                weight_loader = getattr(param, "weight_loader",
-                                        default_weight_loader)
-                loaded_weight = (loaded_weight if loaded_weight.dim() == 0 else
-                                 loaded_weight[0])
-                weight_loader(param, loaded_weight)
-                loaded_params.add(scale_name)
-                continue
+    #     # Params for weights, fp8 weight scales, fp8 activation scales
+    #     # (param_name, weight_name, expert_id, shard_id)
+    #     expert_params_mapping = FusedMoE.make_expert_params_mapping(
+    #         ckpt_gate_proj_name="w1",
+    #         ckpt_down_proj_name="w2",
+    #         ckpt_up_proj_name="w3",
+    #         num_experts=self.config.num_local_experts)
 
-            for (param_name, weight_name, shard_id) in stacked_params_mapping:
-                if weight_name not in name:
-                    continue
-                name = name.replace(weight_name, param_name)
-                # Skip loading extra bias for GPTQ models.
-                if ((name.endswith(".bias") or name.endswith("_bias"))
-                        and name not in params_dict):
-                    continue
-                # Skip layers on other devices.
-                # if is_pp_missing_parameter(name, self):
-                #     continue
-                if name.endswith("scale"):
-                    # Remapping the name of FP8 kv-scale.
-                    name = maybe_remap_kv_scale_name(name, params_dict)
-                    if name is None:
-                        continue
-                param = params_dict[name]
-                weight_loader = param.weight_loader
-                weight_loader(param, loaded_weight, shard_id)
-                break
-            else:
-                for mapping in expert_params_mapping:
-                    param_name, weight_name, expert_id, shard_id = mapping
-                    if weight_name not in name:
-                        continue
-                    name = name.replace(weight_name, param_name)
-                    # Skip layers on other devices.
-                    # if is_pp_missing_parameter(name, self):
-                    #     continue
-                    if ((name.endswith(".bias") or name.endswith("_bias"))
-                            and name not in params_dict):
-                        continue
-                    param = params_dict[name]
-                    weight_loader = param.weight_loader
-                    weight_loader(param,
-                                  loaded_weight,
-                                  name,
-                                  shard_id=shard_id,
-                                  expert_id=expert_id)
-                    break
-                else:
-                    # Skip loading extra bias for GPTQ models.
-                    if ((name.endswith(".bias") or name.endswith("_bias"))
-                            and name not in params_dict):
-                        continue
-                    # Skip layers on other devices.
-                    # if is_pp_missing_parameter(name, self):
-                    #     continue
-                    # Remapping the name of FP8 kv-scale.
-                    name = maybe_remap_kv_scale_name(name, params_dict)
-                    if name is None:
-                        continue
+    #     params_dict = dict(self.named_parameters())
+    #     loaded_params: Set[str] = set()
+    #     for name, loaded_weight in weights:
+    #         if (self.quant_config is not None and
+    #             (scale_name := self.quant_config.get_cache_scale(name))):
+    #             # Loading kv cache quantization scales
+    #             param = params_dict[scale_name]
+    #             weight_loader = getattr(param, "weight_loader",
+    #                                     default_weight_loader)
+    #             loaded_weight = (loaded_weight if loaded_weight.dim() == 0 else
+    #                              loaded_weight[0])
+    #             weight_loader(param, loaded_weight)
+    #             loaded_params.add(scale_name)
+    #             continue
 
-                    param = params_dict[name]
-                    weight_loader = getattr(param, "weight_loader",
-                                            default_weight_loader)
-                    weight_loader(param, loaded_weight)
-            loaded_params.add(name)
-        return loaded_params
+    #         for (param_name, weight_name, shard_id) in stacked_params_mapping:
+    #             if weight_name not in name:
+    #                 continue
+    #             name = name.replace(weight_name, param_name)
+    #             # Skip loading extra bias for GPTQ models.
+    #             if ((name.endswith(".bias") or name.endswith("_bias"))
+    #                     and name not in params_dict):
+    #                 continue
+    #             # Skip layers on other devices.
+    #             # if is_pp_missing_parameter(name, self):
+    #             #     continue
+    #             if name.endswith("scale"):
+    #                 # Remapping the name of FP8 kv-scale.
+    #                 name = maybe_remap_kv_scale_name(name, params_dict)
+    #                 if name is None:
+    #                     continue
+    #             param = params_dict[name]
+    #             weight_loader = param.weight_loader
+    #             weight_loader(param, loaded_weight, shard_id)
+    #             break
+    #         else:
+    #             for mapping in expert_params_mapping:
+    #                 param_name, weight_name, expert_id, shard_id = mapping
+    #                 if weight_name not in name:
+    #                     continue
+    #                 name = name.replace(weight_name, param_name)
+    #                 # Skip layers on other devices.
+    #                 # if is_pp_missing_parameter(name, self):
+    #                 #     continue
+    #                 if ((name.endswith(".bias") or name.endswith("_bias"))
+    #                         and name not in params_dict):
+    #                     continue
+    #                 param = params_dict[name]
+    #                 weight_loader = param.weight_loader
+    #                 weight_loader(param,
+    #                               loaded_weight,
+    #                               name,
+    #                               shard_id=shard_id,
+    #                               expert_id=expert_id)
+    #                 break
+    #             else:
+    #                 # Skip loading extra bias for GPTQ models.
+    #                 if ((name.endswith(".bias") or name.endswith("_bias"))
+    #                         and name not in params_dict):
+    #                     continue
+    #                 # Skip layers on other devices.
+    #                 # if is_pp_missing_parameter(name, self):
+    #                 #     continue
+    #                 # Remapping the name of FP8 kv-scale.
+    #                 name = maybe_remap_kv_scale_name(name, params_dict)
+    #                 if name is None:
+    #                     continue
+
+    #                 param = params_dict[name]
+    #                 weight_loader = getattr(param, "weight_loader",
+    #                                         default_weight_loader)
+    #                 weight_loader(param, loaded_weight)
+    #         loaded_params.add(name)
+    #     return loaded_params
 
 
 class MixtralForCausalLM(nn.Module):
-    fall_back_to_pt_during_load = False
+    # fall_back_to_pt_during_load = False
 
+    # packed_modules_mapping = {
+    #     "qkv_proj": [
+    #         "q_proj",
+    #         "k_proj",
+    #         "v_proj",
+    #     ],
+    # }
+
+    # # LoRA specific attributes
+    # embedding_modules = {
+    #     "embed_tokens": "input_embeddings",
+    #     "lm_head": "output_embeddings",
+    # }
+    # embedding_padding_modules = ["lm_head"]
     packed_modules_mapping = {
-        "qkv_proj": [
-            "q_proj",
-            "k_proj",
-            "v_proj",
-        ],
+        "q_proj": ("qkv_proj", "q"),
+        "k_proj": ("qkv_proj", "k"),
+        "v_proj": ("qkv_proj", "v"),
+        # "gate_proj": ("gate_up_proj", 0),
+        # "up_proj": ("gate_up_proj", 1),
     }
-
-    # LoRA specific attributes
-    embedding_modules = {
-        "embed_tokens": "input_embeddings",
-        "lm_head": "output_embeddings",
+    experts_modules_mapping={
+        "w1":("w13_weight", "w1"),
+        "w3":("w13_weight", "w3"),
+        "w2":("w2_weight", "w2"),
     }
-    embedding_padding_modules = ["lm_head"]
-
     def __init__(self, hf_config, prefix: str = ""):
         super().__init__()
 
