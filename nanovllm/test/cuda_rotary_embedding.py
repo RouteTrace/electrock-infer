@@ -7,14 +7,8 @@ from typing import Any, Dict, Optional, Tuple
 
 
 # -----------------------------------------------------------------------------
-# 核心 RoPE 计算 - 只保留 NeoX 风格实现
+# 核心 RoPE 计算 - NeoX 风格实现
 # -----------------------------------------------------------------------------
-
-def _rotate_neox(x: torch.Tensor) -> torch.Tensor:
-    """GPT-NeoX 风格的旋转：将维度对半切分后交换位置并取反。"""
-    x1 = x[..., :x.shape[-1] // 2]
-    x2 = x[..., x.shape[-1] // 2:]
-    return torch.cat((-x2, x1), dim=-1)
 
 def _apply_rotary_emb_neox_style_torch(
     x: torch.Tensor,

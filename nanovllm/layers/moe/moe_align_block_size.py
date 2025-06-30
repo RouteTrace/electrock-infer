@@ -3,7 +3,7 @@ import triton
 from typing import Optional, Tuple
 
 # 假设 vLLM 的 C++ 算子可用
-from vllm import _custom_ops as ops
+# from vllm import _custom_ops as ops
 
 def moe_align_block_size(
     topk_ids: torch.Tensor,

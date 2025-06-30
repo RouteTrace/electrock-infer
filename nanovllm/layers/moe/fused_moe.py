@@ -6,7 +6,7 @@ from typing import Optional, Tuple
 
 # vLLM 的核心组件，需要从 vLLM 库中导入
 # 假设 vLLM 已经安装 (pip install vllm)
-from vllm import _custom_ops as ops
+# from vllm import _custom_ops as ops
 # from vllm.model_executor.layers.fused_moe.moe_align_block_size import moe_align_block_size
 from nanovllm.layers.moe.moe_align_block_size import moe_align_block_size
 
