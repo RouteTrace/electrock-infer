@@ -28,9 +28,9 @@ import torch
 from torch import nn
 from transformers import MixtralConfig
 from torch import distributed as dist
-from vllm.attention import Attention
-from vllm.compilation.decorators import support_torch_compile
-from vllm.config import CacheConfig, VllmConfig
+# from vllm.attention import Attention
+# from vllm.compilation.decorators import support_torch_compile
+# from vllm.config import CacheConfig, VllmConfig
 # from vllm.distributed import get_pp_group, get_tensor_model_parallel_world_size
 # from vllm.model_executor.layers.fused_moe import FusedMoE
 # from vllm.model_executor.layers.layernorm import RMSNorm
@@ -59,6 +59,7 @@ from nanovllm.layers.linear import (ReplicatedLinear, RowParallelLinear, ColumnP
                                     MergedColumnParallelLinear, QKVParallelLinear)
 from nanovllm.layers.moe.mixtral_moe import FusedMoE
 from nanovllm.layers.rotary_embedding import RotaryEmbedding, get_rope
+from nanovllm.layers.attention import Attention
 
 
 class MixtralMoE(nn.Module):
@@ -117,10 +118,10 @@ class MixtralAttention(nn.Module):
 
     def __init__(
         self,
-        hf_config: MixtralConfig,
+        hf_config : MixtralConfig,
         hidden_size: int,
-        num_heads: int, # num_attention_heads
-        num_kv_heads: int,
+        num_heads: int, # num_attention_heads ： 32
+        num_kv_heads: int, # 8
         max_position: int = 4096 * 32,
         rope_theta: float = 10000,
         prefix: str = "",
@@ -142,8 +143,7 @@ class MixtralAttention(nn.Module):
             assert tp_size % self.total_num_kv_heads == 0
         self.num_kv_heads = max(1, self.total_num_kv_heads // tp_size)
         # MixtralConfig has an optional head_dim argument
-        self.head_dim = getattr(hf_config, "head_dim",
-                                self.hidden_size // self.total_num_heads)
+        self.head_dim = self.hidden_size // self.total_num_heads
         self.q_size = self.num_heads * self.head_dim
         self.kv_size = self.num_kv_heads * self.head_dim
         self.scaling = self.head_dim**-0.5
@@ -166,13 +166,12 @@ class MixtralAttention(nn.Module):
             rotary_dim=self.head_dim,
             max_position=max_position,
             base=int(self.rope_theta),
-            is_neox_style=True,
+            # is_neox_style=True,  # optimizer for cuda_rotaryembed
         )
         self.attn = Attention(self.num_heads,
                               self.head_dim,
                               self.scaling,
-                              num_kv_heads=self.num_kv_heads,
-                              prefix=f"{prefix}.attn")
+                              num_kv_heads=self.num_kv_heads)
 
     def forward(
         self,
@@ -198,9 +197,9 @@ class MixtralDecoderLayer(nn.Module):
         self.hidden_size = hf_config.hidden_size
         # Requires transformers > 4.32.0
         rope_theta = getattr(hf_config, "rope_theta", 10000)
-
+        self.tp_size = dist.get_world_size() # only for single machine and tensor parallel
         self.self_attn = MixtralAttention(
-            config=hf_config,
+            hf_config=hf_config,
             hidden_size=self.hidden_size,
             num_heads=hf_config.num_attention_heads,
             max_position=hf_config.max_position_embeddings,
@@ -212,6 +211,7 @@ class MixtralDecoderLayer(nn.Module):
             top_k=hf_config.num_experts_per_tok,
             hidden_size=hf_config.hidden_size,
             intermediate_size=hf_config.intermediate_size,
+            tp_size=self.tp_size,
             prefix=f"{prefix}.block_sparse_moe")
         
         self.input_layernorm = RMSNorm(hf_config.hidden_size,
@@ -244,7 +244,6 @@ class MixtralDecoderLayer(nn.Module):
         return hidden_states, residual
 
 
-@support_torch_compile
 class MixtralModel(nn.Module):
 
     def __init__(self, hf_config, prefix: str = ""):
@@ -417,7 +416,7 @@ class MixtralForCausalLM(nn.Module):
     }
     embedding_padding_modules = ["lm_head"]
 
-    def __init__(self, *, hf_config, prefix: str = ""):
+    def __init__(self, hf_config, prefix: str = ""):
         super().__init__()
 
 
