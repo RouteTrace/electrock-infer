@@ -6,7 +6,9 @@ from safetensors import safe_open
 import torch.distributed
 from nanovllm.config import Config
 from transformers import AutoTokenizer
-
+# Only-for test
+from nanovllm.models.mixtral import MixtralForCausalLM
+import torch.multiprocessing as mp
 
 def default_weight_loader(param: nn.Parameter, loaded_weight: torch.Tensor):
     param.data.copy_(loaded_weight)
@@ -78,19 +80,16 @@ if __name__ == "__main__":
                     tensor_parallel_size=2,
                     enforce_eager=True)
     hf_config = config.hf_config
-    # Only-for test
-    from nanovllm.models.mixtral import MixtralForCausalLM
-    import torch.multiprocessing as mp
+
     ctx = mp.get_context("spawn")
     events = []
     ps = []
     for i in range(1, config.tensor_parallel_size):
         event = ctx.Event()
-        process = mp.Process(target=ModelLoader, args=(config, i, event))
+        process = ctx.Process(target=ModelLoader, args=(config, i, event))
         process.start()
         events.append(event)
         ps.append(process)
     
     modelloder = ModelLoader(config, rank=0, event=events)
-
 
