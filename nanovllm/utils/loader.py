@@ -9,17 +9,20 @@ from transformers import AutoTokenizer
 # Only-for test
 from nanovllm.models.mixtral import MixtralForCausalLM
 import torch.multiprocessing as mp
+import tqdm
 
 def default_weight_loader(param: nn.Parameter, loaded_weight: torch.Tensor):
     param.data.copy_(loaded_weight)
 
 
-def load_model(model: nn.Module, path: str):
+def load_model(model: nn.Module, path: str, rank : int):
     packed_modules_mapping = getattr(model, "packed_modules_mapping", {})
     experts_modules_mapping = getattr(model, "experts_modules_mapping", {})
-    for file in glob(os.path.join(path, "*.safetensors")):
-        with safe_open(file, "pt", "cpu") as f:
-            for weight_name in f.keys():
+    files = glob(os.path.join(path, "*.safetensors"))
+    for file in tqdm.tqdm(files, desc=f"Rank:{rank} Loading safetensors files"):
+        with safe_open(file, "pt", "cuda") as f:
+            weight_names = list(f.keys())
+            for weight_name in tqdm.tqdm(weight_names, desc=f"Rank:{rank} Loading weights from {os.path.basename(file)}", leave=False):
                 is_loaded = False # ensure every weight just be  load once
                 for k in packed_modules_mapping:
                     if k in weight_name:
@@ -62,7 +65,7 @@ class ModelLoader:
         torch.distributed.init_process_group("nccl", "tcp://localhost:2333", rank=rank, world_size=config.tensor_parallel_size)
         self.model = MixtralForCausalLM(hf_config)
         print(f"Model(rank:{self.rank}) have loaded.")
-        load_model(self.model, config.model)
+        load_model(self.model, config.model, self.rank)
 
         self.loop()
     def loop(self):
