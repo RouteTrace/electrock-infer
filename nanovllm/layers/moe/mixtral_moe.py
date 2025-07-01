@@ -81,28 +81,25 @@ class FusedMoE(nn.Module):
         self.w13_weight.weight_loader = self.weight_loader
         self.w2_weight.weight_loader = self.weight_loader
     def forward(self, hidden_states: torch.Tensor, router_logits: torch.Tensor) -> torch.Tensor:
-        """
-        前向传播逻辑
-        """
-        # 1. 选择专家
-        # `fused_topk` 是一个优化的 CUDA kernel，用于执行 softmax 和 top-k 操作
-        # topk_weights代表所选专家的概率，topk_ids代表所选专家的全局id
-        # topk_weights, topk_ids  shape = (num_tokens, topk)
-        topk_weights, topk_ids = fused_topk(
-            hidden_states=hidden_states, #(num_tokens, hidden_state)
-            gating_output=router_logits, # (num_tokens, n_experts)
-            topk=self.top_k,
-            renormalize=self.renormalize
-        )
+        # # 1. 选择专家
+        # # `fused_topk` 是一个优化的 CUDA kernel，用于执行 softmax 和 top-k 操作
+        # # topk_weights代表所选专家的概率，topk_ids代表所选专家的全局id
+        # # topk_weights, topk_ids  shape = (num_tokens, topk)
+        # topk_weights, topk_ids = fused_topk(
+        #     hidden_states=hidden_states, #(num_tokens, hidden_state)
+        #     gating_output=router_logits, # (num_tokens, n_experts)
+        #     topk=self.top_k,
+        #     renormalize=self.renormalize
+        # )
 
-        # 2. 调用核心的 MoE CUDA kernel 进行计算
+        #  调用核心的 MoE CUDA kernel 进行计算  ( 把 softmax_topk放入了fused_experts中)
         # `fused_experts` 将所有计算（包括索引、矩阵乘法、激活函数等）融合在一起
         final_hidden_states = fused_experts(
-            hidden_states=hidden_states,
+            hidden_states=hidden_states, # (num_tokens, hidden_state)
             w1=self.w13_weight,
             w2=self.w2_weight,
-            topk_weights=topk_weights,
-            topk_ids=topk_ids,
+            gating_output=router_logits, # (num_tokens, n_experts)
+            topk=self.top_k,
             inplace=True, # 原地修改
             activation="silu" # Mixtral 使用 silu (SwiGLU)
         )
