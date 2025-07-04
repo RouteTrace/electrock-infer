@@ -2,14 +2,10 @@
 #include <ATen/cuda/CUDAContext.h>
 #include <c10/cuda/CUDAGuard.h>
 
-#include "../cuda_compat.h"
-#include "../dispatch_utils.h"
 
 #define CEILDIV(x, y) (((x) + (y) - 1) / (y))
 
-namespace vllm {
-namespace moe {
-
+namespace electrock_infer {
 namespace {
 // 辅助函数，用于在共享内存中计算2D数组的索引
 __device__ __forceinline__ int32_t index(int32_t total_col, int32_t row, int32_t col) {
@@ -40,21 +36,26 @@ __global__ void moe_align_block_size_kernel(
     // 动态分配共享内存
     extern __shared__ int32_t shared_mem[];
     // 将共享内存划分给 cumsum 和 tokens_cnts 两个数组使用
-    int32_t* cumsum = shared_mem;
-    token_cnts_t* tokens_cnts = (token_cnts_t*)(shared_mem + num_experts + 1);
+    int32_t* cumsum = shared_mem; // 前num_experts + 1
+    // 剩下的 (num_thread+1) * num_experts， 每个线程一行，外加一行用于前缀和归约
+    token_cnts_t* tokens_cnts = (token_cnts_t*)(shared_mem + num_experts + 1); 
 
     // --- 阶段1: 并行计数 ---
     // 每个线程负责一部分 token，统计这些 token 分别要去哪个专家
+    
+    // 计算每个thread负责多少tokens
     const size_t tokens_per_thread = CEILDIV(numel, blockDim.x);
-    const size_t start_idx = threadIdx.x * tokens_per_thread;
-
+    // 每一个线程负责的token的起始索引
+    const size_t start_idx = threadIdx.x * tokens_per_thread; 
+    // 把共享内存初始化为0，从第1行开始的，空出了第0行
     for (int i = 0; i < num_experts; ++i) {
         tokens_cnts[index(num_experts, threadIdx.x + 1, i)] = 0;
     }
+    // 统计thread对应的token中，要去哪个专家，然后累加
     for (int i = start_idx; i < numel && i < start_idx + tokens_per_thread; ++i) {
         ++tokens_cnts[index(num_experts, threadIdx.x + 1, topk_ids[i])];
     }
-    __syncthreads();
+    __syncthreads(); // 此时tokens_cnts中每一行(每个thread)都统计好了每个专家负责的token数量，下一步就是要计算总和
 
     // --- 阶段2: 并行前缀和 (Parallel Prefix Sum) ---
     // 对每个专家的计数值，在所有线程间进行累加，得到每个专家的总 token 数
@@ -64,7 +65,7 @@ __global__ void moe_align_block_size_kernel(
             tokens_cnts[index(num_experts, i, threadIdx.x)] += tokens_cnts[index(num_experts, i - 1, threadIdx.x)];
         }
     }
-    __syncthreads();
+    __syncthreads(); // 至此，每一行的每一个expert的统计数量，都累加到了最后一行 tokens_cnts[num_thread][num_expert]
 
     // --- 阶段3: 计算最终填充和偏移量 ---
     // 由单个线程(threadIdx.x == 0)完成最终的全局累加
@@ -77,11 +78,12 @@ __global__ void moe_align_block_size_kernel(
         }
         *total_tokens_post_pad = static_cast<int32_t>(cumsum[num_experts]);
     }
-    __syncthreads();
+    __syncthreads(); // 至此，cumsum[num_expert] 累计了每一个专家所需要的槽位（按block_size为分配单位）；同时cumsum[id]代表起始点
 
     // --- 阶段4: 数据重排 (Permutation) ---
     // 为每个 block 写入其对应的 expert_id
     if (threadIdx.x < num_experts) {
+        // 初始化 i 为 对应专家的blocks的起始索引，然后按block为单位分配expert_id； 每个线程只处理自己的blocks
         for (int i = cumsum[threadIdx.x]; i < cumsum[threadIdx.x + 1]; i += block_size) {
             expert_ids[i / block_size] = threadIdx.x;
         }
@@ -115,29 +117,26 @@ void moe_align_block_size(
     TORCH_CHECK(num_experts == 8, "This simplified function is for num_experts=8");
 
     // 启动配置：线程数取 experts 和 warp size 中的较大者
-    const int32_t num_thread = max((int32_t)num_experts, WARP_SIZE);
+    constexpr int32_t warpSize = 32;
+    const int32_t num_thread = max((int32_t)num_experts, warpSize);
     
-    // 计算所需的动态共享内存大小
+    // 计算所需的动态共享内存大小：内核中会分成两个使用, [num_experts+1] 以及 [num_thred+1][num_experts] 
     const int32_t shared_mem_size =
         ((num_thread + 1) * num_experts + (num_experts + 1)) * sizeof(int32_t);
+    
+    // 直接以int32_t类型调用kernel
+    using scalar_t = int32_t;
+    auto kernel = electrock_infer::moe_align_block_size_kernel<scalar_t, int32_t>;
 
-    // 根据输入的数据类型分发并启动内核
-    VLLM_DISPATCH_INTEGRAL_TYPES(
-        topk_ids.scalar_type(), "moe_align_block_size_kernel", [&] {
-            auto kernel = vllm::moe::moe_align_block_size_kernel<scalar_t, int32_t>;
-            // 确保 CUDA 驱动允许我们使用所需的共享内存
-            AT_CUDA_CHECK(VLLM_DevFuncAttribute_SET_MaxDynamicSharedMemorySize((void*)kernel, shared_mem_size));
-            // 启动内核，只使用一个 block，但 block 内有 num_thread 个线程
-            kernel<<<1, num_thread, shared_mem_size, stream>>>(
-                topk_ids.data_ptr<scalar_t>(),
-                sorted_token_ids.data_ptr<int32_t>(),
-                expert_ids.data_ptr<int32_t>(),
-                num_tokens_post_pad.data_ptr<int32_t>(),
-                num_experts,
-                block_size,
-                topk_ids.numel()
-            );
-        });
-}
+    // 启动内核，只使用一个 block，但 block 内有 num_thread 个线程
+    kernel<<<1, num_thread, shared_mem_size, stream>>>(
+        topk_ids.data_ptr<scalar_t>(),
+        sorted_token_ids.data_ptr<int32_t>(),
+        expert_ids.data_ptr<int32_t>(),
+        num_tokens_post_pad.data_ptr<int32_t>(),
+        num_experts,
+        block_size,
+        topk_ids.numel()
+    );
 }
 }
