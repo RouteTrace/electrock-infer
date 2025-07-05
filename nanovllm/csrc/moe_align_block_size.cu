@@ -1,7 +1,7 @@
 #include <torch/all.h>
 #include <ATen/cuda/CUDAContext.h>
 #include <c10/cuda/CUDAGuard.h>
-
+#include "ops.h"
 
 #define CEILDIV(x, y) (((x) + (y) - 1) / (y))
 
@@ -106,12 +106,12 @@ __global__ void moe_align_block_size_kernel(
  * 对于 experts=8 的情况，共享内存总是足够的，因此我们直接选择最优路径。
  */
 void moe_align_block_size(
-    torch::Tensor topk_ids,
+    torch::Tensor &topk_ids,
     int64_t num_experts,
     int64_t block_size,
-    torch::Tensor sorted_token_ids,
-    torch::Tensor expert_ids,
-    torch::Tensor num_tokens_post_pad
+    torch::Tensor &sorted_token_ids,
+    torch::Tensor &expert_ids,
+    torch::Tensor &num_tokens_post_pad
 ) {
     const cudaStream_t stream = at::cuda::getCurrentCUDAStream();
     TORCH_CHECK(num_experts == 8, "This simplified function is for num_experts=8");
