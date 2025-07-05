@@ -1,5 +1,4 @@
 /*
- * vLLM moe_kernels.cu 的简化版本
  *
  * 目标: 只保留 Mixtral (experts=8, topk=2) 所需的核心功能，并使代码结构更清晰。
  *
@@ -11,21 +10,10 @@
 #include <torch/all.h>
 #include <ATen/cuda/CUDAContext.h>
 #include <c10/cuda/CUDAGuard.h>
-
-#include "../cuda_compat.h"
-#include "../dispatch_utils.h"
-
+#include "ops.h"
 #define CEILDIV(x, y) (((x) + (y) - 1) / (y))
 
-namespace vllm {
-namespace moe {
-
-namespace {
-// 辅助函数，用于在共享内存中计算2D数组的索引
-__device__ __forceinline__ int32_t index(int32_t total_col, int32_t row, int32_t col) {
-  return row * total_col + col;
-}
-}  // namespace
+namespace electrock_infer {
 
 // ============================================================================
 // moe_sum: 聚合专家输出
@@ -47,7 +35,7 @@ __global__ void moe_sum_kernel(
         // #pragma unroll 会在编译时将这个循环展开，避免运行时的循环开销
         #pragma unroll
         for (int k = 0; k < TOPK; ++k) {
-            x += VLLM_LDG(&input[token_idx * TOPK * d + k * d + idx]);
+            x += __ldg(&input[token_idx * TOPK * d + k * d + idx]);
         }
         out[token_idx * d + idx] = x;
     }
@@ -71,13 +59,12 @@ void moe_sum(
     // 设置 CUDA 执行配置
     dim3 grid(num_tokens);
     dim3 block(std::min(hidden_size, 1024));
-    const at::cuda::OptionalCUDAGuard device_guard(device_of(output));
     const cudaStream_t stream = at::cuda::getCurrentCUDAStream();
 
     // 根据数据类型分发并启动内核
-    VLLM_DISPATCH_FLOATING_TYPES(input.scalar_type(), "moe_sum_kernel", [&] {
+    AT_DISPATCH_FLOATING_TYPES_AND_HALF(input.scalar_type(), "moe_sum_kernel", [&] {
         // 直接调用模板特化为 TOPK=2 的内核
-        vllm::moe::moe_sum_kernel<scalar_t, 2><<<grid, block, 0, stream>>>(
+        electrock_infer::moe_sum_kernel<scalar_t, 2><<<grid, block, 0, stream>>>(
             output.data_ptr<scalar_t>(),
             input.data_ptr<scalar_t>(),
             hidden_size
@@ -86,5 +73,4 @@ void moe_sum(
 }
 
 
-} // namespace moe
-} // namespace vllm
+} // namespace electrock_infer
