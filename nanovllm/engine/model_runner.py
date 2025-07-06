@@ -17,23 +17,24 @@ class ModelRunner:
 
     def __init__(self, config: Config, rank: int, event: Event | list[Event]):
         self.config = config
-        hf_config = config.hf_config
+        self.hf_config = config.hf_config
         self.block_size = config.kvcache_block_size
-        self.enforce_eager = config.enforce_eager
+        self.enforce_eager = True # config.enforce_eager 暂不支持cudagraph
         self.world_size = config.tensor_parallel_size
         self.rank = rank
         self.event = event
-    
-        dist.init_process_group("nccl", "tcp://localhost:2333", world_size=self.world_size, rank=rank)
+        print("hf_config: ",self.hf_config)
+        dist.init_process_group("nccl", "tcp://localhost:2025", world_size=self.world_size, rank=rank)
         torch.cuda.set_device(rank)
         default_dtype = torch.get_default_dtype()
-        torch.set_default_dtype(hf_config.torch_dtype)
+        torch.set_default_dtype(self.hf_config.torch_dtype)
         torch.set_default_device("cuda")
-        if hf_config.architectures == "MixtralForCausalLM":
-            self.model = MixtralForCausalLM(hf_config)
-        else:
-            self.model = Qwen3ForCausalLM(hf_config)
-        load_model(self.model, config.model)
+
+
+
+        self.model = MixtralForCausalLM(self.hf_config)
+
+        load_model(self.model, config.model, self.rank)
         self.sampler = Sampler()
         self.allocate_kv_cache(config.gpu_memory_utilization)
         if not self.enforce_eager:
@@ -43,11 +44,11 @@ class ModelRunner:
 
         if self.world_size > 1:
             if rank == 0:
-                self.shm = SharedMemory(name="nanovllm", create=True, size=2**20)
+                self.shm = SharedMemory(name="ElectRock", create=True, size=2**20)
                 dist.barrier()
             else:
                 dist.barrier()
-                self.shm = SharedMemory(name="nanovllm")
+                self.shm = SharedMemory(name="ElectRock")
                 self.loop()
 
     def exit(self):
@@ -95,13 +96,15 @@ class ModelRunner:
 
     def allocate_kv_cache(self, gpu_memory_utilization):
         config = self.config
-        hf_config = config.hf_config
         free, total = torch.cuda.mem_get_info()
         used = total - free
-        num_kv_heads = hf_config.num_key_value_heads // self.world_size
-        block_bytes = 2 * hf_config.num_hidden_layers * self.block_size * num_kv_heads * hf_config.head_dim * hf_config.torch_dtype.itemsize
+        num_kv_heads = self.hf_config.num_key_value_heads // self.world_size
+        # BUG: head_dim is not exist in hf_config
+        head_dim = self.hf_config.hidden_size // self.hf_config.num_attention_heads
+        
+        block_bytes = 2 * self.hf_config.num_hidden_layers * self.block_size * num_kv_heads * head_dim * self.hf_config.torch_dtype.itemsize
         config.num_kvcache_blocks = int(total * gpu_memory_utilization - used) // block_bytes
-        self.kv_cache = torch.zeros(2, hf_config.num_hidden_layers, config.num_kvcache_blocks, self.block_size, num_kv_heads, hf_config.head_dim)
+        self.kv_cache = torch.zeros(2, self.hf_config.num_hidden_layers, config.num_kvcache_blocks, self.block_size, num_kv_heads, head_dim)
         layer_id = 0
         for module in self.model.modules():
             if hasattr(module, "k_cache") and hasattr(module, "v_cache"):
