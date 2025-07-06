@@ -11,6 +11,7 @@
 #include <ATen/cuda/CUDAContext.h>
 #include <c10/cuda/CUDAGuard.h>
 #include "ops.h"
+#include "cuda_utils.cuh"
 #define CEILDIV(x, y) (((x) + (y) - 1) / (y))
 
 namespace electrock_infer {
@@ -27,7 +28,7 @@ template <typename scalar_t, int TOPK>
 __global__ void moe_sum_kernel(
     scalar_t* __restrict__ out,         // 输出: [num_tokens, hidden_size]
     const scalar_t* __restrict__ input, // 输入: [num_tokens, topk, hidden_size]
-    const int d
+    const int64_t d
 ) {
     const int64_t token_idx = blockIdx.x;
     for (int64_t idx = threadIdx.x; idx < d; idx += blockDim.x) {

@@ -77,4 +77,5 @@ class Attention(nn.Module):
                                         softmax_scale=self.scale, causal=True)
         o = o.view(-1, self.num_heads * self.head_dim)
         return o
+    
 

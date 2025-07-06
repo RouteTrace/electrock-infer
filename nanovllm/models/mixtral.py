@@ -107,10 +107,13 @@ class MixtralMoE(nn.Module):
     def forward(self, hidden_states: torch.Tensor) -> torch.Tensor:
         # NOTE: hidden_states can have either 1D or 2D shape.
         orig_shape = hidden_states.shape
+        # print(f"{orig_shape=}, {hidden_states=}")
         hidden_states = hidden_states.view(-1, self.hidden_size)
         # router_logits: (num_tokens, n_experts)
-        router_logits, _ = self.gate(hidden_states)
+        router_logits = self.gate(hidden_states)
+        # print(f"MixtralMoe_{router_logits=}, shape:{router_logits.shape}")
         final_hidden_states = self.experts(hidden_states, router_logits)
+        # print(f"MixtralMoe_{final_hidden_states=}")
         return final_hidden_states.view(orig_shape)
 
 
@@ -178,11 +181,12 @@ class MixtralAttention(nn.Module):
         positions: torch.Tensor,
         hidden_states: torch.Tensor,
     ) -> torch.Tensor:
-        qkv, _ = self.qkv_proj(hidden_states)
+        qkv = self.qkv_proj(hidden_states)
         q, k, v = qkv.split([self.q_size, self.kv_size, self.kv_size], dim=-1)
         q, k = self.rotary_emb(positions, q, k)
         attn_output = self.attn(q, k, v)
-        output, _ = self.o_proj(attn_output)
+        # BUG: only singe value will be return 
+        output = self.o_proj(attn_output)
         return output
 
 

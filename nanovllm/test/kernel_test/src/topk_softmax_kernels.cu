@@ -1,6 +1,6 @@
 #include <torch/all.h>
 #include "cuda_utils.cuh"
-
+#include "ops.h"
 #define CEIL(x,y) ((x+y-1) / y)
 namespace electrock_infer
 {
@@ -71,7 +71,6 @@ namespace electrock_infer
         const int topk,
         cudaStream_t stream)
     {
-        constexpr int WARP_SIZE = 32;
         constexpr int BLOCK_COLUMN_SIZE = 8;
         constexpr int BLOCK_ROW_SIZE = WARP_SIZE / BLOCK_COLUMN_SIZE; 
 

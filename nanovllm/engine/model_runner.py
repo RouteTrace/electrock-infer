@@ -23,7 +23,6 @@ class ModelRunner:
         self.world_size = config.tensor_parallel_size
         self.rank = rank
         self.event = event
-        print("hf_config: ",self.hf_config)
         dist.init_process_group("nccl", "tcp://localhost:2025", world_size=self.world_size, rank=rank)
         torch.cuda.set_device(rank)
         default_dtype = torch.get_default_dtype()
@@ -44,11 +43,11 @@ class ModelRunner:
 
         if self.world_size > 1:
             if rank == 0:
-                self.shm = SharedMemory(name="ElectRock", create=True, size=2**20)
+                self.shm = SharedMemory(name="electrock", create=True, size=2**20)
                 dist.barrier()
             else:
                 dist.barrier()
-                self.shm = SharedMemory(name="ElectRock")
+                self.shm = SharedMemory(name="electrock")
                 self.loop()
 
     def exit(self):
@@ -101,7 +100,7 @@ class ModelRunner:
         num_kv_heads = self.hf_config.num_key_value_heads // self.world_size
         # BUG: head_dim is not exist in hf_config
         head_dim = self.hf_config.hidden_size // self.hf_config.num_attention_heads
-        
+
         block_bytes = 2 * self.hf_config.num_hidden_layers * self.block_size * num_kv_heads * head_dim * self.hf_config.torch_dtype.itemsize
         config.num_kvcache_blocks = int(total * gpu_memory_utilization - used) // block_bytes
         self.kv_cache = torch.zeros(2, self.hf_config.num_hidden_layers, config.num_kvcache_blocks, self.block_size, num_kv_heads, head_dim)

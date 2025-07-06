@@ -3,7 +3,7 @@ import torch.nn as nn
 from typing import Optional, List, Tuple
 import re
 # fused_experts 是一个底层的、用 Triton 或 cuBLAS 编写的高性能 CUDA 核
-from nanovllm.layers.moe.fused_moe import fused_experts, fused_topk
+from nanovllm.layers.moe.fused_moe import fused_experts
 import torch.distributed as dist
 class FusedMoE(nn.Module):
     """
@@ -94,22 +94,28 @@ class FusedMoE(nn.Module):
 
         #  调用核心的 MoE CUDA kernel 进行计算  ( 把 softmax_topk放入了fused_experts中)
         # `fused_experts` 将所有计算（包括索引、矩阵乘法、激活函数等）融合在一起
+        # print(f"fusedmoe_{hidden_states=}, shape: {hidden_states.shape}")
+        # print(f"fusedmoe_{self.w13_weight=}, shape: {self.w13_weight.shape}")
+        # print(f"fusedmoe_{self.w2_weight=}, shape: {self.w2_weight.shape}")
         final_hidden_states = fused_experts(
             hidden_states=hidden_states, # (num_tokens, hidden_state)
             w1=self.w13_weight,
             w2=self.w2_weight,
             gating_output=router_logits, # (num_tokens, n_experts)
             topk=self.top_k,
+            renormalize=self.renormalize,
             inplace=True, # 原地修改
             activation="silu" # Mixtral 使用 silu (SwiGLU)
         )
-        
+        # print(f"fusedmoe_{final_hidden_states=}, shape: {final_hidden_states.shape}")
         # 3. 如果需要，对 TP 的结果进行聚合
         # 在标准的 MoE 实现中，这一步通常在更高层处理，但保留该选项
         # dist.all_reduce(input_, group=self.device_group)
         if self.reduce_results and self.tp_size > 1:
-            final_hidden_states = dist.all_reduce(final_hidden_states)
+            # BUG: dist.all_reduce()不能用返回值接收
+            dist.all_reduce(final_hidden_states)
 
+        # print(f"fusedmoe_reduce_{final_hidden_states=}, shape: {final_hidden_states.shape}")
         return final_hidden_states
 
     def weight_loader(self, param: nn.Parameter, loaded_weight: torch.Tensor,

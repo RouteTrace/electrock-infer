@@ -7,9 +7,10 @@
  * 2. 将 SiLU(x) * y 的数学逻辑直接内联到核函数中。
  * 3. 将 CUDA 内核的启动逻辑直接放在最终的C++函数体内。
  */
-#include <torch/extension.h>
+#include <torch/all.h>
 #include <cuda_runtime.h>
 #include <ATen/cuda/CUDAContext.h>
+#include <ATen/ATen.h>
 #include "ops.h"
 #include "cuda_utils.cuh"
 #include <cmath>

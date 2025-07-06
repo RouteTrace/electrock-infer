@@ -7,7 +7,7 @@ class RMSNorm(nn.Module):
     def __init__(
         self,
         hidden_size: int,
-        eps: float = 1e-6,
+        eps: float = 1e-5,
     ) -> None:
         super().__init__()
         self.hidden_size = hidden_size
@@ -49,3 +49,9 @@ class RMSNorm(nn.Module):
             return self.rms_forward(x)
         else:
             return self.add_rms_forward(x, residual)
+
+    def forward_cuda(self, x:torch.Tensor, residual:torch.Tensor | None = None) -> torch.Tensor:
+        if residual is None:
+            pass # cuda implement
+        else:
+            pass # cuda implement

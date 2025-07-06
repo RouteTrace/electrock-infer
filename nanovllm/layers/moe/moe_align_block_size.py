@@ -1,9 +1,7 @@
 import torch
 import triton
 from typing import Optional, Tuple
-
-# 假设 vLLM 的 C++ 算子可用
-# from vllm import _custom_ops as ops
+import electrock_infer
 
 def moe_align_block_size(
     topk_ids: torch.Tensor,
@@ -11,11 +9,11 @@ def moe_align_block_size(
     num_experts: int,
 ) -> Tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
     """
-    一个简化的 moe_align_block_size 实现，专为少量专家（如8个）的场景。
+    一个简化的 moe_align_block_size 实现, 专为少量专家(如8个)的场景。
     它移除了复杂的条件分派逻辑，直接调用核心的计算算子。
 
     Args:
-        topk_ids: 形状为 [总token数, top_k] 的张量，表示每个token选择的专家索引。
+        topk_ids: 形状为 [总token数, top_k] 的张量, 表示每个token选择的专家索引。
         block_size: 计算块大小，例如 64 或 128。
         num_experts: 专家总数，例如 8。
 
@@ -32,12 +30,13 @@ def moe_align_block_size(
     # 2. 准备输出张量
     # 计算可能需要的最大空间：原始token数 + 每个专家最多需要的(block_size-1)个填充
     max_num_tokens_padded = topk_ids.numel() + num_experts * (block_size - 1)
-    
+
     sorted_ids = torch.empty((max_num_tokens_padded,),
                              dtype=torch.int32,
                              device=topk_ids.device)
     # 填充一个默认值，表示这些位置是空的
-    sorted_ids.fill_(topk_ids.numel())
+    # sorted_ids.fill_(topk_ids.numel())
+    sorted_ids.fill_(-1)
     
     max_num_m_blocks = triton.cdiv(max_num_tokens_padded, block_size)
     expert_ids = torch.zeros((max_num_m_blocks,),
@@ -51,7 +50,7 @@ def moe_align_block_size(
     # 3. 调用核心算子
     # 对于 num_experts=8 的情况，vLLM 会调用一个高效的 C++ 实现。
     # 这个算子内部实现了计数、前缀和、重排等所有逻辑。
-    ops.moe_align_block_size(
+    electrock_infer.moe_align_block_size(
         topk_ids,
         num_experts,
         block_size,
