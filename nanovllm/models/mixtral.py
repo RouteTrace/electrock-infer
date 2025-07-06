@@ -1,58 +1,11 @@
-# SPDX-License-Identifier: Apache-2.0
-
-# Adapted from
-# https://github.com/huggingface/transformers/blob/v4.28.0/src/transformers/models/llama/modeling_llama.py
-# Copyright 2023 The vLLM team.
-# Copyright 2022 EleutherAI and the HuggingFace Inc. team. All rights reserved.
-#
-# This code is based on EleutherAI's GPT-NeoX library and the GPT-NeoX
-# and OPT implementations in this library. It has been modified from its
-# original forms to accommodate minor architectural differences compared
-# to GPT-NeoX and OPT used by the Meta AI team that trained the model.
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-"""Inference-only Mixtral model."""
 from typing import Iterable, Optional, Set, Tuple, Union
 
 import torch
 from torch import nn
 from transformers import MixtralConfig
 from torch import distributed as dist
-# from vllm.attention import Attention
-# from vllm.compilation.decorators import support_torch_compile
-# from vllm.config import CacheConfig, VllmConfig
-# from vllm.distributed import get_pp_group, get_tensor_model_parallel_world_size
-# from vllm.model_executor.layers.fused_moe import FusedMoE
-# from vllm.model_executor.layers.layernorm import RMSNorm
-# from vllm.model_executor.layers.linear import (QKVParallelLinear,
-#                                                ReplicatedLinear,
-#                                                RowParallelLinear)
-# from vllm.model_executor.layers.logits_processor import LogitsProcessor
-# from vllm.model_executor.layers.quantization import QuantizationConfig
-# from vllm.model_executor.layers.rotary_embedding import get_rope
-# from vllm.model_executor.layers.vocab_parallel_embedding import (
-#     DEFAULT_VOCAB_PADDING_SIZE, ParallelLMHead, VocabParallelEmbedding)
-# from vllm.model_executor.model_loader.weight_utils import (
-    # default_weight_loader, maybe_remap_kv_scale_name)
-# from vllm.model_executor.sampling_metadata import SamplingMetadata
-# from vllm.sequence import IntermediateTensors
 
-# from .interfaces import SupportsLoRA, SupportsPP
-# from .utils import (AutoWeightsLoader, is_pp_missing_parameter,
-#                     make_empty_intermediate_tensors_factory, make_layers,
-#                     maybe_prefix)
 
-# self-implement
 from nanovllm.layers.embed_head import ParallelLMHead, VocabParallelEmbedding
 from nanovllm.layers.layernorm import RMSNorm
 from nanovllm.layers.linear import (ReplicatedLinear, RowParallelLinear, ColumnParallelLinear,
@@ -62,6 +15,7 @@ from nanovllm.layers.rotary_embedding import RotaryEmbedding, get_rope
 from nanovllm.layers.attention import Attention
 
 
+"""Inference-only Mixtral model."""
 class MixtralMoE(nn.Module):
     """A tensor-parallel MoE implementation for Mixtral that shards each expert
     across all ranks.
@@ -83,14 +37,6 @@ class MixtralMoE(nn.Module):
         self.hidden_size = hidden_size
 
         # Gate always runs at half / full precision for now.
-
-        # self.gate = ReplicatedLinear(hidden_size,
-        #                              num_experts,
-        #                              bias=False,
-        #                              params_dtype=params_dtype,
-        #                              quant_config=None,
-        #                              prefix=f"{prefix}.gate")
-        
         self.gate = ReplicatedLinear(hidden_size, 
                                      num_experts,
                                      bias=False)
@@ -253,11 +199,6 @@ class MixtralModel(nn.Module):
     def __init__(self, hf_config, prefix: str = ""):
         super().__init__()
 
-        # config = vllm_config.model_config.hf_config
-        # cache_config = vllm_config.cache_config
-        # quant_config = vllm_config.quant_config
-        # lora_config = vllm_config.lora_config
-
         self.hf_config = hf_config
         self.vocab_size = hf_config.vocab_size 
         # embedding layer
@@ -267,160 +208,32 @@ class MixtralModel(nn.Module):
         )
         # Decoder layers
         self.layers = nn.ModuleList([MixtralDecoderLayer(hf_config) for _ in range(hf_config.num_hidden_layers)])
-        # self.start_layer, self.end_layer, self.layers = make_layers(
-        #     config.num_hidden_layers,
-        #     lambda prefix: MixtralDecoderLayer(
-        #         config, cache_config, quant_config=quant_config, prefix=prefix
-        #     ),
-        #     prefix=f"{prefix}.layers")
-
         self.norm = RMSNorm(hf_config.hidden_size, eps=hf_config.rms_norm_eps)
-        # self.make_empty_intermediate_tensors = (
-        #     make_empty_intermediate_tensors_factory(
-        #         ["hidden_states", "residual"], config.hidden_size))
 
-    # def get_input_embeddings(self, input_ids: torch.Tensor) -> torch.Tensor:
-    #     return self.embed_tokens(input_ids)
 
     def forward(
         self,
         input_ids: torch.Tensor,
         positions: torch.Tensor,
     ) -> Union[torch.Tensor]:
-        # if get_pp_group().is_first_rank:
-        #     if inputs_embeds is not None:
-        #         hidden_states = inputs_embeds
-        #     else:
-        #         hidden_states = self.get_input_embeddings(input_ids)
-        #     residual = None
-        # else:
-        #     assert intermediate_tensors is not None
-        #     hidden_states = intermediate_tensors["hidden_states"]
-        #     residual = intermediate_tensors["residual"]
+
         residual = None
-        # hidden_states = self.get_input_embeddings(input_ids)
         hidden_states = self.embed_tokens(input_ids)
         for layer in self.layers:
             hidden_states, residual = layer(positions, hidden_states, residual)
-        # if not get_pp_group().is_last_rank:
-        #     return IntermediateTensors({
-        #         "hidden_states": hidden_states,
-        #         "residual": residual
-        #     })
+
         hidden_states, _ = self.norm(hidden_states, residual)
         return hidden_states
 
-    # def load_weights(self, weights: Iterable[Tuple[str,
-    #                                                torch.Tensor]]) -> Set[str]:
 
-
-    #     # Params for weights, fp8 weight scales, fp8 activation scales
-    #     # (param_name, weight_name, expert_id, shard_id)
-    #     expert_params_mapping = FusedMoE.make_expert_params_mapping(
-    #         ckpt_gate_proj_name="w1",
-    #         ckpt_down_proj_name="w2",
-    #         ckpt_up_proj_name="w3",
-    #         num_experts=self.config.num_local_experts)
-
-    #     params_dict = dict(self.named_parameters())
-    #     loaded_params: Set[str] = set()
-    #     for name, loaded_weight in weights:
-    #         if (self.quant_config is not None and
-    #             (scale_name := self.quant_config.get_cache_scale(name))):
-    #             # Loading kv cache quantization scales
-    #             param = params_dict[scale_name]
-    #             weight_loader = getattr(param, "weight_loader",
-    #                                     default_weight_loader)
-    #             loaded_weight = (loaded_weight if loaded_weight.dim() == 0 else
-    #                              loaded_weight[0])
-    #             weight_loader(param, loaded_weight)
-    #             loaded_params.add(scale_name)
-    #             continue
-
-    #         for (param_name, weight_name, shard_id) in stacked_params_mapping:
-    #             if weight_name not in name:
-    #                 continue
-    #             name = name.replace(weight_name, param_name)
-    #             # Skip loading extra bias for GPTQ models.
-    #             if ((name.endswith(".bias") or name.endswith("_bias"))
-    #                     and name not in params_dict):
-    #                 continue
-    #             # Skip layers on other devices.
-    #             # if is_pp_missing_parameter(name, self):
-    #             #     continue
-    #             if name.endswith("scale"):
-    #                 # Remapping the name of FP8 kv-scale.
-    #                 name = maybe_remap_kv_scale_name(name, params_dict)
-    #                 if name is None:
-    #                     continue
-    #             param = params_dict[name]
-    #             weight_loader = param.weight_loader
-    #             weight_loader(param, loaded_weight, shard_id)
-    #             break
-    #         else:
-    #             for mapping in expert_params_mapping:
-    #                 param_name, weight_name, expert_id, shard_id = mapping
-    #                 if weight_name not in name:
-    #                     continue
-    #                 name = name.replace(weight_name, param_name)
-    #                 # Skip layers on other devices.
-    #                 # if is_pp_missing_parameter(name, self):
-    #                 #     continue
-    #                 if ((name.endswith(".bias") or name.endswith("_bias"))
-    #                         and name not in params_dict):
-    #                     continue
-    #                 param = params_dict[name]
-    #                 weight_loader = param.weight_loader
-    #                 weight_loader(param,
-    #                               loaded_weight,
-    #                               name,
-    #                               shard_id=shard_id,
-    #                               expert_id=expert_id)
-    #                 break
-    #             else:
-    #                 # Skip loading extra bias for GPTQ models.
-    #                 if ((name.endswith(".bias") or name.endswith("_bias"))
-    #                         and name not in params_dict):
-    #                     continue
-    #                 # Skip layers on other devices.
-    #                 # if is_pp_missing_parameter(name, self):
-    #                 #     continue
-    #                 # Remapping the name of FP8 kv-scale.
-    #                 name = maybe_remap_kv_scale_name(name, params_dict)
-    #                 if name is None:
-    #                     continue
-
-    #                 param = params_dict[name]
-    #                 weight_loader = getattr(param, "weight_loader",
-    #                                         default_weight_loader)
-    #                 weight_loader(param, loaded_weight)
-    #         loaded_params.add(name)
-    #     return loaded_params
 
 
 class MixtralForCausalLM(nn.Module):
-    # fall_back_to_pt_during_load = False
 
-    # packed_modules_mapping = {
-    #     "qkv_proj": [
-    #         "q_proj",
-    #         "k_proj",
-    #         "v_proj",
-    #     ],
-    # }
-
-    # # LoRA specific attributes
-    # embedding_modules = {
-    #     "embed_tokens": "input_embeddings",
-    #     "lm_head": "output_embeddings",
-    # }
-    # embedding_padding_modules = ["lm_head"]
     packed_modules_mapping = {
         "q_proj": ("qkv_proj", "q"),
         "k_proj": ("qkv_proj", "k"),
         "v_proj": ("qkv_proj", "v"),
-        # "gate_proj": ("gate_up_proj", 0),
-        # "up_proj": ("gate_up_proj", 1),
     }
     experts_modules_mapping={
         "w1":("w13_weight", "w1"),
@@ -432,8 +245,6 @@ class MixtralForCausalLM(nn.Module):
 
 
         self.model = MixtralModel(hf_config)
-                                #   prefix=maybe_prefix(prefix, "model"))
-        # self.unpadded_vocab_size = hf_config.vocab_size
         
         self.lm_head = ParallelLMHead(
             hf_config.vocab_size,
@@ -442,11 +253,6 @@ class MixtralForCausalLM(nn.Module):
 
         if hf_config.tie_word_embeddings:
             self.lm_head.weight.data = self.model.embed_tokens.weight.data
-            
-        # self.logits_processor = LogitsProcessor(self.unpadded_vocab_size,
-        #                                         config.vocab_size)
-        # self.make_empty_intermediate_tensors = (
-        #     self.model.make_empty_intermediate_tensors)
 
     def get_input_embeddings(self, input_ids: torch.Tensor) -> torch.Tensor:
         return self.model.get_input_embeddings(input_ids)
@@ -468,7 +274,3 @@ class MixtralForCausalLM(nn.Module):
         logits = self.lm_head(hidden_states)
         return logits
 
-    # def load_weights(self, weights: Iterable[Tuple[str,
-    #                                                torch.Tensor]]) -> Set[str]:
-    #     loader = AutoWeightsLoader(self, skip_prefixes=["rotary_emb.inv_freq"])
-    #     return loader.load_weights(weights)
