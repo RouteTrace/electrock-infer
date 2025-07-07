@@ -3,10 +3,9 @@ import torch
 import torch.distributed as dist
 from multiprocessing.synchronize import Event
 from multiprocessing.shared_memory import SharedMemory
-
+from nanovllm.models.qwen3 import Qwen3ForCausalLM
 from nanovllm.config import Config
 from nanovllm.engine.sequence import Sequence
-from nanovllm.models.qwen3 import Qwen3ForCausalLM
 from nanovllm.models.mixtral import MixtralForCausalLM
 from nanovllm.layers.sampler import Sampler
 from nanovllm.utils.context import set_context, get_context, reset_context
@@ -28,10 +27,10 @@ class ModelRunner:
         default_dtype = torch.get_default_dtype()
         torch.set_default_dtype(self.hf_config.torch_dtype)
         torch.set_default_device("cuda")
-
-
-
-        self.model = MixtralForCausalLM(self.hf_config)
+        if self.hf_config.architectures == "MixtralForCausalLM":
+            self.model = MixtralForCausalLM(self.hf_config)
+        else:
+            self.model = Qwen3ForCausalLM(self.hf_config)
 
         load_model(self.model, config.model, self.rank)
         self.sampler = Sampler()
@@ -73,7 +72,7 @@ class ModelRunner:
         self.event.wait()
         n = int.from_bytes(self.shm.buf[0:4], "little")
         method_name, *args = pickle.loads(self.shm.buf[4:n+4])
-        self.event.clear()
+        self.event.clear() 
         return method_name, args
 
     def write_shm(self, method_name, *args):
@@ -99,9 +98,13 @@ class ModelRunner:
         used = total - free
         num_kv_heads = self.hf_config.num_key_value_heads // self.world_size
         # BUG: head_dim is not exist in hf_config
-        head_dim = self.hf_config.hidden_size // self.hf_config.num_attention_heads
-
+        if hasattr(self.hf_config, 'head_dim'):
+            head_dim = self.hf_config.head_dim
+        else:
+            head_dim = self.hf_config.hidden_size // self.hf_config.num_attention_heads
+        # 计算一个block_size所需要的字节数，其中block_size = num_token，即block是以token为单位设计的。
         block_bytes = 2 * self.hf_config.num_hidden_layers * self.block_size * num_kv_heads * head_dim * self.hf_config.torch_dtype.itemsize
+        assert (total*gpu_memory_utilization - used)>0 , "no memory leaved for allocating kv cache block."
         config.num_kvcache_blocks = int(total * gpu_memory_utilization - used) // block_bytes
         self.kv_cache = torch.zeros(2, self.hf_config.num_hidden_layers, config.num_kvcache_blocks, self.block_size, num_kv_heads, head_dim)
         layer_id = 0
@@ -112,6 +115,11 @@ class ModelRunner:
                 layer_id += 1
 
     def prepare_block_tables(self, seqs: list[Sequence]):
+        """
+            计算所有序列中block_table的最大长度: max_len
+            对每个seq的block_table补齐长度
+            得到一个二维的block_tables[batch_size, max_len]
+        """
         max_len = max(len(seq.block_table) for seq in seqs)
         block_tables = [
             seq.block_table + [-1] * (max_len - len(seq.block_table))
@@ -135,10 +143,10 @@ class ModelRunner:
             positions.extend(list(range(seq.num_cached_tokens, seqlen)))
             seqlen_q = seqlen - seq.num_cached_tokens
             seqlen_k = seqlen
-            cu_seqlens_q.append(cu_seqlens_q[-1] + seqlen_q)
-            cu_seqlens_k.append(cu_seqlens_k[-1] + seqlen_k)
-            max_seqlen_q = max(seqlen_q, max_seqlen_q)
-            max_seqlen_k = max(seqlen_k, max_seqlen_k)
+            cu_seqlens_q.append(cu_seqlens_q[-1] + seqlen_q) # 记录每个seq_q的长度，进行累加并append——>记录了每个seq的起始索引[ 0, q1, q2, ...]
+            cu_seqlens_k.append(cu_seqlens_k[-1] + seqlen_k) # 同上，但是seq_k没有减去cached_tokens
+            max_seqlen_q = max(seqlen_q, max_seqlen_q) # 获得该batch中，q的最长 长度
+            max_seqlen_k = max(seqlen_k, max_seqlen_k) # 获得该batch中， k的最长 长度
             for i in range(seq.num_cached_blocks, seq.num_blocks):
                 start = seq.block_table[i] * self.block_size
                 if i != seq.num_blocks - 1:
@@ -146,8 +154,9 @@ class ModelRunner:
                 else:
                     end = start + seq.last_block_num_tokens 
                 slot_mapping.extend(list(range(start, end)))
-        assert len(input_ids) == len(slot_mapping)
-        if cu_seqlens_k[-1] > cu_seqlens_q[-1]:    # prefix cache
+
+        assert len(input_ids) == len(slot_mapping) # 确保每个seq，只取未缓存的token
+        if cu_seqlens_k[-1] > cu_seqlens_q[-1]:    
             block_tables = self.prepare_block_tables(seqs)
 
         input_ids = torch.tensor(input_ids, dtype=torch.int64, pin_memory=True).cuda(non_blocking=True)
