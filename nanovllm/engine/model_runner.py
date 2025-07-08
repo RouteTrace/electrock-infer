@@ -27,10 +27,8 @@ class ModelRunner:
         default_dtype = torch.get_default_dtype()
         torch.set_default_dtype(self.hf_config.torch_dtype)
         torch.set_default_device("cuda")
-        if self.hf_config.architectures == "MixtralForCausalLM":
-            self.model = MixtralForCausalLM(self.hf_config)
-        else:
-            self.model = Qwen3ForCausalLM(self.hf_config)
+        self.model = MixtralForCausalLM(self.hf_config)
+        # self.model = Qwen3ForCausalLM(self.hf_config)
 
         load_model(self.model, config.model, self.rank)
         self.sampler = Sampler()
@@ -97,11 +95,8 @@ class ModelRunner:
         free, total = torch.cuda.mem_get_info()
         used = total - free
         num_kv_heads = self.hf_config.num_key_value_heads // self.world_size
-        # BUG: head_dim is not exist in hf_config
-        if hasattr(self.hf_config, 'head_dim'):
-            head_dim = self.hf_config.head_dim
-        else:
-            head_dim = self.hf_config.hidden_size // self.hf_config.num_attention_heads
+        # BUG fix: head_dim may not exist in hf_config
+        head_dim = self.hf_config.hidden_size // self.hf_config.num_attention_heads
         # 计算一个block_size所需要的字节数，其中block_size = num_token，即block是以token为单位设计的。
         block_bytes = 2 * self.hf_config.num_hidden_layers * self.block_size * num_kv_heads * head_dim * self.hf_config.torch_dtype.itemsize
         assert (total*gpu_memory_utilization - used)>0 , "no memory leaved for allocating kv cache block."
@@ -148,12 +143,14 @@ class ModelRunner:
             max_seqlen_q = max(seqlen_q, max_seqlen_q) # 获得该batch中，q的最长 长度
             max_seqlen_k = max(seqlen_k, max_seqlen_k) # 获得该batch中， k的最长 长度
             for i in range(seq.num_cached_blocks, seq.num_blocks):
+                # 在kv cache中，逻辑上的block_id都是连续的块，因此block_talble中的id就相当于块表中索引，可以根据block_id精确定位到kv cache中的block位置
                 start = seq.block_table[i] * self.block_size
+                # 是否最后一个block
                 if i != seq.num_blocks - 1:
                     end = start + self.block_size
                 else:
                     end = start + seq.last_block_num_tokens 
-                slot_mapping.extend(list(range(start, end)))
+                slot_mapping.extend(list(range(start, end))) # slot_mapping存的是每个block在kv_cache中物理上的地址
 
         assert len(input_ids) == len(slot_mapping) # 确保每个seq，只取未缓存的token
         if cu_seqlens_k[-1] > cu_seqlens_q[-1]:    
@@ -173,17 +170,32 @@ class ModelRunner:
         positions = []
         slot_mapping = []
         context_lens = []
+        # Fix: To support old version of flash-attn
+        cu_seqlens_q = [0]
+        cu_seqlens_k = [0]
+        max_seqlen_q = 1
+        max_seqlen_k = 1
+
         for seq in seqs:
-            input_ids.append(seq.last_token)
+            # 都是对单个token进行记录(tensor[1])
+            input_ids.append(seq.last_token) 
             positions.append(len(seq))
             context_lens.append(len(seq))
             slot_mapping.append(seq.block_table[-1] * self.block_size + seq.last_block_num_tokens  - 1)
+            # Fix：To support old flash-attn
+            cu_seqlens_q.append(cu_seqlens_q[-1] + 1)
+            cu_seqlens_k.append(cu_seqlens_k[-1] + 1)
+
         input_ids = torch.tensor(input_ids, dtype=torch.int64, pin_memory=True).cuda(non_blocking=True)
         positions = torch.tensor(positions, dtype=torch.int64, pin_memory=True).cuda(non_blocking=True)
         slot_mapping = torch.tensor(slot_mapping, dtype=torch.int32, pin_memory=True).cuda(non_blocking=True)
         context_lens = torch.tensor(context_lens, dtype=torch.int32, pin_memory=True).cuda(non_blocking=True)
         block_tables = self.prepare_block_tables(seqs)
-        set_context(False, slot_mapping=slot_mapping, context_lens=context_lens, block_tables=block_tables)
+        # Fix
+        cu_seqlens_q = torch.tensor(cu_seqlens_q, dtype=torch.int32, pin_memory=True).cuda(non_blocking=True)
+        cu_seqlens_k = torch.tensor(cu_seqlens_k, dtype=torch.int32, pin_memory=True).cuda(non_blocking=True)
+        set_context(False, slot_mapping=slot_mapping, context_lens=context_lens, block_tables=block_tables, 
+                    cu_seqlens_k=cu_seqlens_k, cu_seqlens_q=cu_seqlens_q, max_seqlen_k=max_seqlen_k, max_seqlen_q=max_seqlen_q) # To support old flash-attn
         return input_ids, positions
 
     def prepare_sample(self, seqs: list[Sequence]):
