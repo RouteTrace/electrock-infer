@@ -7,11 +7,14 @@ def main():
     # path = os.path.expanduser("~/zhushengguang/models/Qwen3-0.6B/")
     path = os.path.expanduser("~/zhushengguang/models/Mixtral-8x7B-Instruct-v0.1/")
     tokenizer = AutoTokenizer.from_pretrained(path)
-    llm = LLM(path, enforce_eager=True, tensor_parallel_size=2)
+    llm = LLM(path, 
+              enforce_eager=True, 
+              tensor_parallel_size=1,
+              gpu_memory_utilization=0.9)
 
-    sampling_params = SamplingParams(temperature=0.6, max_tokens=256)
+    sampling_params = SamplingParams(temperature=1, max_tokens=256)
     prompts = [
-        "introduce yourself",
+        # "introduce yourself",
         "list all prime numbers within 100",
     ]
     prompts = [

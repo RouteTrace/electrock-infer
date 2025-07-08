@@ -66,25 +66,27 @@ class BlockManager:
             h = self.compute_hash(token_ids, h) if len(token_ids) == self.block_size else -1
             block_id = self.hash_to_block_id.get(h, -1)
             if block_id == -1 or self.blocks[block_id].token_ids != token_ids:
+                # 一次 miss, 后续迭代都是miss
                 cache_miss = True
             if cache_miss:
                 block_id = self.free_block_ids[0]
                 block = self._allocate_block(block_id)
             else:
+                # implemention of prefix caching
                 seq.num_cached_tokens += self.block_size
                 if block_id in self.used_block_ids:
                     block = self.blocks[block_id]
                     block.ref_count += 1
+                # 存在未被使用的block(之前被使用过，但是已经没有seq再使用了)，需要拿这个block再利用
                 else:
                     block = self._allocate_block(block_id)
             if h != -1:
                 block.update(h, token_ids)
-                # Question：在cache命中的时候，会更新block的hash和token_ids. 
-                # 导致hash_to_block_id[old_hash]返回更新后的block.
                 self.hash_to_block_id[h] = block_id 
             seq.block_table.append(block_id)
 
     def deallocate(self, seq: Sequence):
+        # 通过反转顺序逐个释放block，蕴含了prefix cacing的优化：当分配free时优先高位的block，提高hit的几率
         for block_id in reversed(seq.block_table):
             block = self.blocks[block_id]
             block.ref_count -= 1
@@ -100,11 +102,13 @@ class BlockManager:
         block_table = seq.block_table
         last_block = self.blocks[block_table[-1]]
         if len(seq) % self.block_size == 1:
+            # decode过程，new_token需要分配新的块
             assert last_block.hash != -1
             block_id = self.free_block_ids[0]
             self._allocate_block(block_id)
             block_table.append(block_id)
         elif len(seq) % self.block_size == 0:
+            # decode时，每满足一个full block都要计算prefix_hash然后更新该block并加入hash_to_block_id
             assert last_block.hash == -1
             token_ids = seq.block(seq.num_blocks-1)
             prefix = self.blocks[block_table[-2]].hash if len(block_table) > 1 else -1
@@ -112,4 +116,5 @@ class BlockManager:
             last_block.update(h, token_ids)
             self.hash_to_block_id[h] = last_block.block_id
         else:
+            # not full
             assert last_block.hash == -1

@@ -131,7 +131,7 @@ class MixtralAttention(nn.Module):
         q, k, v = qkv.split([self.q_size, self.kv_size, self.kv_size], dim=-1)
         q, k = self.rotary_emb(positions, q, k)
         attn_output = self.attn(q, k, v)
-        # BUG: only singe value will be return 
+        # Fix: only singe value will be return 
         output = self.o_proj(attn_output)
         return output
 

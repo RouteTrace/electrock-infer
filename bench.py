@@ -13,7 +13,7 @@ def main():
 
     # path = os.path.expanduser("~/zhushengguang/models/Qwen3-0.6B/")
     path = os.path.expanduser("~/zhushengguang/models/Mixtral-8x7B-Instruct-v0.1/")
-    llm = LLM(path, enforce_eager=True, max_model_len=4096, )
+    llm = LLM(path, enforce_eager=True, max_model_len=4096, tensor_parallel_size=2,  )
 
     prompt_token_ids = [[randint(0, 10000) for _ in range(randint(100, max_input_len))] for _ in range(num_seqs)]
     sampling_params = [SamplingParams(temperature=0.6, ignore_eos=True, max_tokens=randint(100, max_ouput_len)) for _ in range(num_seqs)]

@@ -19,7 +19,7 @@ class LLMEngine:
         config_fields = {field.name for field in fields(Config)}
         config_kwargs = {k: v for k, v in kwargs.items() if k in config_fields}
         config = Config(model, **config_kwargs)
-        config.__post_init__()
+        # config.__post_init__()
         self.ps = []
         self.events = []
         ctx = mp.get_context("spawn")

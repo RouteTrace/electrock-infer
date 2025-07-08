@@ -96,7 +96,7 @@ class ModelRunner:
         used = total - free
         num_kv_heads = self.hf_config.num_key_value_heads // self.world_size
         # BUG fix: head_dim may not exist in hf_config
-        head_dim = self.hf_config.hidden_size // self.hf_config.num_attention_heads
+        head_dim = self.hf_config.hidden_size // self.hf_config.num_attention_heads if not self.hf_config.head_dim else self.hf_config.head_dim
         # 计算一个block_size所需要的字节数，其中block_size = num_token，即block是以token为单位设计的。
         block_bytes = 2 * self.hf_config.num_hidden_layers * self.block_size * num_kv_heads * head_dim * self.hf_config.torch_dtype.itemsize
         assert (total*gpu_memory_utilization - used)>0 , "no memory leaved for allocating kv cache block."
@@ -174,9 +174,12 @@ class ModelRunner:
         cu_seqlens_q = [0]
         cu_seqlens_k = [0]
         max_seqlen_q = 1
-        max_seqlen_k = 1
+        max_seqlen_k = 0
 
         for seq in seqs:
+            seqlen = len(seq)
+            seqlen_k = seqlen
+            max_seqlen_k = max(seqlen_k, max_seqlen_k)
             # 都是对单个token进行记录(tensor[1])
             input_ids.append(seq.last_token) 
             positions.append(len(seq))
@@ -184,7 +187,7 @@ class ModelRunner:
             slot_mapping.append(seq.block_table[-1] * self.block_size + seq.last_block_num_tokens  - 1)
             # Fix：To support old flash-attn
             cu_seqlens_q.append(cu_seqlens_q[-1] + 1)
-            cu_seqlens_k.append(cu_seqlens_k[-1] + 1)
+            cu_seqlens_k.append(cu_seqlens_k[-1] + seqlen_k)
 
         input_ids = torch.tensor(input_ids, dtype=torch.int64, pin_memory=True).cuda(non_blocking=True)
         positions = torch.tensor(positions, dtype=torch.int64, pin_memory=True).cuda(non_blocking=True)

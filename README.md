@@ -42,6 +42,8 @@ See `bench.py` for benchmark.
 **Performance Results:**
 | Inference Engine | Output Tokens | Time (s) | Throughput (tokens/s) | Request(req/s)|
 |----------------|-------------|----------|-----------------------|----|
-| vLLM (v0)          |   133,966   |  83.54s   | 1603.57             |3.07
-| Elect-Rock-Infer| 133,966     | 79.33s   | 1688.80               |3.23|
+| vLLM (v0)          |   133,966   |  83.54   | 1603.57             |3.07
+| Elect-Rock-Infer| 133,966     | 79.33   | 1688.80               |3.23
+| ERI(flash_attn 2.0.4)|133,966| 111.79| 1198.42tok/s|2.29
+
 
