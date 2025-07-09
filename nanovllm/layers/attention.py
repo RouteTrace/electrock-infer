@@ -3,9 +3,9 @@ from torch import nn
 import triton
 import triton.language as tl
 
-from flash_attn import flash_attn_varlen_func, flash_attn_with_kvcache
+from flash_attn import flash_attn_varlen_func
 from nanovllm.utils.context import get_context
-from nanovllm.layers.attention_triton_kernel import store_kvcache, unpage_kv_cache_fixed
+from nanovllm.layers.attention_triton_kernel import store_kvcache, unpage_kv_cache_fixed, unpage_kv_cache
 
 
 class Attention(nn.Module):
@@ -103,7 +103,7 @@ class Attention(nn.Module):
 
             # ctx.context_lens gives the length of each sequence. We need cumulative lengths for our kernel.
             # It's assumed ctx.cu_seqlens_k is correctly computed from ctx.context_lens for the decode phase.
-            unpage_kv_cache_fixed(k_cache, v_cache, k_contiguous, v_contiguous, ctx.block_tables, ctx.cu_seqlens_k)
+            unpage_kv_cache_fixed(k_cache, v_cache, k_contiguous, v_contiguous, ctx.block_tables, ctx.cu_seqlens_k )
 
             # Now call the old flash_attn_varlen_func with the contiguous KV and the new Q.
             o = flash_attn_varlen_func(

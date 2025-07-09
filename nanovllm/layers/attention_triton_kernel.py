@@ -145,8 +145,8 @@ def _unpage_kv_kernel(
     stride_v_cache_block, stride_v_cache_token, stride_v_cache_head,
     stride_k_out_token, stride_k_out_head,
     stride_v_out_token, stride_v_out_head,
-    batch_size,
-    max_num_blocks_per_seq,
+    max_batch_size :tl.constexpr, real_batch_size,
+    max_num_blocks_per_seq :tl.constexpr,
     # Triton program metadata
     D: tl.constexpr, # hidden_size
 ):
@@ -154,35 +154,55 @@ def _unpage_kv_kernel(
     Triton kernel to gather scattered KV blocks from a paged cache into
     contiguous tensors.
     """
-    #期望每个实例搬运一个token相关的kv cache
     pid = tl.program_id(0)
-    #确定在哪一个seq_id上, 逻辑第几个block块上，块内的相对位置
-    seq_id = 0
-    logic_block_idx = 0
-    cur_seq_len = 0
-    inner_block_offset = 0
 
-    for i in range(1, batch_size+1):
-        if pid < tl.load(cu_seqlens_k_ptr+i):
-            start, end = tl.load(cu_seqlens_k_ptr+i-1) , tl.load(cu_seqlens_k_ptr+i)
-            cur_seq_len = end - start
-            inner_block_offset = (pid - start) % block_size
-            logic_block_idx = (pid - start) // block_size
-            break
-    # 拿到真实kv cache的块号 并计算cache offset
-    real_block_idx = tl.load( block_table_ptr + (seq_id * max_num_blocks_per_seq) + logic_block_idx)
+    # 第一层防护：拦截超出token总数的pid
+    total_num_tokens = tl.load(cu_seqlens_k_ptr + real_batch_size)
+    if pid >= total_num_tokens:
+        return
+
+    # --- 核心逻辑 ---
+    seq_idx_offsets = tl.arange(0, max_batch_size)
+    valid_mask = seq_idx_offsets < real_batch_size
+    seq_start = tl.load(cu_seqlens_k_ptr + seq_idx_offsets, mask=valid_mask, other=0)
+    seq_end = tl.load(cu_seqlens_k_ptr + seq_idx_offsets + 1, mask=valid_mask, other=0)
+    
+    is_in_seq = (pid >= seq_start) & (pid < seq_end) & valid_mask
+    seq_id = tl.argmax(is_in_seq, axis=0)
+    
+    start_token_idx = tl.load(cu_seqlens_k_ptr + seq_id, mask=seq_id < real_batch_size, other=0)
+    token_idx_in_seq = pid - start_token_idx
+    
+    inner_block_offset = token_idx_in_seq % block_size
+    logic_block_idx = token_idx_in_seq // block_size
+
+    # 第二层防护：检查逻辑块索引是否在范围内
+    block_table_mask = (seq_id < real_batch_size) & (logic_block_idx < max_num_blocks_per_seq)
+
+    # 加载物理块索引，如果逻辑块无效，则默认为0（或其他不会引起问题的默认值）
+    real_block_idx = tl.load(block_table_ptr + (seq_id * max_num_blocks_per_seq) + logic_block_idx, 
+                            mask=block_table_mask,
+                            other=0) # other=0 在此是安全的，因为下一步会检查
+
+    # ===================== 最终的、决定性的修复 =====================
+    
+    # 第三层防护：检查从 block_table 中加载出的值本身是否有效
+    # 我们将所有非正数（包括-1和0）都视为无效的物理块索引
+    final_mask = block_table_mask & (real_block_idx > 0)
+
+    # --- 后续所有内存操作，都必须使用这个最终的 `final_mask` ---
+    
     key_cache_offset = (real_block_idx * stride_k_cache_block) + (inner_block_offset * stride_k_cache_token) + tl.arange(0, D)
     value_cache_offset = (real_block_idx * stride_v_cache_block) + (inner_block_offset * stride_v_cache_token) + tl.arange(0, D)
-    # 取出对应token的 hidden
-    key = tl.load(K_cache_ptr + key_cache_offset)
-    value = tl.load(V_cache_ptr + value_cache_offset)
-    # 计算output_offset
+
+    key = tl.load(K_cache_ptr + key_cache_offset, mask=final_mask)
+    value = tl.load(V_cache_ptr + value_cache_offset, mask=final_mask)
+
     key_out_offset = pid * stride_k_out_token + tl.arange(0, D)
     value_out_offset = pid * stride_v_out_token + tl.arange(0, D)
-    #搬运
-    tl.store(K_out_ptr + key_out_offset, key)
-    tl.store(V_out_ptr + value_out_offset, value)
 
+    tl.store(K_out_ptr + key_out_offset, key, mask=final_mask)
+    tl.store(V_out_ptr + value_out_offset, value, mask=final_mask)
 
 def unpage_kv_cache(
     k_cache: torch.Tensor,
@@ -197,14 +217,17 @@ def unpage_kv_cache(
     Python wrapper to launch the _unpage_kv_kernel.
     Gathers KV pairs from paged cache into contiguous output tensors.
     """
+    assert block_tables is not None
     # Extract dimensions
     total_k_tokens, num_kv_heads, head_dim = k_out.shape
-    D = num_kv_heads * head_dim
+    D = 1024 # num_kv_heads * head_dim
     assert num_tokens == total_k_tokens
     block_size = k_cache.shape[1] 
-
-    batch_size, max_num_blocks_per_seq = len(block_tables), len(block_tables[0])
-
+    max_batch_size = 128
+    assert len(block_tables) <= max_batch_size, "Fix Bug"
+    batch_size = int(len(block_tables))
+    max_num_blocks_per_seq = int(len(block_tables[0]))
+    
     # Triton grid setup
     grid = (total_k_tokens,)
     
@@ -220,9 +243,10 @@ def unpage_kv_cache(
         v_cache.stride(0), v_cache.stride(1), v_cache.stride(2),
         k_out.stride(0), k_out.stride(1),
         v_out.stride(0), v_out.stride(1),
-        batch_size, max_num_blocks_per_seq, 
+        max_batch_size, batch_size, max_num_blocks_per_seq, 
         D
     )
+
 
 
 

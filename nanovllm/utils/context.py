@@ -20,7 +20,7 @@ class Context:
     context_lens: torch.Tensor | None = None
     block_tables: torch.Tensor | None = None
     # To support old version of flash-attn
-    enable_block_table: bool = True
+    enable_block_table: bool = False
 
 _CONTEXT = Context()
 

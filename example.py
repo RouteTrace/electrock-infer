@@ -9,7 +9,7 @@ def main():
     tokenizer = AutoTokenizer.from_pretrained(path)
     llm = LLM(path, 
               enforce_eager=True, 
-              tensor_parallel_size=1,
+              tensor_parallel_size=2,
               gpu_memory_utilization=0.9)
 
     sampling_params = SamplingParams(temperature=1, max_tokens=256)

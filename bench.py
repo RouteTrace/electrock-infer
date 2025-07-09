@@ -7,12 +7,12 @@ from nanovllm import LLM, SamplingParams
 
 def main():
     seed(0)
-    num_seqs = 256
+    num_seqs = 128
     max_input_len = 1024 
     max_ouput_len = 1024 
 
-    # path = os.path.expanduser("~/zhushengguang/models/Qwen3-0.6B/")
-    path = os.path.expanduser("~/zhushengguang/models/Mixtral-8x7B-Instruct-v0.1/")
+    path = os.path.expanduser("~/zhushengguang/models/Qwen3-0.6B/")
+    # path = os.path.expanduser("~/zhushengguang/models/Mixtral-8x7B-Instruct-v0.1/")
     llm = LLM(path, enforce_eager=True, max_model_len=4096, tensor_parallel_size=2,  )
 
     prompt_token_ids = [[randint(0, 10000) for _ in range(randint(100, max_input_len))] for _ in range(num_seqs)]
