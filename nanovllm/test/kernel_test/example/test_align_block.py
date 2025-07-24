@@ -178,14 +178,14 @@ if __name__ == "__main__":
         # print("Custom sorted_ids: ", sorted_ids_custom[mask])
         exit()
         
-    # --- 6. 运行性能基准测试 ---
-    print("\nRunning benchmarks...")
+    # # --- 6. 运行性能基准测试 ---
+    # print("\nRunning benchmarks...")
     
-    benchmark(True, 
-              "PyTorch Version")
+    # benchmark(True, 
+    #           "PyTorch Version")
               
-    benchmark(False,
-              "Custom CUDA Kernel")
+    # benchmark(False,
+    #           "Custom CUDA Kernel")
               
     print("\nTest finished.")
     print("="*60)

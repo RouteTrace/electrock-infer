@@ -27,4 +27,16 @@ namespace electrock_infer{
         torch::Tensor sorted_token_ids,
         torch::Tensor expert_ids,
         torch::Tensor num_tokens_post_pad);
+        
+    void flash_attn_simplified_causal_varlen_gqa(torch::Tensor Q, torch::Tensor K, torch::Tensor V, torch::Tensor O);
+    // void rms_norm(
+    //     torch::Tensor &input,   // (num_tokens, hidden_size)
+    //     double epsilon, // 1e-5
+    //     torch::Tensor weight); // self.weight.shape = (hidden_size,) = (4096)
+    // void add_rms_norm(
+    //     torch::Tensor &input,   // (num_tokens, hidden_size)
+    //     torch::Tensor &residual,  // if not None, residual.shape = input.shape (num_tokens, hidden_size)
+    //     double epsilon, // 1e-5
+    //     torch::Tensor weight); // self.weight.shape = (hidden_size,) = (4096)
+
 }

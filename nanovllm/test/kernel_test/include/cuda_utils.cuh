@@ -1,41 +1,31 @@
-/**
- * @file cuda_utils.cuh
- * @brief 一个通用的CUDA工具和接口声明头文件
- *
- * 包含了标准的CUDA头文件、一个强大的错误检查宏、
- * 以及通用的设备端辅助函数和主机端接口声明。
- *
- * 使用 .cuh 后缀名以明确表示此头文件包含CUDA特定代码，
- * 如 __device__ 函数或CUDA API相关的宏。
- */
-#pragma once
-#ifndef CUDA_UTILS_CUH
-#define CUDA_UTILS_CUH
 
-// 1. ================== 核心库包含 (Core Includes) ==================
-// 核心CUDA运行时库，包含了大部分API函数如 cudaMalloc, cudaMemcpy等
+#pragma once
+#include <algorithm>
+#include <cuda_bf16.h>
+#include <cuda_fp16.h>
+#include <cuda_fp8.h>
 #include <cuda_runtime.h>
+#include <float.h>
+#include <mma.h>
+#include <stdint.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <torch/extension.h>
+#include <torch/types.h>
+#include <vector>
+using namespace nvcuda;
+
 #include <torch/all.h>
 #include <ATen/cuda/CUDAContext.h>
 #include <c10/cuda/CUDAGuard.h>
 // 包含了核函数中使用的内置变量，如 threadIdx, blockIdx等
-#include <device_launch_parameters.h>
+
 
 // 用于主机端进行输出和错误处理
 #include <iostream>
 #include <string>
 #include <stdexcept> // 用于抛出异常
 
-// 2. ================== CUDA错误检查宏 (Error Checking Macro) ==================
-/**
- * @brief 一个强大的宏，用于检查CUDA API调用的返回值。
- *
- * 如果API调用返回的不是 cudaSuccess，它会构造一个详细的错误信息
- * (包括文件名、行号和错误描述) 并抛出一个 std::runtime_error 异常。
- * 这比在每个API调用后手动写 if/else 判断要简洁和健壮得多。
- *
- * @param call 要执行的CUDA API调用，例如 CUDA_CHECK(cudaMalloc(...));
- */
 #define CUDA_CHECK(call)                                                         \
     do {                                                                         \
         cudaError_t err = call;                                                  \
@@ -77,42 +67,217 @@
 
 #define DevFuncAttribute_SET_MaxDynamicSharedMemorySize(FUNC, VAL) \
     cudaFuncSetAttribute(FUNC, cudaFuncAttributeMaxDynamicSharedMemorySize, VAL)
-// 3. ================== 设备端辅助函数 (Device-side Helper Functions) ==================
-//
-// 使用 __device__ __forceinline__ 可以在头文件中安全地定义设备端函数。
-// __forceinline__ 建议编译器将函数内联，以获得最佳性能，适合短小的函数。
 
-/**
- * @brief 在两个值之间进行线性插值 (Linear Interpolation)。
- * @tparam T 数据类型 (例如 float, double)。
- * @param a 起始值。
- * @param b 结束值。
- * @param t 插值因子 (通常在 0.0 到 1.0 之间)。
- * @return 插值结果。
- */
 template <typename T>
 __device__ __forceinline__ T lerp(T a, T b, T t) {
     return a + t * (b - a);
 }
 
 
-// 4. ================== 主机端接口声明 (Host-side API Declarations) ==================
-//
-// 这里是你项目的主要部分。声明那些作为CUDA功能入口的"包装函数"。
-// 这些函数将在 .cu 文件中被实现，并可以被其他 .cpp 或 .cu 文件调用。
-// 它们是连接 C++ 世界和 CUDA 世界的“桥梁”。
+#define WARP_SIZE 32
+#define DEVICE_INLINE __device__ inline
+#define HOST_DEVICE_INLINE __device__ __host__ inline
 
-/**
- * @brief 示例函数：在GPU上对一个浮点数数组的每个元素乘以一个常数。
- *
- * @param data 指向主机端输入/输出数据的指针。函数内部会负责主机与设备间的数据传输。
- * @param num_elements 数组中的元素数量。
- * @param factor 要乘以的常数因子。
- */
-void multiply_array_on_gpu(float* data, int num_elements, float factor);
+#define DEVICE_INLINE __device__ inline
+#define HOST_DEVICE_INLINE __device__ __host__ inline
+#define INT4(value) (reinterpret_cast<int4 *>(&(value))[0])
+#define FLOAT2(value) (reinterpret_cast<float2 *>(&(value))[0])
+#define FLOAT4(value) (reinterpret_cast<float4 *>(&(value))[0])
+#define HALF2(value) (reinterpret_cast<half2 *>(&(value))[0])
+#define BFLOAT2(value) (reinterpret_cast<__nv_bfloat162 *>(&(value))[0])
+#define LDST32BITS(value) (reinterpret_cast<half2 *>(&(value))[0])
+#define LDST64BITS(value) (reinterpret_cast<float2 *>(&(value))[0])
+#define LDST128BITS(value) (reinterpret_cast<float4 *>(&(value))[0])
+// gmem -> smem
+#define CP_ASYNC_COMMIT_GROUP() asm volatile("cp.async.commit_group;\n" ::)
+#define CP_ASYNC_WAIT_ALL() asm volatile("cp.async.wait_all;\n" ::)
+#define CP_ASYNC_WAIT_GROUP(n)                                                 \
+  asm volatile("cp.async.wait_group %0;\n" ::"n"(n))
+// ca(cache all, L1 + L2): support 4, 8, 16 bytes, cg(cache global, L2): only
+// support 16 bytes.
+#define CP_ASYNC_CA(dst, src, bytes)                                           \
+  asm volatile(                                                                \
+      "cp.async.ca.shared.global.L2::128B [%0], [%1], %2;\n" ::"r"(dst),       \
+      "l"(src), "n"(bytes))
+#define CP_ASYNC_CG(dst, src, bytes)                                           \
+  asm volatile(                                                                \
+      "cp.async.cg.shared.global.L2::128B [%0], [%1], %2;\n" ::"r"(dst),       \
+      "l"(src), "n"(bytes))
+// smem -> gmem: requires sm_90 or higher.
+#define CP_ASYNC_BULK_COMMIT_GROUP()                                           \
+  asm volatile("cp.async.bulk.commit_group;\n" ::)
+#define CP_ASYNC_BULK_WAIT_ALL() asm volatile("cp.async.bulk.wait_all;\n" ::)
+#define CP_ASYNC_BULK_WAIT_GROUP(n)                                            \
+  asm volatile("cp.async.bulk.wait_group %0;\n" ::"n"(n))
+#define CP_ASYNC_BULK(dst, src, bytes)                                         \
+  asm volatile(                                                                \
+      "cp.async.bulk.global.shared::cta.bulk_group.L2::128B [%0], [%1], "      \
+      "%2;\n" ::"r"(dst),                                                      \
+      "l"(src), "n"(bytes))
+// ldmatrix
+#define LDMATRIX_X1(R, addr)                                                   \
+  asm volatile("ldmatrix.sync.aligned.x1.m8n8.shared.b16 {%0}, [%1];\n"        \
+               : "=r"(R)                                                       \
+               : "r"(addr))
+#define LDMATRIX_X2(R0, R1, addr)                                              \
+  asm volatile("ldmatrix.sync.aligned.x2.m8n8.shared.b16 {%0, %1}, [%2];\n"    \
+               : "=r"(R0), "=r"(R1)                                            \
+               : "r"(addr))
+#define LDMATRIX_X4(R0, R1, R2, R3, addr)                                      \
+  asm volatile(                                                                \
+      "ldmatrix.sync.aligned.x4.m8n8.shared.b16 {%0, %1, %2, %3}, [%4];\n"     \
+      : "=r"(R0), "=r"(R1), "=r"(R2), "=r"(R3)                                 \
+      : "r"(addr))
+#define LDMATRIX_X1_T(R, addr)                                                 \
+  asm volatile("ldmatrix.sync.aligned.x1.trans.m8n8.shared.b16 {%0}, [%1];\n"  \
+               : "=r"(R)                                                       \
+               : "r"(addr))
+#define LDMATRIX_X2_T(R0, R1, addr)                                            \
+  asm volatile(                                                                \
+      "ldmatrix.sync.aligned.x2.trans.m8n8.shared.b16 {%0, %1}, [%2];\n"       \
+      : "=r"(R0), "=r"(R1)                                                     \
+      : "r"(addr))
+#define LDMATRIX_X4_T(R0, R1, R2, R3, addr)                                    \
+  asm volatile(                                                                \
+      "ldmatrix.sync.aligned.x4.trans.m8n8.shared.b16 {%0, %1, %2, %3}, "      \
+      "[%4];\n"                                                                \
+      : "=r"(R0), "=r"(R1), "=r"(R2), "=r"(R3)                                 \
+      : "r"(addr))
+// stmatrix: requires sm_90 or higher.
+#define STMATRIX_X1(addr, R)                                                   \
+  asm volatile(                                                                \
+      "stmatrix.sync.aligned.x1.m8n8.shared.b16 [%0], {%1};\n" ::"r"(addr),    \
+      "r"(R))
+#define STMATRIX_X2(addr, R0, R1)                                              \
+  asm volatile(                                                                \
+      "stmatrix.sync.aligned.x2.m8n8.shared.b16 [%0], {%1, %2};\n" ::"r"(      \
+          addr),                                                               \
+      "r"(R0), "r"(R1))
+#define STMATRIX_X4(addr, R0, R1, R2, R3)                                      \
+  asm volatile(                                                                \
+      "stmatrix.sync.aligned.x4.m8n8.shared.b16 [%0], {%1, %2, %3, %4};\n" ::  \
+          "r"(addr),                                                           \
+      "r"(R0), "r"(R1), "r"(R2), "r"(R3))
+#define STMATRIX_X1_T(addr, R)                                                 \
+  asm volatile(                                                                \
+      "stmatrix.sync.aligned.x1.trans.m8n8.shared.b16 [%0], {%1};\n" ::"r"(    \
+          addr),                                                               \
+      "r"(R))
+#define STMATRIX_X2_T(addr, R0, R1)                                            \
+  asm volatile(                                                                \
+      "stmatrix.sync.aligned.x2.trans.m8n8.shared.b16 [%0], {%1, %2};\n" ::    \
+          "r"(addr),                                                           \
+      "r"(R0), "r"(R1))
+#define STMATRIX_X4_T(addr, R0, R1, R2, R3)                                    \
+  asm volatile(                                                                \
+      "stmatrix.sync.aligned.x4.trans.m8n8.shared.b16 [%0], {%1, %2, %3, "     \
+      "%4};\n" ::"r"(addr),                                                    \
+      "r"(R0), "r"(R1), "r"(R2), "r"(R3))
+// mma m16n8k16
+#define HMMA16816(RD0, RD1, RA0, RA1, RA2, RA3, RB0, RB1, RC0, RC1)            \
+  asm volatile(                                                                \
+      "mma.sync.aligned.m16n8k16.row.col.f16.f16.f16.f16 {%0, %1}, {%2, %3, "  \
+      "%4, %5}, {%6, %7}, {%8, %9};\n"                                         \
+      : "=r"(RD0), "=r"(RD1)                                                   \
+      : "r"(RA0), "r"(RA1), "r"(RA2), "r"(RA3), "r"(RB0), "r"(RB1), "r"(RC0),  \
+        "r"(RC1))
+#define HMMA16816F32(RD0, RD1, RD2, RD3, RA0, RA1, RA2, RA3, RB0, RB1, RC0,    \
+                     RC1, RC2, RC3)                                            \
+  asm volatile(                                                                \
+      "mma.sync.aligned.m16n8k16.row.col.f32.f16.f16.f32 {%0,  %1,  %2,  "     \
+      "%3}, {%4, %5, %6, %7}, {%8, %9}, {%10, %11, %12, %13};\n"               \
+      : "=r"(RD0), "=r"(RD1), "=r"(RD2), "=r"(RD3)                             \
+      : "r"(RA0), "r"(RA1), "r"(RA2), "r"(RA3), "r"(RB0), "r"(RB1), "r"(RC0),  \
+        "r"(RC1), "r"(RC2), "r"(RC3))
 
-// 你可以在这里添加更多的函数声明...
-// void another_cool_gpu_function(int* params, ...);
+#define STRINGFY(str) #str
+#define TORCH_BINDING_COMMON_EXTENSION(func)                                   \
+  m.def(STRINGFY(func), &func, STRINGFY(func));
 
+#define CHECK_TORCH_TENSOR_DTYPE(T, th_type)                                   \
+  if (((T).options().dtype() != (th_type))) {                                  \
+    std::cout << "Tensor Info:" << (T).options() << std::endl;                 \
+    throw std::runtime_error("values must be " #th_type);                      \
+  }
 
-#endif // CUDA_UTILS_CUH
+#define CHECK_TORCH_TENSOR_SHAPE(T1, T2)                                       \
+  if (((T2).size(0) != (T1).size(0)) || ((T2).size(1) != (T1).size(1)) ||      \
+      ((T2).size(2) != (T1).size(2)) || ((T2).size(3) != (T1).size(3))) {      \
+    throw std::runtime_error("Tensor size mismatch!");                         \
+  }
+
+HOST_DEVICE_INLINE
+int div_ceil(int a, int b) { return (a % b != 0) ? (a / b + 1) : (a / b); }
+
+template <typename T, const int kWarpSize = WARP_SIZE>
+DEVICE_INLINE T warp_reduce_sum(T val) {
+#pragma unroll
+  for (int mask = kWarpSize >> 1; mask >= 1; mask >>= 1) {
+    val += __shfl_xor_sync(0xffffffff, val, mask, kWarpSize);
+  }
+  return val;
+}
+
+template <typename T, const int kWarpSize = WARP_SIZE>
+DEVICE_INLINE T warp_reduce_max(T val) {
+#pragma unroll
+  for (int mask = kWarpSize >> 1; mask >= 1; mask >>= 1) {
+    val = max(val, __shfl_xor_sync(0xffffffff, val, mask, kWarpSize));
+  }
+  return val;
+}
+
+template <typename T, int M, const int N, const int K = 2>
+DEVICE_INLINE void fill_3D_regs(T (&R)[M][N][K], T val) {
+#pragma unroll
+  for (int i = 0; i < M; ++i) {
+#pragma unroll
+    for (int j = 0; j < N; ++j) {
+#pragma unroll
+      for (int k = 0; k < K; ++k) {
+        R[i][j][k] = val;
+      }
+    }
+  }
+}
+
+template <typename T, int M, const int N = 2>
+DEVICE_INLINE void fill_2D_regs(T (&R)[M][N], T val) {
+#pragma unroll
+  for (int i = 0; i < M; ++i) {
+#pragma unroll
+    for (int j = 0; j < N; ++j) {
+      R[i][j] = val;
+    }
+  }
+}
+
+template <typename T, int M> DEVICE_INLINE void fill_1D_regs(T (&S)[M], T val) {
+#pragma unroll
+  for (int i = 0; i < M; ++i) {
+    S[i] = val;
+  }
+}
+
+template <typename T, int M>
+DEVICE_INLINE void fill_1D_smem(T (&R)[M], T val, int tid) {
+  if (tid == 0) {
+#pragma unroll
+    for (int i = 0; i < M; ++i) {
+      R[i] = val;
+    }
+  }
+}
+
+// Copy from:
+// https://github.com/NVIDIA/cutlass/blob/e1cd8c7866dd6de02b66a89879795e7d7301aacc/examples/41_fused_multi_head_attention/kernel_forward.h#L87
+static DEVICE_INLINE float atomicMaxFloat(float *addr, float value) {
+  // source: https://stackoverflow.com/a/51549250
+  return (value >= 0)
+             ? __int_as_float(atomicMax((int *)addr, __float_as_int(value)))
+             : __uint_as_float(
+                   atomicMin((unsigned int *)addr, __float_as_uint(value)));
+}
+
+#define INFHALF __float2half(65536.0f)
+#define ZEROHALF __float2half(0.0f)

@@ -121,31 +121,17 @@ void silu_and_mul(
   
   // 5. 根据输入的数据类型分发并启动专用内核
   // 这是关键部分：使用 AT_DISPATCH_... 宏来处理类型分发
-  if (input.scalar_type() == torch::kFloat32)
-  {
-    // --- 路径A：调用高度优化的 float4 Kernel ---
-    const dim3 grid(num_tokens);
-    const dim3 block(1024); // 使用为 float4 kernel 优化的 block size
-
-    electrock_infer::silu_and_mul_d7168_float4_kernel<<<grid, block, 0, stream>>>(
-        out.data_ptr<float>(),
-        input.data_ptr<float>(),
-        d );
-  }else{
-  
-        // 使用 AT_DISPATCH 宏自动处理 float, half, bfloat16 等类型
-        DISPATCH_FLOATING_TYPES(
-            input.scalar_type(), 
-            "silu_and_mul_generic_dispatch", 
-            ([&] {
-                electrock_infer::silu_and_mul_kernel<scalar_t><<<grid, block, 0, stream>>>(
-                    out.data_ptr<scalar_t>(),
-                    input.data_ptr<scalar_t>(),
-                    d
-                );
-            })
-        );
-
-  }
+  // 使用 AT_DISPATCH 宏自动处理 float, half, bfloat16 等类型
+  DISPATCH_FLOATING_TYPES(
+      input.scalar_type(), 
+      "silu_and_mul_generic_dispatch", 
+      ([&] {
+          electrock_infer::silu_and_mul_kernel<scalar_t><<<grid, block, 0, stream>>>(
+              out.data_ptr<scalar_t>(),
+              input.data_ptr<scalar_t>(),
+              d
+          );
+      })
+  );
 } // namespace 
 }
