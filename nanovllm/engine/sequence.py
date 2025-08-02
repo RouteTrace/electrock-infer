@@ -12,10 +12,10 @@ class SequenceStatus(Enum):
 
 
 class Sequence:
-    block_size = 256
+    # block_size = 256
     counter = count()
 
-    def __init__(self, token_ids: list[int], sampling_params: SamplingParams):
+    def __init__(self, token_ids: list[int], sampling_params: SamplingParams, config):
         self.seq_id = next(Sequence.counter)
         self.status = SequenceStatus.WAITING
         self.token_ids = copy(token_ids)
@@ -28,7 +28,8 @@ class Sequence:
         self.temperature = sampling_params.temperature
         self.max_tokens = sampling_params.max_tokens
         self.ignore_eos = sampling_params.ignore_eos
-
+        self.block_size = config.kvcache_block_size
+        
     def __len__(self):
         return self.num_tokens
 
