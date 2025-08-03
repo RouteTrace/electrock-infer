@@ -27,15 +27,17 @@ setup(
         "triton>=2.1.0",
         "transformers>=4.51.0",
         "xxhash",
+        "numpy==1.26.0"
     ],
     packages=find_packages(),
-
-    # C++ 扩展
+    include_dirs=[
+        "src/include"
+    ],
+    # 自定义HIP算子扩展, 作为子模块"_C"导入
     ext_modules=[
         CppExtension(
             name="electrock_infer._C", 
             sources=source_files,
-            include_dirs=["src/include"], 
             libraries=['amdhip64'],
             extra_compile_args=compile_args
         )

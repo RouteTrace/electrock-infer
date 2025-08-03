@@ -14,13 +14,13 @@ A lightweight Inference Engine implementation built from scratch.
 conda create -n electrock python=3.10
 conda activate electrock
 cd electrock-infer-xdb
-
-pip install https://download.sourcefind.cn:65024/directlink/4/pytorch/DAS1.0/torch-2.1.0+das1.0+git00661e0.abi0.dtk2404-cp310-cp310-manylinux2014_x86_64.whl 
-pip install https://download.sourcefind.cn:65024/directlink/4/triton/DAS1.0/triton-2.1.0+das1.0+git3841f975.abi0.dtk2404-cp310-cp310-manylinux2014_x86_64.whl
+pip install pip==24.0
+pip install https://download.sourcefind.cn:65024/directlink/4/pytorch/DAS1.0/torch-2.1.0+das1.0+git00661e0.abi0.dtk2404-cp310-cp310-manylinux2014_x86_64.whl  -i https://pypi.tuna.tsinghua.edu.cn/simple/
+pip install https://download.sourcefind.cn:65024/directlink/4/triton/DAS1.0/triton-2.1.0+das1.0+git3841f975.abi0.dtk2404-cp310-cp310-manylinux2014_x86_64.whl -i https://pypi.tuna.tsinghua.edu.cn/simple/
 
 pip install -e .
 ```
-
+⚠️ If you encounter an error, make sure you compile and install it on the compute node.
 ## Quick Start
 
 See `example.py` for usage. 

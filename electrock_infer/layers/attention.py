@@ -3,7 +3,7 @@ from torch import nn
 import triton
 import triton.language as tl
 from electrock_infer import _C
-from flash_attn import flash_attn_varlen_func
+# from flash_attn import flash_attn_varlen_func
 from electrock_infer.utils.context import get_context
 from electrock_infer.layers.attention_triton_kernel import store_kvcache, paged_attention_decode_naive, naive_attention_varlen_mixed_precision
 
@@ -40,15 +40,18 @@ class Attention(nn.Module):
         if context.is_prefill:
             if context.block_tables is not None:    # prefix cache
                 k, v = k_cache, v_cache
-            o = flash_attn_varlen_func(q, k, v,
-                                       max_seqlen_q=context.max_seqlen_q, cu_seqlens_q=context.cu_seqlens_q,
-                                       max_seqlen_k=context.max_seqlen_k, cu_seqlens_k=context.cu_seqlens_k,
-                                       softmax_scale=self.scale, causal=True, block_table=context.block_tables)
-        else:    # decode
-            o = flash_attn_with_kvcache(q.unsqueeze(1), k_cache, v_cache,
-                   
-                                        cache_seqlens=context.context_lens, block_table=context.block_tables, 
-                                        softmax_scale=self.scale, causal=True)
+            # TODO
+            # 1. Not support MMA_bf16, manually convert to fp16.
+            # 2. Not support prefix caching.
+            o = _C.flash_attn_causal_varlen_gqa_hip(
+                q.to(torch.float16), k.to(torch.float16), v.to(torch.float16), 
+                max_seqlen_q=ctx.max_seqlen_q, cu_seqlens_q=ctx.cu_seqlens_q,
+                max_seqlen_k=ctx.max_seqlen_k, cu_seqlens_k=ctx.cu_seqlens_k,
+                softmax_scale=self.scale, causal=True).to(torch.bfloat16)
+        else:    # decode phrase
+            # TODO: flash decoding
+            o = _C.paged_attn_varlen(q, k_cache, v_cache, 0, ctx.context_lens, ctx.block_tables, self.scale)
+            
         o = o.view(-1, self.num_heads * self.head_dim)
         return o
     
@@ -96,41 +99,7 @@ class Attention(nn.Module):
                 max_seqlen_q=ctx.max_seqlen_q, cu_seqlens_q=ctx.cu_seqlens_q,
                 max_seqlen_k=ctx.max_seqlen_k, cu_seqlens_k=ctx.cu_seqlens_k,
                 softmax_scale=self.scale, causal=True).to(torch.bfloat16)
-            # o = naive_attention_varlen_mixed_precision(q, k_for_attn, v_for_attn, cu_seqlens_k=ctx.cu_seqlens_k, cu_seqlens_q=ctx.cu_seqlens_q,
-            #                                 num_kv_heads=self.num_kv_heads, num_q_heads=self.num_heads,scale=self.scale, causal=True)
-            # is_close = torch.allclose(o, output, rtol=1e-2, atol=1e-2)
-            # if is_close:
-            #     print("\n✅ Verification PASSED: The results are consistent.")
-            # else:
-            #     print("\n❌ Verification FAILED: The results are NOT consistent.")
-            #     # 如果失败，可以计算并打印差异
-            #     diff = torch.abs(o - output)
-            #     print(f"   Max absolute difference: {diff.max().item()}")
-            #     print(f"   Mean absolute difference: {diff.mean().item()}")
-
-
         else:  # Decode phase
-            # In decode, the KVs for attention are ALWAYS the entire history from the paged cache.
-            # ctx.context_lens gives the length of each sequence. We need cumulative lengths for our kernel.
-            # It's assumed ctx.cu_seqlens_k is correctly computed from ctx.context_lens for the decode phase.
-
-            # print(f"{q.shape=} {ctx.context_lens=} {ctx.block_tables.shape=}")
-            # o_naive = paged_attention_decode_naive(
-            #     q, k_cache, v_cache, ctx.block_tables, ctx.context_lens,
-            #     self.scale, self.num_kv_heads
-            # )
             o = _C.paged_attn_varlen(q, k_cache, v_cache, 0, ctx.context_lens, ctx.block_tables, self.scale)
-            # is_close = torch.allclose(o, o_naive, rtol=1e-2, atol=1e-2)
-            # diff = torch.abs(o - o_naive)
-            # if is_close:
-            #     print("\n✅ Verification PASSED: The results are consistent.")
-            #     print(f"   Max absolute difference: {diff.max().item()}")
-            #     print(f"   Mean absolute difference: {diff.mean().item()}")
-            # else:
-            #     print("\n❌ Verification FAILED: The results are NOT consistent.")
-            #     # 如果失败，可以计算并打印差异
-            #     print(f"   Max absolute difference: {diff.max().item()}")
-            #     print(f"   Mean absolute difference: {diff.mean().item()}")
-
         o = o.view(-1, self.num_heads * self.head_dim)
         return o
