@@ -1,0 +1,1301 @@
+在 '/home/test/test01/zhushengguang/models/Mixtral-8x7B-Instruct-v0.1/' 中找到了 19 个 safetensors 文件。开始分析...
+
+================================================================================
+正在分析文件: model-00001-of-00019.safetensors
+文件大小: 4666.15 MB
+
+--- 文件元数据 ---
+  format: pt
+
+--- 文件摘要 ---
+总张量数量: 51
+总参数量: 2,446,401,536
+数据类型分布:
+  -  torch.bfloat16: 51 个张量
+
+--- 张量详细列表 ---
+    1. model.embed_tokens.weight                                    | 形状: (32000, 4096)             | 类型: torch.bfloat16  | 参数量: 131,072,000
+    2. model.layers.0.block_sparse_moe.experts.0.w1.weight          | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+    3. model.layers.0.block_sparse_moe.experts.0.w2.weight          | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+    4. model.layers.0.block_sparse_moe.experts.0.w3.weight          | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+    5. model.layers.0.block_sparse_moe.experts.1.w1.weight          | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+    6. model.layers.0.block_sparse_moe.experts.1.w2.weight          | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+    7. model.layers.0.block_sparse_moe.experts.1.w3.weight          | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+    8. model.layers.0.block_sparse_moe.experts.2.w1.weight          | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+    9. model.layers.0.block_sparse_moe.experts.2.w2.weight          | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   10. model.layers.0.block_sparse_moe.experts.2.w3.weight          | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   11. model.layers.0.block_sparse_moe.experts.3.w1.weight          | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   12. model.layers.0.block_sparse_moe.experts.3.w2.weight          | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   13. model.layers.0.block_sparse_moe.experts.3.w3.weight          | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   14. model.layers.0.block_sparse_moe.experts.4.w1.weight          | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   15. model.layers.0.block_sparse_moe.experts.4.w2.weight          | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   16. model.layers.0.block_sparse_moe.experts.4.w3.weight          | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   17. model.layers.0.block_sparse_moe.experts.5.w1.weight          | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   18. model.layers.0.block_sparse_moe.experts.5.w2.weight          | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   19. model.layers.0.block_sparse_moe.experts.5.w3.weight          | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   20. model.layers.0.block_sparse_moe.experts.6.w1.weight          | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   21. model.layers.0.block_sparse_moe.experts.6.w2.weight          | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   22. model.layers.0.block_sparse_moe.experts.6.w3.weight          | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   23. model.layers.0.block_sparse_moe.experts.7.w1.weight          | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   24. model.layers.0.block_sparse_moe.experts.7.w2.weight          | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   25. model.layers.0.block_sparse_moe.experts.7.w3.weight          | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   26. model.layers.0.block_sparse_moe.gate.weight                  | 形状: (8, 4096)                 | 类型: torch.bfloat16  | 参数量: 32,768
+   27. model.layers.0.input_layernorm.weight                        | 形状: (4096,)                   | 类型: torch.bfloat16  | 参数量: 4,096
+   28. model.layers.0.post_attention_layernorm.weight               | 形状: (4096,)                   | 类型: torch.bfloat16  | 参数量: 4,096
+   29. model.layers.0.self_attn.k_proj.weight                       | 形状: (1024, 4096)              | 类型: torch.bfloat16  | 参数量: 4,194,304
+   30. model.layers.0.self_attn.o_proj.weight                       | 形状: (4096, 4096)              | 类型: torch.bfloat16  | 参数量: 16,777,216
+   31. model.layers.0.self_attn.q_proj.weight                       | 形状: (4096, 4096)              | 类型: torch.bfloat16  | 参数量: 16,777,216
+   32. model.layers.0.self_attn.v_proj.weight                       | 形状: (1024, 4096)              | 类型: torch.bfloat16  | 参数量: 4,194,304
+   33. model.layers.1.block_sparse_moe.experts.0.w1.weight          | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   34. model.layers.1.block_sparse_moe.experts.0.w2.weight          | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   35. model.layers.1.block_sparse_moe.experts.0.w3.weight          | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   36. model.layers.1.block_sparse_moe.experts.1.w1.weight          | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   37. model.layers.1.block_sparse_moe.experts.1.w2.weight          | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   38. model.layers.1.block_sparse_moe.experts.1.w3.weight          | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   39. model.layers.1.block_sparse_moe.experts.2.w1.weight          | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   40. model.layers.1.block_sparse_moe.experts.2.w2.weight          | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   41. model.layers.1.block_sparse_moe.experts.2.w3.weight          | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   42. model.layers.1.block_sparse_moe.experts.3.w1.weight          | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   43. model.layers.1.block_sparse_moe.experts.3.w2.weight          | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   44. model.layers.1.block_sparse_moe.experts.3.w3.weight          | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   45. model.layers.1.block_sparse_moe.experts.4.w1.weight          | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   46. model.layers.1.block_sparse_moe.experts.4.w2.weight          | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   47. model.layers.1.block_sparse_moe.gate.weight                  | 形状: (8, 4096)                 | 类型: torch.bfloat16  | 参数量: 32,768
+   48. model.layers.1.self_attn.k_proj.weight                       | 形状: (1024, 4096)              | 类型: torch.bfloat16  | 参数量: 4,194,304
+   49. model.layers.1.self_attn.o_proj.weight                       | 形状: (4096, 4096)              | 类型: torch.bfloat16  | 参数量: 16,777,216
+   50. model.layers.1.self_attn.q_proj.weight                       | 形状: (4096, 4096)              | 类型: torch.bfloat16  | 参数量: 16,777,216
+   51. model.layers.1.self_attn.v_proj.weight                       | 形状: (1024, 4096)              | 类型: torch.bfloat16  | 参数量: 4,194,304
+================================================================================
+
+================================================================================
+正在分析文件: model-00002-of-00019.safetensors
+文件大小: 4752.16 MB
+
+--- 文件元数据 ---
+  format: pt
+
+--- 文件摘要 ---
+总张量数量: 55
+总参数量: 2,491,498,496
+数据类型分布:
+  -  torch.bfloat16: 55 个张量
+
+--- 张量详细列表 ---
+    1. model.layers.1.block_sparse_moe.experts.4.w3.weight          | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+    2. model.layers.1.block_sparse_moe.experts.5.w1.weight          | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+    3. model.layers.1.block_sparse_moe.experts.5.w2.weight          | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+    4. model.layers.1.block_sparse_moe.experts.5.w3.weight          | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+    5. model.layers.1.block_sparse_moe.experts.6.w1.weight          | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+    6. model.layers.1.block_sparse_moe.experts.6.w2.weight          | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+    7. model.layers.1.block_sparse_moe.experts.6.w3.weight          | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+    8. model.layers.1.block_sparse_moe.experts.7.w1.weight          | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+    9. model.layers.1.block_sparse_moe.experts.7.w2.weight          | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   10. model.layers.1.block_sparse_moe.experts.7.w3.weight          | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   11. model.layers.1.input_layernorm.weight                        | 形状: (4096,)                   | 类型: torch.bfloat16  | 参数量: 4,096
+   12. model.layers.1.post_attention_layernorm.weight               | 形状: (4096,)                   | 类型: torch.bfloat16  | 参数量: 4,096
+   13. model.layers.2.block_sparse_moe.experts.0.w1.weight          | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   14. model.layers.2.block_sparse_moe.experts.0.w2.weight          | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   15. model.layers.2.block_sparse_moe.experts.0.w3.weight          | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   16. model.layers.2.block_sparse_moe.experts.1.w1.weight          | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   17. model.layers.2.block_sparse_moe.experts.1.w2.weight          | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   18. model.layers.2.block_sparse_moe.experts.1.w3.weight          | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   19. model.layers.2.block_sparse_moe.experts.2.w1.weight          | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   20. model.layers.2.block_sparse_moe.experts.2.w2.weight          | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   21. model.layers.2.block_sparse_moe.experts.2.w3.weight          | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   22. model.layers.2.block_sparse_moe.experts.3.w1.weight          | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   23. model.layers.2.block_sparse_moe.experts.3.w2.weight          | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   24. model.layers.2.block_sparse_moe.experts.3.w3.weight          | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   25. model.layers.2.block_sparse_moe.experts.4.w1.weight          | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   26. model.layers.2.block_sparse_moe.experts.4.w2.weight          | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   27. model.layers.2.block_sparse_moe.experts.4.w3.weight          | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   28. model.layers.2.block_sparse_moe.experts.5.w1.weight          | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   29. model.layers.2.block_sparse_moe.experts.5.w2.weight          | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   30. model.layers.2.block_sparse_moe.experts.5.w3.weight          | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   31. model.layers.2.block_sparse_moe.experts.6.w1.weight          | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   32. model.layers.2.block_sparse_moe.experts.6.w2.weight          | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   33. model.layers.2.block_sparse_moe.experts.6.w3.weight          | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   34. model.layers.2.block_sparse_moe.experts.7.w1.weight          | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   35. model.layers.2.block_sparse_moe.experts.7.w2.weight          | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   36. model.layers.2.block_sparse_moe.experts.7.w3.weight          | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   37. model.layers.2.block_sparse_moe.gate.weight                  | 形状: (8, 4096)                 | 类型: torch.bfloat16  | 参数量: 32,768
+   38. model.layers.2.input_layernorm.weight                        | 形状: (4096,)                   | 类型: torch.bfloat16  | 参数量: 4,096
+   39. model.layers.2.post_attention_layernorm.weight               | 形状: (4096,)                   | 类型: torch.bfloat16  | 参数量: 4,096
+   40. model.layers.2.self_attn.k_proj.weight                       | 形状: (1024, 4096)              | 类型: torch.bfloat16  | 参数量: 4,194,304
+   41. model.layers.2.self_attn.o_proj.weight                       | 形状: (4096, 4096)              | 类型: torch.bfloat16  | 参数量: 16,777,216
+   42. model.layers.2.self_attn.q_proj.weight                       | 形状: (4096, 4096)              | 类型: torch.bfloat16  | 参数量: 16,777,216
+   43. model.layers.2.self_attn.v_proj.weight                       | 形状: (1024, 4096)              | 类型: torch.bfloat16  | 参数量: 4,194,304
+   44. model.layers.3.block_sparse_moe.experts.0.w1.weight          | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   45. model.layers.3.block_sparse_moe.experts.0.w2.weight          | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   46. model.layers.3.block_sparse_moe.experts.0.w3.weight          | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   47. model.layers.3.block_sparse_moe.experts.1.w1.weight          | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   48. model.layers.3.block_sparse_moe.experts.1.w2.weight          | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   49. model.layers.3.block_sparse_moe.experts.1.w3.weight          | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   50. model.layers.3.block_sparse_moe.experts.2.w1.weight          | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   51. model.layers.3.block_sparse_moe.gate.weight                  | 形状: (8, 4096)                 | 类型: torch.bfloat16  | 参数量: 32,768
+   52. model.layers.3.self_attn.k_proj.weight                       | 形状: (1024, 4096)              | 类型: torch.bfloat16  | 参数量: 4,194,304
+   53. model.layers.3.self_attn.o_proj.weight                       | 形状: (4096, 4096)              | 类型: torch.bfloat16  | 参数量: 16,777,216
+   54. model.layers.3.self_attn.q_proj.weight                       | 形状: (4096, 4096)              | 类型: torch.bfloat16  | 参数量: 16,777,216
+   55. model.layers.3.self_attn.v_proj.weight                       | 形状: (1024, 4096)              | 类型: torch.bfloat16  | 参数量: 4,194,304
+================================================================================
+
+================================================================================
+正在分析文件: model-00003-of-00019.safetensors
+文件大小: 4752.16 MB
+
+--- 文件元数据 ---
+  format: pt
+
+--- 文件摘要 ---
+总张量数量: 55
+总参数量: 2,491,498,496
+数据类型分布:
+  -  torch.bfloat16: 55 个张量
+
+--- 张量详细列表 ---
+    1. model.layers.3.block_sparse_moe.experts.2.w2.weight          | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+    2. model.layers.3.block_sparse_moe.experts.2.w3.weight          | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+    3. model.layers.3.block_sparse_moe.experts.3.w1.weight          | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+    4. model.layers.3.block_sparse_moe.experts.3.w2.weight          | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+    5. model.layers.3.block_sparse_moe.experts.3.w3.weight          | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+    6. model.layers.3.block_sparse_moe.experts.4.w1.weight          | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+    7. model.layers.3.block_sparse_moe.experts.4.w2.weight          | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+    8. model.layers.3.block_sparse_moe.experts.4.w3.weight          | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+    9. model.layers.3.block_sparse_moe.experts.5.w1.weight          | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   10. model.layers.3.block_sparse_moe.experts.5.w2.weight          | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   11. model.layers.3.block_sparse_moe.experts.5.w3.weight          | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   12. model.layers.3.block_sparse_moe.experts.6.w1.weight          | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   13. model.layers.3.block_sparse_moe.experts.6.w2.weight          | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   14. model.layers.3.block_sparse_moe.experts.6.w3.weight          | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   15. model.layers.3.block_sparse_moe.experts.7.w1.weight          | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   16. model.layers.3.block_sparse_moe.experts.7.w2.weight          | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   17. model.layers.3.block_sparse_moe.experts.7.w3.weight          | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   18. model.layers.3.input_layernorm.weight                        | 形状: (4096,)                   | 类型: torch.bfloat16  | 参数量: 4,096
+   19. model.layers.3.post_attention_layernorm.weight               | 形状: (4096,)                   | 类型: torch.bfloat16  | 参数量: 4,096
+   20. model.layers.4.block_sparse_moe.experts.0.w1.weight          | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   21. model.layers.4.block_sparse_moe.experts.0.w2.weight          | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   22. model.layers.4.block_sparse_moe.experts.0.w3.weight          | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   23. model.layers.4.block_sparse_moe.experts.1.w1.weight          | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   24. model.layers.4.block_sparse_moe.experts.1.w2.weight          | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   25. model.layers.4.block_sparse_moe.experts.1.w3.weight          | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   26. model.layers.4.block_sparse_moe.experts.2.w1.weight          | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   27. model.layers.4.block_sparse_moe.experts.2.w2.weight          | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   28. model.layers.4.block_sparse_moe.experts.2.w3.weight          | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   29. model.layers.4.block_sparse_moe.experts.3.w1.weight          | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   30. model.layers.4.block_sparse_moe.experts.3.w2.weight          | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   31. model.layers.4.block_sparse_moe.experts.3.w3.weight          | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   32. model.layers.4.block_sparse_moe.experts.4.w1.weight          | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   33. model.layers.4.block_sparse_moe.experts.4.w2.weight          | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   34. model.layers.4.block_sparse_moe.experts.4.w3.weight          | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   35. model.layers.4.block_sparse_moe.experts.5.w1.weight          | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   36. model.layers.4.block_sparse_moe.experts.5.w2.weight          | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   37. model.layers.4.block_sparse_moe.experts.5.w3.weight          | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   38. model.layers.4.block_sparse_moe.experts.6.w1.weight          | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   39. model.layers.4.block_sparse_moe.experts.6.w2.weight          | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   40. model.layers.4.block_sparse_moe.experts.6.w3.weight          | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   41. model.layers.4.block_sparse_moe.experts.7.w1.weight          | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   42. model.layers.4.block_sparse_moe.experts.7.w2.weight          | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   43. model.layers.4.block_sparse_moe.experts.7.w3.weight          | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   44. model.layers.4.block_sparse_moe.gate.weight                  | 形状: (8, 4096)                 | 类型: torch.bfloat16  | 参数量: 32,768
+   45. model.layers.4.input_layernorm.weight                        | 形状: (4096,)                   | 类型: torch.bfloat16  | 参数量: 4,096
+   46. model.layers.4.post_attention_layernorm.weight               | 形状: (4096,)                   | 类型: torch.bfloat16  | 参数量: 4,096
+   47. model.layers.4.self_attn.k_proj.weight                       | 形状: (1024, 4096)              | 类型: torch.bfloat16  | 参数量: 4,194,304
+   48. model.layers.4.self_attn.o_proj.weight                       | 形状: (4096, 4096)              | 类型: torch.bfloat16  | 参数量: 16,777,216
+   49. model.layers.4.self_attn.q_proj.weight                       | 形状: (4096, 4096)              | 类型: torch.bfloat16  | 参数量: 16,777,216
+   50. model.layers.4.self_attn.v_proj.weight                       | 形状: (1024, 4096)              | 类型: torch.bfloat16  | 参数量: 4,194,304
+   51. model.layers.5.block_sparse_moe.gate.weight                  | 形状: (8, 4096)                 | 类型: torch.bfloat16  | 参数量: 32,768
+   52. model.layers.5.self_attn.k_proj.weight                       | 形状: (1024, 4096)              | 类型: torch.bfloat16  | 参数量: 4,194,304
+   53. model.layers.5.self_attn.o_proj.weight                       | 形状: (4096, 4096)              | 类型: torch.bfloat16  | 参数量: 16,777,216
+   54. model.layers.5.self_attn.q_proj.weight                       | 形状: (4096, 4096)              | 类型: torch.bfloat16  | 参数量: 16,777,216
+   55. model.layers.5.self_attn.v_proj.weight                       | 形状: (1024, 4096)              | 类型: torch.bfloat16  | 参数量: 4,194,304
+================================================================================
+
+================================================================================
+正在分析文件: model-00004-of-00019.safetensors
+文件大小: 4672.08 MB
+
+--- 文件元数据 ---
+  format: pt
+
+--- 文件摘要 ---
+总张量数量: 48
+总参数量: 2,449,514,496
+数据类型分布:
+  -  torch.bfloat16: 48 个张量
+
+--- 张量详细列表 ---
+    1. model.layers.5.block_sparse_moe.experts.0.w1.weight          | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+    2. model.layers.5.block_sparse_moe.experts.0.w2.weight          | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+    3. model.layers.5.block_sparse_moe.experts.0.w3.weight          | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+    4. model.layers.5.block_sparse_moe.experts.1.w1.weight          | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+    5. model.layers.5.block_sparse_moe.experts.1.w2.weight          | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+    6. model.layers.5.block_sparse_moe.experts.1.w3.weight          | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+    7. model.layers.5.block_sparse_moe.experts.2.w1.weight          | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+    8. model.layers.5.block_sparse_moe.experts.2.w2.weight          | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+    9. model.layers.5.block_sparse_moe.experts.2.w3.weight          | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   10. model.layers.5.block_sparse_moe.experts.3.w1.weight          | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   11. model.layers.5.block_sparse_moe.experts.3.w2.weight          | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   12. model.layers.5.block_sparse_moe.experts.3.w3.weight          | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   13. model.layers.5.block_sparse_moe.experts.4.w1.weight          | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   14. model.layers.5.block_sparse_moe.experts.4.w2.weight          | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   15. model.layers.5.block_sparse_moe.experts.4.w3.weight          | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   16. model.layers.5.block_sparse_moe.experts.5.w1.weight          | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   17. model.layers.5.block_sparse_moe.experts.5.w2.weight          | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   18. model.layers.5.block_sparse_moe.experts.5.w3.weight          | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   19. model.layers.5.block_sparse_moe.experts.6.w1.weight          | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   20. model.layers.5.block_sparse_moe.experts.6.w2.weight          | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   21. model.layers.5.block_sparse_moe.experts.6.w3.weight          | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   22. model.layers.5.block_sparse_moe.experts.7.w1.weight          | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   23. model.layers.5.block_sparse_moe.experts.7.w2.weight          | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   24. model.layers.5.block_sparse_moe.experts.7.w3.weight          | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   25. model.layers.5.input_layernorm.weight                        | 形状: (4096,)                   | 类型: torch.bfloat16  | 参数量: 4,096
+   26. model.layers.5.post_attention_layernorm.weight               | 形状: (4096,)                   | 类型: torch.bfloat16  | 参数量: 4,096
+   27. model.layers.6.block_sparse_moe.experts.0.w1.weight          | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   28. model.layers.6.block_sparse_moe.experts.0.w2.weight          | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   29. model.layers.6.block_sparse_moe.experts.0.w3.weight          | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   30. model.layers.6.block_sparse_moe.experts.1.w1.weight          | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   31. model.layers.6.block_sparse_moe.experts.1.w2.weight          | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   32. model.layers.6.block_sparse_moe.experts.1.w3.weight          | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   33. model.layers.6.block_sparse_moe.experts.2.w1.weight          | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   34. model.layers.6.block_sparse_moe.experts.2.w2.weight          | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   35. model.layers.6.block_sparse_moe.experts.2.w3.weight          | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   36. model.layers.6.block_sparse_moe.experts.3.w1.weight          | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   37. model.layers.6.block_sparse_moe.experts.3.w2.weight          | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   38. model.layers.6.block_sparse_moe.experts.3.w3.weight          | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   39. model.layers.6.block_sparse_moe.experts.4.w1.weight          | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   40. model.layers.6.block_sparse_moe.experts.4.w2.weight          | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   41. model.layers.6.block_sparse_moe.experts.4.w3.weight          | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   42. model.layers.6.block_sparse_moe.experts.5.w1.weight          | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   43. model.layers.6.block_sparse_moe.experts.5.w2.weight          | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   44. model.layers.6.block_sparse_moe.gate.weight                  | 形状: (8, 4096)                 | 类型: torch.bfloat16  | 参数量: 32,768
+   45. model.layers.6.self_attn.k_proj.weight                       | 形状: (1024, 4096)              | 类型: torch.bfloat16  | 参数量: 4,194,304
+   46. model.layers.6.self_attn.o_proj.weight                       | 形状: (4096, 4096)              | 类型: torch.bfloat16  | 参数量: 16,777,216
+   47. model.layers.6.self_attn.q_proj.weight                       | 形状: (4096, 4096)              | 类型: torch.bfloat16  | 参数量: 16,777,216
+   48. model.layers.6.self_attn.v_proj.weight                       | 形状: (1024, 4096)              | 类型: torch.bfloat16  | 参数量: 4,194,304
+================================================================================
+
+================================================================================
+正在分析文件: model-00005-of-00019.safetensors
+文件大小: 4752.16 MB
+
+--- 文件元数据 ---
+  format: pt
+
+--- 文件摘要 ---
+总张量数量: 55
+总参数量: 2,491,498,496
+数据类型分布:
+  -  torch.bfloat16: 55 个张量
+
+--- 张量详细列表 ---
+    1. model.layers.6.block_sparse_moe.experts.5.w3.weight          | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+    2. model.layers.6.block_sparse_moe.experts.6.w1.weight          | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+    3. model.layers.6.block_sparse_moe.experts.6.w2.weight          | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+    4. model.layers.6.block_sparse_moe.experts.6.w3.weight          | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+    5. model.layers.6.block_sparse_moe.experts.7.w1.weight          | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+    6. model.layers.6.block_sparse_moe.experts.7.w2.weight          | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+    7. model.layers.6.block_sparse_moe.experts.7.w3.weight          | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+    8. model.layers.6.input_layernorm.weight                        | 形状: (4096,)                   | 类型: torch.bfloat16  | 参数量: 4,096
+    9. model.layers.6.post_attention_layernorm.weight               | 形状: (4096,)                   | 类型: torch.bfloat16  | 参数量: 4,096
+   10. model.layers.7.block_sparse_moe.experts.0.w1.weight          | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   11. model.layers.7.block_sparse_moe.experts.0.w2.weight          | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   12. model.layers.7.block_sparse_moe.experts.0.w3.weight          | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   13. model.layers.7.block_sparse_moe.experts.1.w1.weight          | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   14. model.layers.7.block_sparse_moe.experts.1.w2.weight          | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   15. model.layers.7.block_sparse_moe.experts.1.w3.weight          | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   16. model.layers.7.block_sparse_moe.experts.2.w1.weight          | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   17. model.layers.7.block_sparse_moe.experts.2.w2.weight          | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   18. model.layers.7.block_sparse_moe.experts.2.w3.weight          | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   19. model.layers.7.block_sparse_moe.experts.3.w1.weight          | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   20. model.layers.7.block_sparse_moe.experts.3.w2.weight          | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   21. model.layers.7.block_sparse_moe.experts.3.w3.weight          | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   22. model.layers.7.block_sparse_moe.experts.4.w1.weight          | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   23. model.layers.7.block_sparse_moe.experts.4.w2.weight          | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   24. model.layers.7.block_sparse_moe.experts.4.w3.weight          | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   25. model.layers.7.block_sparse_moe.experts.5.w1.weight          | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   26. model.layers.7.block_sparse_moe.experts.5.w2.weight          | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   27. model.layers.7.block_sparse_moe.experts.5.w3.weight          | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   28. model.layers.7.block_sparse_moe.experts.6.w1.weight          | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   29. model.layers.7.block_sparse_moe.experts.6.w2.weight          | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   30. model.layers.7.block_sparse_moe.experts.6.w3.weight          | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   31. model.layers.7.block_sparse_moe.experts.7.w1.weight          | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   32. model.layers.7.block_sparse_moe.experts.7.w2.weight          | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   33. model.layers.7.block_sparse_moe.experts.7.w3.weight          | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   34. model.layers.7.block_sparse_moe.gate.weight                  | 形状: (8, 4096)                 | 类型: torch.bfloat16  | 参数量: 32,768
+   35. model.layers.7.input_layernorm.weight                        | 形状: (4096,)                   | 类型: torch.bfloat16  | 参数量: 4,096
+   36. model.layers.7.post_attention_layernorm.weight               | 形状: (4096,)                   | 类型: torch.bfloat16  | 参数量: 4,096
+   37. model.layers.7.self_attn.k_proj.weight                       | 形状: (1024, 4096)              | 类型: torch.bfloat16  | 参数量: 4,194,304
+   38. model.layers.7.self_attn.o_proj.weight                       | 形状: (4096, 4096)              | 类型: torch.bfloat16  | 参数量: 16,777,216
+   39. model.layers.7.self_attn.q_proj.weight                       | 形状: (4096, 4096)              | 类型: torch.bfloat16  | 参数量: 16,777,216
+   40. model.layers.7.self_attn.v_proj.weight                       | 形状: (1024, 4096)              | 类型: torch.bfloat16  | 参数量: 4,194,304
+   41. model.layers.8.block_sparse_moe.experts.0.w1.weight          | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   42. model.layers.8.block_sparse_moe.experts.0.w2.weight          | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   43. model.layers.8.block_sparse_moe.experts.0.w3.weight          | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   44. model.layers.8.block_sparse_moe.experts.1.w1.weight          | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   45. model.layers.8.block_sparse_moe.experts.1.w2.weight          | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   46. model.layers.8.block_sparse_moe.experts.1.w3.weight          | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   47. model.layers.8.block_sparse_moe.experts.2.w1.weight          | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   48. model.layers.8.block_sparse_moe.experts.2.w2.weight          | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   49. model.layers.8.block_sparse_moe.experts.2.w3.weight          | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   50. model.layers.8.block_sparse_moe.experts.3.w1.weight          | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   51. model.layers.8.block_sparse_moe.gate.weight                  | 形状: (8, 4096)                 | 类型: torch.bfloat16  | 参数量: 32,768
+   52. model.layers.8.self_attn.k_proj.weight                       | 形状: (1024, 4096)              | 类型: torch.bfloat16  | 参数量: 4,194,304
+   53. model.layers.8.self_attn.o_proj.weight                       | 形状: (4096, 4096)              | 类型: torch.bfloat16  | 参数量: 16,777,216
+   54. model.layers.8.self_attn.q_proj.weight                       | 形状: (4096, 4096)              | 类型: torch.bfloat16  | 参数量: 16,777,216
+   55. model.layers.8.self_attn.v_proj.weight                       | 形状: (1024, 4096)              | 类型: torch.bfloat16  | 参数量: 4,194,304
+================================================================================
+
+================================================================================
+正在分析文件: model-00006-of-00019.safetensors
+文件大小: 4752.16 MB
+
+--- 文件元数据 ---
+  format: pt
+
+--- 文件摘要 ---
+总张量数量: 55
+总参数量: 2,491,498,496
+数据类型分布:
+  -  torch.bfloat16: 55 个张量
+
+--- 张量详细列表 ---
+    1. model.layers.10.block_sparse_moe.experts.0.w1.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+    2. model.layers.10.block_sparse_moe.experts.0.w2.weight         | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+    3. model.layers.10.block_sparse_moe.experts.0.w3.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+    4. model.layers.10.block_sparse_moe.gate.weight                 | 形状: (8, 4096)                 | 类型: torch.bfloat16  | 参数量: 32,768
+    5. model.layers.10.self_attn.k_proj.weight                      | 形状: (1024, 4096)              | 类型: torch.bfloat16  | 参数量: 4,194,304
+    6. model.layers.10.self_attn.o_proj.weight                      | 形状: (4096, 4096)              | 类型: torch.bfloat16  | 参数量: 16,777,216
+    7. model.layers.10.self_attn.q_proj.weight                      | 形状: (4096, 4096)              | 类型: torch.bfloat16  | 参数量: 16,777,216
+    8. model.layers.10.self_attn.v_proj.weight                      | 形状: (1024, 4096)              | 类型: torch.bfloat16  | 参数量: 4,194,304
+    9. model.layers.8.block_sparse_moe.experts.3.w2.weight          | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   10. model.layers.8.block_sparse_moe.experts.3.w3.weight          | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   11. model.layers.8.block_sparse_moe.experts.4.w1.weight          | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   12. model.layers.8.block_sparse_moe.experts.4.w2.weight          | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   13. model.layers.8.block_sparse_moe.experts.4.w3.weight          | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   14. model.layers.8.block_sparse_moe.experts.5.w1.weight          | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   15. model.layers.8.block_sparse_moe.experts.5.w2.weight          | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   16. model.layers.8.block_sparse_moe.experts.5.w3.weight          | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   17. model.layers.8.block_sparse_moe.experts.6.w1.weight          | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   18. model.layers.8.block_sparse_moe.experts.6.w2.weight          | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   19. model.layers.8.block_sparse_moe.experts.6.w3.weight          | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   20. model.layers.8.block_sparse_moe.experts.7.w1.weight          | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   21. model.layers.8.block_sparse_moe.experts.7.w2.weight          | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   22. model.layers.8.block_sparse_moe.experts.7.w3.weight          | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   23. model.layers.8.input_layernorm.weight                        | 形状: (4096,)                   | 类型: torch.bfloat16  | 参数量: 4,096
+   24. model.layers.8.post_attention_layernorm.weight               | 形状: (4096,)                   | 类型: torch.bfloat16  | 参数量: 4,096
+   25. model.layers.9.block_sparse_moe.experts.0.w1.weight          | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   26. model.layers.9.block_sparse_moe.experts.0.w2.weight          | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   27. model.layers.9.block_sparse_moe.experts.0.w3.weight          | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   28. model.layers.9.block_sparse_moe.experts.1.w1.weight          | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   29. model.layers.9.block_sparse_moe.experts.1.w2.weight          | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   30. model.layers.9.block_sparse_moe.experts.1.w3.weight          | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   31. model.layers.9.block_sparse_moe.experts.2.w1.weight          | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   32. model.layers.9.block_sparse_moe.experts.2.w2.weight          | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   33. model.layers.9.block_sparse_moe.experts.2.w3.weight          | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   34. model.layers.9.block_sparse_moe.experts.3.w1.weight          | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   35. model.layers.9.block_sparse_moe.experts.3.w2.weight          | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   36. model.layers.9.block_sparse_moe.experts.3.w3.weight          | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   37. model.layers.9.block_sparse_moe.experts.4.w1.weight          | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   38. model.layers.9.block_sparse_moe.experts.4.w2.weight          | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   39. model.layers.9.block_sparse_moe.experts.4.w3.weight          | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   40. model.layers.9.block_sparse_moe.experts.5.w1.weight          | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   41. model.layers.9.block_sparse_moe.experts.5.w2.weight          | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   42. model.layers.9.block_sparse_moe.experts.5.w3.weight          | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   43. model.layers.9.block_sparse_moe.experts.6.w1.weight          | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   44. model.layers.9.block_sparse_moe.experts.6.w2.weight          | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   45. model.layers.9.block_sparse_moe.experts.6.w3.weight          | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   46. model.layers.9.block_sparse_moe.experts.7.w1.weight          | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   47. model.layers.9.block_sparse_moe.experts.7.w2.weight          | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   48. model.layers.9.block_sparse_moe.experts.7.w3.weight          | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   49. model.layers.9.block_sparse_moe.gate.weight                  | 形状: (8, 4096)                 | 类型: torch.bfloat16  | 参数量: 32,768
+   50. model.layers.9.input_layernorm.weight                        | 形状: (4096,)                   | 类型: torch.bfloat16  | 参数量: 4,096
+   51. model.layers.9.post_attention_layernorm.weight               | 形状: (4096,)                   | 类型: torch.bfloat16  | 参数量: 4,096
+   52. model.layers.9.self_attn.k_proj.weight                       | 形状: (1024, 4096)              | 类型: torch.bfloat16  | 参数量: 4,194,304
+   53. model.layers.9.self_attn.o_proj.weight                       | 形状: (4096, 4096)              | 类型: torch.bfloat16  | 参数量: 16,777,216
+   54. model.layers.9.self_attn.q_proj.weight                       | 形状: (4096, 4096)              | 类型: torch.bfloat16  | 参数量: 16,777,216
+   55. model.layers.9.self_attn.v_proj.weight                       | 形状: (1024, 4096)              | 类型: torch.bfloat16  | 参数量: 4,194,304
+================================================================================
+
+================================================================================
+正在分析文件: model-00007-of-00019.safetensors
+文件大小: 4672.08 MB
+
+--- 文件元数据 ---
+  format: pt
+
+--- 文件摘要 ---
+总张量数量: 48
+总参数量: 2,449,514,496
+数据类型分布:
+  -  torch.bfloat16: 48 个张量
+
+--- 张量详细列表 ---
+    1. model.layers.10.block_sparse_moe.experts.1.w1.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+    2. model.layers.10.block_sparse_moe.experts.1.w2.weight         | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+    3. model.layers.10.block_sparse_moe.experts.1.w3.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+    4. model.layers.10.block_sparse_moe.experts.2.w1.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+    5. model.layers.10.block_sparse_moe.experts.2.w2.weight         | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+    6. model.layers.10.block_sparse_moe.experts.2.w3.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+    7. model.layers.10.block_sparse_moe.experts.3.w1.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+    8. model.layers.10.block_sparse_moe.experts.3.w2.weight         | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+    9. model.layers.10.block_sparse_moe.experts.3.w3.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   10. model.layers.10.block_sparse_moe.experts.4.w1.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   11. model.layers.10.block_sparse_moe.experts.4.w2.weight         | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   12. model.layers.10.block_sparse_moe.experts.4.w3.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   13. model.layers.10.block_sparse_moe.experts.5.w1.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   14. model.layers.10.block_sparse_moe.experts.5.w2.weight         | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   15. model.layers.10.block_sparse_moe.experts.5.w3.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   16. model.layers.10.block_sparse_moe.experts.6.w1.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   17. model.layers.10.block_sparse_moe.experts.6.w2.weight         | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   18. model.layers.10.block_sparse_moe.experts.6.w3.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   19. model.layers.10.block_sparse_moe.experts.7.w1.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   20. model.layers.10.block_sparse_moe.experts.7.w2.weight         | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   21. model.layers.10.block_sparse_moe.experts.7.w3.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   22. model.layers.10.input_layernorm.weight                       | 形状: (4096,)                   | 类型: torch.bfloat16  | 参数量: 4,096
+   23. model.layers.10.post_attention_layernorm.weight              | 形状: (4096,)                   | 类型: torch.bfloat16  | 参数量: 4,096
+   24. model.layers.11.block_sparse_moe.experts.0.w1.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   25. model.layers.11.block_sparse_moe.experts.0.w2.weight         | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   26. model.layers.11.block_sparse_moe.experts.0.w3.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   27. model.layers.11.block_sparse_moe.experts.1.w1.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   28. model.layers.11.block_sparse_moe.experts.1.w2.weight         | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   29. model.layers.11.block_sparse_moe.experts.1.w3.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   30. model.layers.11.block_sparse_moe.experts.2.w1.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   31. model.layers.11.block_sparse_moe.experts.2.w2.weight         | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   32. model.layers.11.block_sparse_moe.experts.2.w3.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   33. model.layers.11.block_sparse_moe.experts.3.w1.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   34. model.layers.11.block_sparse_moe.experts.3.w2.weight         | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   35. model.layers.11.block_sparse_moe.experts.3.w3.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   36. model.layers.11.block_sparse_moe.experts.4.w1.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   37. model.layers.11.block_sparse_moe.experts.4.w2.weight         | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   38. model.layers.11.block_sparse_moe.experts.4.w3.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   39. model.layers.11.block_sparse_moe.experts.5.w1.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   40. model.layers.11.block_sparse_moe.experts.5.w2.weight         | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   41. model.layers.11.block_sparse_moe.experts.5.w3.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   42. model.layers.11.block_sparse_moe.experts.6.w1.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   43. model.layers.11.block_sparse_moe.experts.6.w2.weight         | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   44. model.layers.11.block_sparse_moe.gate.weight                 | 形状: (8, 4096)                 | 类型: torch.bfloat16  | 参数量: 32,768
+   45. model.layers.11.self_attn.k_proj.weight                      | 形状: (1024, 4096)              | 类型: torch.bfloat16  | 参数量: 4,194,304
+   46. model.layers.11.self_attn.o_proj.weight                      | 形状: (4096, 4096)              | 类型: torch.bfloat16  | 参数量: 16,777,216
+   47. model.layers.11.self_attn.q_proj.weight                      | 形状: (4096, 4096)              | 类型: torch.bfloat16  | 参数量: 16,777,216
+   48. model.layers.11.self_attn.v_proj.weight                      | 形状: (1024, 4096)              | 类型: torch.bfloat16  | 参数量: 4,194,304
+================================================================================
+
+================================================================================
+正在分析文件: model-00008-of-00019.safetensors
+文件大小: 4752.16 MB
+
+--- 文件元数据 ---
+  format: pt
+
+--- 文件摘要 ---
+总张量数量: 55
+总参数量: 2,491,498,496
+数据类型分布:
+  -  torch.bfloat16: 55 个张量
+
+--- 张量详细列表 ---
+    1. model.layers.11.block_sparse_moe.experts.6.w3.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+    2. model.layers.11.block_sparse_moe.experts.7.w1.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+    3. model.layers.11.block_sparse_moe.experts.7.w2.weight         | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+    4. model.layers.11.block_sparse_moe.experts.7.w3.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+    5. model.layers.11.input_layernorm.weight                       | 形状: (4096,)                   | 类型: torch.bfloat16  | 参数量: 4,096
+    6. model.layers.11.post_attention_layernorm.weight              | 形状: (4096,)                   | 类型: torch.bfloat16  | 参数量: 4,096
+    7. model.layers.12.block_sparse_moe.experts.0.w1.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+    8. model.layers.12.block_sparse_moe.experts.0.w2.weight         | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+    9. model.layers.12.block_sparse_moe.experts.0.w3.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   10. model.layers.12.block_sparse_moe.experts.1.w1.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   11. model.layers.12.block_sparse_moe.experts.1.w2.weight         | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   12. model.layers.12.block_sparse_moe.experts.1.w3.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   13. model.layers.12.block_sparse_moe.experts.2.w1.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   14. model.layers.12.block_sparse_moe.experts.2.w2.weight         | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   15. model.layers.12.block_sparse_moe.experts.2.w3.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   16. model.layers.12.block_sparse_moe.experts.3.w1.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   17. model.layers.12.block_sparse_moe.experts.3.w2.weight         | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   18. model.layers.12.block_sparse_moe.experts.3.w3.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   19. model.layers.12.block_sparse_moe.experts.4.w1.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   20. model.layers.12.block_sparse_moe.experts.4.w2.weight         | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   21. model.layers.12.block_sparse_moe.experts.4.w3.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   22. model.layers.12.block_sparse_moe.experts.5.w1.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   23. model.layers.12.block_sparse_moe.experts.5.w2.weight         | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   24. model.layers.12.block_sparse_moe.experts.5.w3.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   25. model.layers.12.block_sparse_moe.experts.6.w1.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   26. model.layers.12.block_sparse_moe.experts.6.w2.weight         | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   27. model.layers.12.block_sparse_moe.experts.6.w3.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   28. model.layers.12.block_sparse_moe.experts.7.w1.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   29. model.layers.12.block_sparse_moe.experts.7.w2.weight         | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   30. model.layers.12.block_sparse_moe.experts.7.w3.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   31. model.layers.12.block_sparse_moe.gate.weight                 | 形状: (8, 4096)                 | 类型: torch.bfloat16  | 参数量: 32,768
+   32. model.layers.12.input_layernorm.weight                       | 形状: (4096,)                   | 类型: torch.bfloat16  | 参数量: 4,096
+   33. model.layers.12.post_attention_layernorm.weight              | 形状: (4096,)                   | 类型: torch.bfloat16  | 参数量: 4,096
+   34. model.layers.12.self_attn.k_proj.weight                      | 形状: (1024, 4096)              | 类型: torch.bfloat16  | 参数量: 4,194,304
+   35. model.layers.12.self_attn.o_proj.weight                      | 形状: (4096, 4096)              | 类型: torch.bfloat16  | 参数量: 16,777,216
+   36. model.layers.12.self_attn.q_proj.weight                      | 形状: (4096, 4096)              | 类型: torch.bfloat16  | 参数量: 16,777,216
+   37. model.layers.12.self_attn.v_proj.weight                      | 形状: (1024, 4096)              | 类型: torch.bfloat16  | 参数量: 4,194,304
+   38. model.layers.13.block_sparse_moe.experts.0.w1.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   39. model.layers.13.block_sparse_moe.experts.0.w2.weight         | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   40. model.layers.13.block_sparse_moe.experts.0.w3.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   41. model.layers.13.block_sparse_moe.experts.1.w1.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   42. model.layers.13.block_sparse_moe.experts.1.w2.weight         | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   43. model.layers.13.block_sparse_moe.experts.1.w3.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   44. model.layers.13.block_sparse_moe.experts.2.w1.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   45. model.layers.13.block_sparse_moe.experts.2.w2.weight         | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   46. model.layers.13.block_sparse_moe.experts.2.w3.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   47. model.layers.13.block_sparse_moe.experts.3.w1.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   48. model.layers.13.block_sparse_moe.experts.3.w2.weight         | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   49. model.layers.13.block_sparse_moe.experts.3.w3.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   50. model.layers.13.block_sparse_moe.experts.4.w1.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   51. model.layers.13.block_sparse_moe.gate.weight                 | 形状: (8, 4096)                 | 类型: torch.bfloat16  | 参数量: 32,768
+   52. model.layers.13.self_attn.k_proj.weight                      | 形状: (1024, 4096)              | 类型: torch.bfloat16  | 参数量: 4,194,304
+   53. model.layers.13.self_attn.o_proj.weight                      | 形状: (4096, 4096)              | 类型: torch.bfloat16  | 参数量: 16,777,216
+   54. model.layers.13.self_attn.q_proj.weight                      | 形状: (4096, 4096)              | 类型: torch.bfloat16  | 参数量: 16,777,216
+   55. model.layers.13.self_attn.v_proj.weight                      | 形状: (1024, 4096)              | 类型: torch.bfloat16  | 参数量: 4,194,304
+================================================================================
+
+================================================================================
+正在分析文件: model-00009-of-00019.safetensors
+文件大小: 4752.16 MB
+
+--- 文件元数据 ---
+  format: pt
+
+--- 文件摘要 ---
+总张量数量: 55
+总参数量: 2,491,498,496
+数据类型分布:
+  -  torch.bfloat16: 55 个张量
+
+--- 张量详细列表 ---
+    1. model.layers.13.block_sparse_moe.experts.4.w2.weight         | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+    2. model.layers.13.block_sparse_moe.experts.4.w3.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+    3. model.layers.13.block_sparse_moe.experts.5.w1.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+    4. model.layers.13.block_sparse_moe.experts.5.w2.weight         | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+    5. model.layers.13.block_sparse_moe.experts.5.w3.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+    6. model.layers.13.block_sparse_moe.experts.6.w1.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+    7. model.layers.13.block_sparse_moe.experts.6.w2.weight         | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+    8. model.layers.13.block_sparse_moe.experts.6.w3.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+    9. model.layers.13.block_sparse_moe.experts.7.w1.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   10. model.layers.13.block_sparse_moe.experts.7.w2.weight         | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   11. model.layers.13.block_sparse_moe.experts.7.w3.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   12. model.layers.13.input_layernorm.weight                       | 形状: (4096,)                   | 类型: torch.bfloat16  | 参数量: 4,096
+   13. model.layers.13.post_attention_layernorm.weight              | 形状: (4096,)                   | 类型: torch.bfloat16  | 参数量: 4,096
+   14. model.layers.14.block_sparse_moe.experts.0.w1.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   15. model.layers.14.block_sparse_moe.experts.0.w2.weight         | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   16. model.layers.14.block_sparse_moe.experts.0.w3.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   17. model.layers.14.block_sparse_moe.experts.1.w1.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   18. model.layers.14.block_sparse_moe.experts.1.w2.weight         | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   19. model.layers.14.block_sparse_moe.experts.1.w3.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   20. model.layers.14.block_sparse_moe.experts.2.w1.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   21. model.layers.14.block_sparse_moe.experts.2.w2.weight         | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   22. model.layers.14.block_sparse_moe.experts.2.w3.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   23. model.layers.14.block_sparse_moe.experts.3.w1.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   24. model.layers.14.block_sparse_moe.experts.3.w2.weight         | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   25. model.layers.14.block_sparse_moe.experts.3.w3.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   26. model.layers.14.block_sparse_moe.experts.4.w1.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   27. model.layers.14.block_sparse_moe.experts.4.w2.weight         | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   28. model.layers.14.block_sparse_moe.experts.4.w3.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   29. model.layers.14.block_sparse_moe.experts.5.w1.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   30. model.layers.14.block_sparse_moe.experts.5.w2.weight         | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   31. model.layers.14.block_sparse_moe.experts.5.w3.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   32. model.layers.14.block_sparse_moe.experts.6.w1.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   33. model.layers.14.block_sparse_moe.experts.6.w2.weight         | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   34. model.layers.14.block_sparse_moe.experts.6.w3.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   35. model.layers.14.block_sparse_moe.experts.7.w1.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   36. model.layers.14.block_sparse_moe.experts.7.w2.weight         | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   37. model.layers.14.block_sparse_moe.experts.7.w3.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   38. model.layers.14.block_sparse_moe.gate.weight                 | 形状: (8, 4096)                 | 类型: torch.bfloat16  | 参数量: 32,768
+   39. model.layers.14.input_layernorm.weight                       | 形状: (4096,)                   | 类型: torch.bfloat16  | 参数量: 4,096
+   40. model.layers.14.post_attention_layernorm.weight              | 形状: (4096,)                   | 类型: torch.bfloat16  | 参数量: 4,096
+   41. model.layers.14.self_attn.k_proj.weight                      | 形状: (1024, 4096)              | 类型: torch.bfloat16  | 参数量: 4,194,304
+   42. model.layers.14.self_attn.o_proj.weight                      | 形状: (4096, 4096)              | 类型: torch.bfloat16  | 参数量: 16,777,216
+   43. model.layers.14.self_attn.q_proj.weight                      | 形状: (4096, 4096)              | 类型: torch.bfloat16  | 参数量: 16,777,216
+   44. model.layers.14.self_attn.v_proj.weight                      | 形状: (1024, 4096)              | 类型: torch.bfloat16  | 参数量: 4,194,304
+   45. model.layers.15.block_sparse_moe.experts.0.w1.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   46. model.layers.15.block_sparse_moe.experts.0.w2.weight         | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   47. model.layers.15.block_sparse_moe.experts.0.w3.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   48. model.layers.15.block_sparse_moe.experts.1.w1.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   49. model.layers.15.block_sparse_moe.experts.1.w2.weight         | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   50. model.layers.15.block_sparse_moe.experts.1.w3.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   51. model.layers.15.block_sparse_moe.gate.weight                 | 形状: (8, 4096)                 | 类型: torch.bfloat16  | 参数量: 32,768
+   52. model.layers.15.self_attn.k_proj.weight                      | 形状: (1024, 4096)              | 类型: torch.bfloat16  | 参数量: 4,194,304
+   53. model.layers.15.self_attn.o_proj.weight                      | 形状: (4096, 4096)              | 类型: torch.bfloat16  | 参数量: 16,777,216
+   54. model.layers.15.self_attn.q_proj.weight                      | 形状: (4096, 4096)              | 类型: torch.bfloat16  | 参数量: 16,777,216
+   55. model.layers.15.self_attn.v_proj.weight                      | 形状: (1024, 4096)              | 类型: torch.bfloat16  | 参数量: 4,194,304
+================================================================================
+
+================================================================================
+正在分析文件: model-00010-of-00019.safetensors
+文件大小: 4672.08 MB
+
+--- 文件元数据 ---
+  format: pt
+
+--- 文件摘要 ---
+总张量数量: 48
+总参数量: 2,449,514,496
+数据类型分布:
+  -  torch.bfloat16: 48 个张量
+
+--- 张量详细列表 ---
+    1. model.layers.15.block_sparse_moe.experts.2.w1.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+    2. model.layers.15.block_sparse_moe.experts.2.w2.weight         | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+    3. model.layers.15.block_sparse_moe.experts.2.w3.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+    4. model.layers.15.block_sparse_moe.experts.3.w1.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+    5. model.layers.15.block_sparse_moe.experts.3.w2.weight         | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+    6. model.layers.15.block_sparse_moe.experts.3.w3.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+    7. model.layers.15.block_sparse_moe.experts.4.w1.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+    8. model.layers.15.block_sparse_moe.experts.4.w2.weight         | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+    9. model.layers.15.block_sparse_moe.experts.4.w3.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   10. model.layers.15.block_sparse_moe.experts.5.w1.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   11. model.layers.15.block_sparse_moe.experts.5.w2.weight         | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   12. model.layers.15.block_sparse_moe.experts.5.w3.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   13. model.layers.15.block_sparse_moe.experts.6.w1.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   14. model.layers.15.block_sparse_moe.experts.6.w2.weight         | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   15. model.layers.15.block_sparse_moe.experts.6.w3.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   16. model.layers.15.block_sparse_moe.experts.7.w1.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   17. model.layers.15.block_sparse_moe.experts.7.w2.weight         | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   18. model.layers.15.block_sparse_moe.experts.7.w3.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   19. model.layers.15.input_layernorm.weight                       | 形状: (4096,)                   | 类型: torch.bfloat16  | 参数量: 4,096
+   20. model.layers.15.post_attention_layernorm.weight              | 形状: (4096,)                   | 类型: torch.bfloat16  | 参数量: 4,096
+   21. model.layers.16.block_sparse_moe.experts.0.w1.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   22. model.layers.16.block_sparse_moe.experts.0.w2.weight         | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   23. model.layers.16.block_sparse_moe.experts.0.w3.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   24. model.layers.16.block_sparse_moe.experts.1.w1.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   25. model.layers.16.block_sparse_moe.experts.1.w2.weight         | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   26. model.layers.16.block_sparse_moe.experts.1.w3.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   27. model.layers.16.block_sparse_moe.experts.2.w1.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   28. model.layers.16.block_sparse_moe.experts.2.w2.weight         | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   29. model.layers.16.block_sparse_moe.experts.2.w3.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   30. model.layers.16.block_sparse_moe.experts.3.w1.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   31. model.layers.16.block_sparse_moe.experts.3.w2.weight         | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   32. model.layers.16.block_sparse_moe.experts.3.w3.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   33. model.layers.16.block_sparse_moe.experts.4.w1.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   34. model.layers.16.block_sparse_moe.experts.4.w2.weight         | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   35. model.layers.16.block_sparse_moe.experts.4.w3.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   36. model.layers.16.block_sparse_moe.experts.5.w1.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   37. model.layers.16.block_sparse_moe.experts.5.w2.weight         | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   38. model.layers.16.block_sparse_moe.experts.5.w3.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   39. model.layers.16.block_sparse_moe.experts.6.w1.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   40. model.layers.16.block_sparse_moe.experts.6.w2.weight         | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   41. model.layers.16.block_sparse_moe.experts.6.w3.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   42. model.layers.16.block_sparse_moe.experts.7.w1.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   43. model.layers.16.block_sparse_moe.experts.7.w2.weight         | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   44. model.layers.16.block_sparse_moe.gate.weight                 | 形状: (8, 4096)                 | 类型: torch.bfloat16  | 参数量: 32,768
+   45. model.layers.16.self_attn.k_proj.weight                      | 形状: (1024, 4096)              | 类型: torch.bfloat16  | 参数量: 4,194,304
+   46. model.layers.16.self_attn.o_proj.weight                      | 形状: (4096, 4096)              | 类型: torch.bfloat16  | 参数量: 16,777,216
+   47. model.layers.16.self_attn.q_proj.weight                      | 形状: (4096, 4096)              | 类型: torch.bfloat16  | 参数量: 16,777,216
+   48. model.layers.16.self_attn.v_proj.weight                      | 形状: (1024, 4096)              | 类型: torch.bfloat16  | 参数量: 4,194,304
+================================================================================
+
+================================================================================
+正在分析文件: model-00011-of-00019.safetensors
+文件大小: 4752.16 MB
+
+--- 文件元数据 ---
+  format: pt
+
+--- 文件摘要 ---
+总张量数量: 55
+总参数量: 2,491,498,496
+数据类型分布:
+  -  torch.bfloat16: 55 个张量
+
+--- 张量详细列表 ---
+    1. model.layers.16.block_sparse_moe.experts.7.w3.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+    2. model.layers.16.input_layernorm.weight                       | 形状: (4096,)                   | 类型: torch.bfloat16  | 参数量: 4,096
+    3. model.layers.16.post_attention_layernorm.weight              | 形状: (4096,)                   | 类型: torch.bfloat16  | 参数量: 4,096
+    4. model.layers.17.block_sparse_moe.experts.0.w1.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+    5. model.layers.17.block_sparse_moe.experts.0.w2.weight         | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+    6. model.layers.17.block_sparse_moe.experts.0.w3.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+    7. model.layers.17.block_sparse_moe.experts.1.w1.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+    8. model.layers.17.block_sparse_moe.experts.1.w2.weight         | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+    9. model.layers.17.block_sparse_moe.experts.1.w3.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   10. model.layers.17.block_sparse_moe.experts.2.w1.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   11. model.layers.17.block_sparse_moe.experts.2.w2.weight         | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   12. model.layers.17.block_sparse_moe.experts.2.w3.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   13. model.layers.17.block_sparse_moe.experts.3.w1.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   14. model.layers.17.block_sparse_moe.experts.3.w2.weight         | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   15. model.layers.17.block_sparse_moe.experts.3.w3.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   16. model.layers.17.block_sparse_moe.experts.4.w1.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   17. model.layers.17.block_sparse_moe.experts.4.w2.weight         | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   18. model.layers.17.block_sparse_moe.experts.4.w3.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   19. model.layers.17.block_sparse_moe.experts.5.w1.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   20. model.layers.17.block_sparse_moe.experts.5.w2.weight         | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   21. model.layers.17.block_sparse_moe.experts.5.w3.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   22. model.layers.17.block_sparse_moe.experts.6.w1.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   23. model.layers.17.block_sparse_moe.experts.6.w2.weight         | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   24. model.layers.17.block_sparse_moe.experts.6.w3.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   25. model.layers.17.block_sparse_moe.experts.7.w1.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   26. model.layers.17.block_sparse_moe.experts.7.w2.weight         | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   27. model.layers.17.block_sparse_moe.experts.7.w3.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   28. model.layers.17.block_sparse_moe.gate.weight                 | 形状: (8, 4096)                 | 类型: torch.bfloat16  | 参数量: 32,768
+   29. model.layers.17.input_layernorm.weight                       | 形状: (4096,)                   | 类型: torch.bfloat16  | 参数量: 4,096
+   30. model.layers.17.post_attention_layernorm.weight              | 形状: (4096,)                   | 类型: torch.bfloat16  | 参数量: 4,096
+   31. model.layers.17.self_attn.k_proj.weight                      | 形状: (1024, 4096)              | 类型: torch.bfloat16  | 参数量: 4,194,304
+   32. model.layers.17.self_attn.o_proj.weight                      | 形状: (4096, 4096)              | 类型: torch.bfloat16  | 参数量: 16,777,216
+   33. model.layers.17.self_attn.q_proj.weight                      | 形状: (4096, 4096)              | 类型: torch.bfloat16  | 参数量: 16,777,216
+   34. model.layers.17.self_attn.v_proj.weight                      | 形状: (1024, 4096)              | 类型: torch.bfloat16  | 参数量: 4,194,304
+   35. model.layers.18.block_sparse_moe.experts.0.w1.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   36. model.layers.18.block_sparse_moe.experts.0.w2.weight         | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   37. model.layers.18.block_sparse_moe.experts.0.w3.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   38. model.layers.18.block_sparse_moe.experts.1.w1.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   39. model.layers.18.block_sparse_moe.experts.1.w2.weight         | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   40. model.layers.18.block_sparse_moe.experts.1.w3.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   41. model.layers.18.block_sparse_moe.experts.2.w1.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   42. model.layers.18.block_sparse_moe.experts.2.w2.weight         | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   43. model.layers.18.block_sparse_moe.experts.2.w3.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   44. model.layers.18.block_sparse_moe.experts.3.w1.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   45. model.layers.18.block_sparse_moe.experts.3.w2.weight         | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   46. model.layers.18.block_sparse_moe.experts.3.w3.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   47. model.layers.18.block_sparse_moe.experts.4.w1.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   48. model.layers.18.block_sparse_moe.experts.4.w2.weight         | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   49. model.layers.18.block_sparse_moe.experts.4.w3.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   50. model.layers.18.block_sparse_moe.experts.5.w1.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   51. model.layers.18.block_sparse_moe.gate.weight                 | 形状: (8, 4096)                 | 类型: torch.bfloat16  | 参数量: 32,768
+   52. model.layers.18.self_attn.k_proj.weight                      | 形状: (1024, 4096)              | 类型: torch.bfloat16  | 参数量: 4,194,304
+   53. model.layers.18.self_attn.o_proj.weight                      | 形状: (4096, 4096)              | 类型: torch.bfloat16  | 参数量: 16,777,216
+   54. model.layers.18.self_attn.q_proj.weight                      | 形状: (4096, 4096)              | 类型: torch.bfloat16  | 参数量: 16,777,216
+   55. model.layers.18.self_attn.v_proj.weight                      | 形状: (1024, 4096)              | 类型: torch.bfloat16  | 参数量: 4,194,304
+================================================================================
+
+================================================================================
+正在分析文件: model-00012-of-00019.safetensors
+文件大小: 4752.16 MB
+
+--- 文件元数据 ---
+  format: pt
+
+--- 文件摘要 ---
+总张量数量: 55
+总参数量: 2,491,498,496
+数据类型分布:
+  -  torch.bfloat16: 55 个张量
+
+--- 张量详细列表 ---
+    1. model.layers.18.block_sparse_moe.experts.5.w2.weight         | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+    2. model.layers.18.block_sparse_moe.experts.5.w3.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+    3. model.layers.18.block_sparse_moe.experts.6.w1.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+    4. model.layers.18.block_sparse_moe.experts.6.w2.weight         | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+    5. model.layers.18.block_sparse_moe.experts.6.w3.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+    6. model.layers.18.block_sparse_moe.experts.7.w1.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+    7. model.layers.18.block_sparse_moe.experts.7.w2.weight         | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+    8. model.layers.18.block_sparse_moe.experts.7.w3.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+    9. model.layers.18.input_layernorm.weight                       | 形状: (4096,)                   | 类型: torch.bfloat16  | 参数量: 4,096
+   10. model.layers.18.post_attention_layernorm.weight              | 形状: (4096,)                   | 类型: torch.bfloat16  | 参数量: 4,096
+   11. model.layers.19.block_sparse_moe.experts.0.w1.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   12. model.layers.19.block_sparse_moe.experts.0.w2.weight         | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   13. model.layers.19.block_sparse_moe.experts.0.w3.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   14. model.layers.19.block_sparse_moe.experts.1.w1.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   15. model.layers.19.block_sparse_moe.experts.1.w2.weight         | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   16. model.layers.19.block_sparse_moe.experts.1.w3.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   17. model.layers.19.block_sparse_moe.experts.2.w1.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   18. model.layers.19.block_sparse_moe.experts.2.w2.weight         | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   19. model.layers.19.block_sparse_moe.experts.2.w3.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   20. model.layers.19.block_sparse_moe.experts.3.w1.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   21. model.layers.19.block_sparse_moe.experts.3.w2.weight         | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   22. model.layers.19.block_sparse_moe.experts.3.w3.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   23. model.layers.19.block_sparse_moe.experts.4.w1.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   24. model.layers.19.block_sparse_moe.experts.4.w2.weight         | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   25. model.layers.19.block_sparse_moe.experts.4.w3.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   26. model.layers.19.block_sparse_moe.experts.5.w1.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   27. model.layers.19.block_sparse_moe.experts.5.w2.weight         | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   28. model.layers.19.block_sparse_moe.experts.5.w3.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   29. model.layers.19.block_sparse_moe.experts.6.w1.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   30. model.layers.19.block_sparse_moe.experts.6.w2.weight         | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   31. model.layers.19.block_sparse_moe.experts.6.w3.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   32. model.layers.19.block_sparse_moe.experts.7.w1.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   33. model.layers.19.block_sparse_moe.experts.7.w2.weight         | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   34. model.layers.19.block_sparse_moe.experts.7.w3.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   35. model.layers.19.block_sparse_moe.gate.weight                 | 形状: (8, 4096)                 | 类型: torch.bfloat16  | 参数量: 32,768
+   36. model.layers.19.input_layernorm.weight                       | 形状: (4096,)                   | 类型: torch.bfloat16  | 参数量: 4,096
+   37. model.layers.19.post_attention_layernorm.weight              | 形状: (4096,)                   | 类型: torch.bfloat16  | 参数量: 4,096
+   38. model.layers.19.self_attn.k_proj.weight                      | 形状: (1024, 4096)              | 类型: torch.bfloat16  | 参数量: 4,194,304
+   39. model.layers.19.self_attn.o_proj.weight                      | 形状: (4096, 4096)              | 类型: torch.bfloat16  | 参数量: 16,777,216
+   40. model.layers.19.self_attn.q_proj.weight                      | 形状: (4096, 4096)              | 类型: torch.bfloat16  | 参数量: 16,777,216
+   41. model.layers.19.self_attn.v_proj.weight                      | 形状: (1024, 4096)              | 类型: torch.bfloat16  | 参数量: 4,194,304
+   42. model.layers.20.block_sparse_moe.experts.0.w1.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   43. model.layers.20.block_sparse_moe.experts.0.w2.weight         | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   44. model.layers.20.block_sparse_moe.experts.0.w3.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   45. model.layers.20.block_sparse_moe.experts.1.w1.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   46. model.layers.20.block_sparse_moe.experts.1.w2.weight         | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   47. model.layers.20.block_sparse_moe.experts.1.w3.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   48. model.layers.20.block_sparse_moe.experts.2.w1.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   49. model.layers.20.block_sparse_moe.experts.2.w2.weight         | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   50. model.layers.20.block_sparse_moe.experts.2.w3.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   51. model.layers.20.block_sparse_moe.gate.weight                 | 形状: (8, 4096)                 | 类型: torch.bfloat16  | 参数量: 32,768
+   52. model.layers.20.self_attn.k_proj.weight                      | 形状: (1024, 4096)              | 类型: torch.bfloat16  | 参数量: 4,194,304
+   53. model.layers.20.self_attn.o_proj.weight                      | 形状: (4096, 4096)              | 类型: torch.bfloat16  | 参数量: 16,777,216
+   54. model.layers.20.self_attn.q_proj.weight                      | 形状: (4096, 4096)              | 类型: torch.bfloat16  | 参数量: 16,777,216
+   55. model.layers.20.self_attn.v_proj.weight                      | 形状: (1024, 4096)              | 类型: torch.bfloat16  | 参数量: 4,194,304
+================================================================================
+
+================================================================================
+正在分析文件: model-00013-of-00019.safetensors
+文件大小: 4752.16 MB
+
+--- 文件元数据 ---
+  format: pt
+
+--- 文件摘要 ---
+总张量数量: 55
+总参数量: 2,491,498,496
+数据类型分布:
+  -  torch.bfloat16: 55 个张量
+
+--- 张量详细列表 ---
+    1. model.layers.20.block_sparse_moe.experts.3.w1.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+    2. model.layers.20.block_sparse_moe.experts.3.w2.weight         | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+    3. model.layers.20.block_sparse_moe.experts.3.w3.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+    4. model.layers.20.block_sparse_moe.experts.4.w1.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+    5. model.layers.20.block_sparse_moe.experts.4.w2.weight         | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+    6. model.layers.20.block_sparse_moe.experts.4.w3.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+    7. model.layers.20.block_sparse_moe.experts.5.w1.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+    8. model.layers.20.block_sparse_moe.experts.5.w2.weight         | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+    9. model.layers.20.block_sparse_moe.experts.5.w3.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   10. model.layers.20.block_sparse_moe.experts.6.w1.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   11. model.layers.20.block_sparse_moe.experts.6.w2.weight         | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   12. model.layers.20.block_sparse_moe.experts.6.w3.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   13. model.layers.20.block_sparse_moe.experts.7.w1.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   14. model.layers.20.block_sparse_moe.experts.7.w2.weight         | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   15. model.layers.20.block_sparse_moe.experts.7.w3.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   16. model.layers.20.input_layernorm.weight                       | 形状: (4096,)                   | 类型: torch.bfloat16  | 参数量: 4,096
+   17. model.layers.20.post_attention_layernorm.weight              | 形状: (4096,)                   | 类型: torch.bfloat16  | 参数量: 4,096
+   18. model.layers.21.block_sparse_moe.experts.0.w1.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   19. model.layers.21.block_sparse_moe.experts.0.w2.weight         | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   20. model.layers.21.block_sparse_moe.experts.0.w3.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   21. model.layers.21.block_sparse_moe.experts.1.w1.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   22. model.layers.21.block_sparse_moe.experts.1.w2.weight         | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   23. model.layers.21.block_sparse_moe.experts.1.w3.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   24. model.layers.21.block_sparse_moe.experts.2.w1.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   25. model.layers.21.block_sparse_moe.experts.2.w2.weight         | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   26. model.layers.21.block_sparse_moe.experts.2.w3.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   27. model.layers.21.block_sparse_moe.experts.3.w1.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   28. model.layers.21.block_sparse_moe.experts.3.w2.weight         | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   29. model.layers.21.block_sparse_moe.experts.3.w3.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   30. model.layers.21.block_sparse_moe.experts.4.w1.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   31. model.layers.21.block_sparse_moe.experts.4.w2.weight         | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   32. model.layers.21.block_sparse_moe.experts.4.w3.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   33. model.layers.21.block_sparse_moe.experts.5.w1.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   34. model.layers.21.block_sparse_moe.experts.5.w2.weight         | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   35. model.layers.21.block_sparse_moe.experts.5.w3.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   36. model.layers.21.block_sparse_moe.experts.6.w1.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   37. model.layers.21.block_sparse_moe.experts.6.w2.weight         | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   38. model.layers.21.block_sparse_moe.experts.6.w3.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   39. model.layers.21.block_sparse_moe.experts.7.w1.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   40. model.layers.21.block_sparse_moe.experts.7.w2.weight         | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   41. model.layers.21.block_sparse_moe.experts.7.w3.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   42. model.layers.21.block_sparse_moe.gate.weight                 | 形状: (8, 4096)                 | 类型: torch.bfloat16  | 参数量: 32,768
+   43. model.layers.21.input_layernorm.weight                       | 形状: (4096,)                   | 类型: torch.bfloat16  | 参数量: 4,096
+   44. model.layers.21.post_attention_layernorm.weight              | 形状: (4096,)                   | 类型: torch.bfloat16  | 参数量: 4,096
+   45. model.layers.21.self_attn.k_proj.weight                      | 形状: (1024, 4096)              | 类型: torch.bfloat16  | 参数量: 4,194,304
+   46. model.layers.21.self_attn.o_proj.weight                      | 形状: (4096, 4096)              | 类型: torch.bfloat16  | 参数量: 16,777,216
+   47. model.layers.21.self_attn.q_proj.weight                      | 形状: (4096, 4096)              | 类型: torch.bfloat16  | 参数量: 16,777,216
+   48. model.layers.21.self_attn.v_proj.weight                      | 形状: (1024, 4096)              | 类型: torch.bfloat16  | 参数量: 4,194,304
+   49. model.layers.22.block_sparse_moe.experts.0.w1.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   50. model.layers.22.block_sparse_moe.experts.0.w2.weight         | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   51. model.layers.22.block_sparse_moe.gate.weight                 | 形状: (8, 4096)                 | 类型: torch.bfloat16  | 参数量: 32,768
+   52. model.layers.22.self_attn.k_proj.weight                      | 形状: (1024, 4096)              | 类型: torch.bfloat16  | 参数量: 4,194,304
+   53. model.layers.22.self_attn.o_proj.weight                      | 形状: (4096, 4096)              | 类型: torch.bfloat16  | 参数量: 16,777,216
+   54. model.layers.22.self_attn.q_proj.weight                      | 形状: (4096, 4096)              | 类型: torch.bfloat16  | 参数量: 16,777,216
+   55. model.layers.22.self_attn.v_proj.weight                      | 形状: (1024, 4096)              | 类型: torch.bfloat16  | 参数量: 4,194,304
+================================================================================
+
+================================================================================
+正在分析文件: model-00014-of-00019.safetensors
+文件大小: 4672.08 MB
+
+--- 文件元数据 ---
+  format: pt
+
+--- 文件摘要 ---
+总张量数量: 48
+总参数量: 2,449,514,496
+数据类型分布:
+  -  torch.bfloat16: 48 个张量
+
+--- 张量详细列表 ---
+    1. model.layers.22.block_sparse_moe.experts.0.w3.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+    2. model.layers.22.block_sparse_moe.experts.1.w1.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+    3. model.layers.22.block_sparse_moe.experts.1.w2.weight         | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+    4. model.layers.22.block_sparse_moe.experts.1.w3.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+    5. model.layers.22.block_sparse_moe.experts.2.w1.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+    6. model.layers.22.block_sparse_moe.experts.2.w2.weight         | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+    7. model.layers.22.block_sparse_moe.experts.2.w3.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+    8. model.layers.22.block_sparse_moe.experts.3.w1.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+    9. model.layers.22.block_sparse_moe.experts.3.w2.weight         | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   10. model.layers.22.block_sparse_moe.experts.3.w3.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   11. model.layers.22.block_sparse_moe.experts.4.w1.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   12. model.layers.22.block_sparse_moe.experts.4.w2.weight         | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   13. model.layers.22.block_sparse_moe.experts.4.w3.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   14. model.layers.22.block_sparse_moe.experts.5.w1.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   15. model.layers.22.block_sparse_moe.experts.5.w2.weight         | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   16. model.layers.22.block_sparse_moe.experts.5.w3.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   17. model.layers.22.block_sparse_moe.experts.6.w1.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   18. model.layers.22.block_sparse_moe.experts.6.w2.weight         | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   19. model.layers.22.block_sparse_moe.experts.6.w3.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   20. model.layers.22.block_sparse_moe.experts.7.w1.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   21. model.layers.22.block_sparse_moe.experts.7.w2.weight         | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   22. model.layers.22.block_sparse_moe.experts.7.w3.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   23. model.layers.22.input_layernorm.weight                       | 形状: (4096,)                   | 类型: torch.bfloat16  | 参数量: 4,096
+   24. model.layers.22.post_attention_layernorm.weight              | 形状: (4096,)                   | 类型: torch.bfloat16  | 参数量: 4,096
+   25. model.layers.23.block_sparse_moe.experts.0.w1.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   26. model.layers.23.block_sparse_moe.experts.0.w2.weight         | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   27. model.layers.23.block_sparse_moe.experts.0.w3.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   28. model.layers.23.block_sparse_moe.experts.1.w1.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   29. model.layers.23.block_sparse_moe.experts.1.w2.weight         | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   30. model.layers.23.block_sparse_moe.experts.1.w3.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   31. model.layers.23.block_sparse_moe.experts.2.w1.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   32. model.layers.23.block_sparse_moe.experts.2.w2.weight         | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   33. model.layers.23.block_sparse_moe.experts.2.w3.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   34. model.layers.23.block_sparse_moe.experts.3.w1.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   35. model.layers.23.block_sparse_moe.experts.3.w2.weight         | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   36. model.layers.23.block_sparse_moe.experts.3.w3.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   37. model.layers.23.block_sparse_moe.experts.4.w1.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   38. model.layers.23.block_sparse_moe.experts.4.w2.weight         | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   39. model.layers.23.block_sparse_moe.experts.4.w3.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   40. model.layers.23.block_sparse_moe.experts.5.w1.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   41. model.layers.23.block_sparse_moe.experts.5.w2.weight         | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   42. model.layers.23.block_sparse_moe.experts.5.w3.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   43. model.layers.23.block_sparse_moe.experts.6.w1.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   44. model.layers.23.block_sparse_moe.gate.weight                 | 形状: (8, 4096)                 | 类型: torch.bfloat16  | 参数量: 32,768
+   45. model.layers.23.self_attn.k_proj.weight                      | 形状: (1024, 4096)              | 类型: torch.bfloat16  | 参数量: 4,194,304
+   46. model.layers.23.self_attn.o_proj.weight                      | 形状: (4096, 4096)              | 类型: torch.bfloat16  | 参数量: 16,777,216
+   47. model.layers.23.self_attn.q_proj.weight                      | 形状: (4096, 4096)              | 类型: torch.bfloat16  | 参数量: 16,777,216
+   48. model.layers.23.self_attn.v_proj.weight                      | 形状: (1024, 4096)              | 类型: torch.bfloat16  | 参数量: 4,194,304
+================================================================================
+
+================================================================================
+正在分析文件: model-00015-of-00019.safetensors
+文件大小: 4752.16 MB
+
+--- 文件元数据 ---
+  format: pt
+
+--- 文件摘要 ---
+总张量数量: 55
+总参数量: 2,491,498,496
+数据类型分布:
+  -  torch.bfloat16: 55 个张量
+
+--- 张量详细列表 ---
+    1. model.layers.23.block_sparse_moe.experts.6.w2.weight         | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+    2. model.layers.23.block_sparse_moe.experts.6.w3.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+    3. model.layers.23.block_sparse_moe.experts.7.w1.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+    4. model.layers.23.block_sparse_moe.experts.7.w2.weight         | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+    5. model.layers.23.block_sparse_moe.experts.7.w3.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+    6. model.layers.23.input_layernorm.weight                       | 形状: (4096,)                   | 类型: torch.bfloat16  | 参数量: 4,096
+    7. model.layers.23.post_attention_layernorm.weight              | 形状: (4096,)                   | 类型: torch.bfloat16  | 参数量: 4,096
+    8. model.layers.24.block_sparse_moe.experts.0.w1.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+    9. model.layers.24.block_sparse_moe.experts.0.w2.weight         | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   10. model.layers.24.block_sparse_moe.experts.0.w3.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   11. model.layers.24.block_sparse_moe.experts.1.w1.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   12. model.layers.24.block_sparse_moe.experts.1.w2.weight         | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   13. model.layers.24.block_sparse_moe.experts.1.w3.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   14. model.layers.24.block_sparse_moe.experts.2.w1.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   15. model.layers.24.block_sparse_moe.experts.2.w2.weight         | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   16. model.layers.24.block_sparse_moe.experts.2.w3.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   17. model.layers.24.block_sparse_moe.experts.3.w1.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   18. model.layers.24.block_sparse_moe.experts.3.w2.weight         | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   19. model.layers.24.block_sparse_moe.experts.3.w3.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   20. model.layers.24.block_sparse_moe.experts.4.w1.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   21. model.layers.24.block_sparse_moe.experts.4.w2.weight         | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   22. model.layers.24.block_sparse_moe.experts.4.w3.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   23. model.layers.24.block_sparse_moe.experts.5.w1.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   24. model.layers.24.block_sparse_moe.experts.5.w2.weight         | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   25. model.layers.24.block_sparse_moe.experts.5.w3.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   26. model.layers.24.block_sparse_moe.experts.6.w1.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   27. model.layers.24.block_sparse_moe.experts.6.w2.weight         | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   28. model.layers.24.block_sparse_moe.experts.6.w3.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   29. model.layers.24.block_sparse_moe.experts.7.w1.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   30. model.layers.24.block_sparse_moe.experts.7.w2.weight         | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   31. model.layers.24.block_sparse_moe.experts.7.w3.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   32. model.layers.24.block_sparse_moe.gate.weight                 | 形状: (8, 4096)                 | 类型: torch.bfloat16  | 参数量: 32,768
+   33. model.layers.24.input_layernorm.weight                       | 形状: (4096,)                   | 类型: torch.bfloat16  | 参数量: 4,096
+   34. model.layers.24.post_attention_layernorm.weight              | 形状: (4096,)                   | 类型: torch.bfloat16  | 参数量: 4,096
+   35. model.layers.24.self_attn.k_proj.weight                      | 形状: (1024, 4096)              | 类型: torch.bfloat16  | 参数量: 4,194,304
+   36. model.layers.24.self_attn.o_proj.weight                      | 形状: (4096, 4096)              | 类型: torch.bfloat16  | 参数量: 16,777,216
+   37. model.layers.24.self_attn.q_proj.weight                      | 形状: (4096, 4096)              | 类型: torch.bfloat16  | 参数量: 16,777,216
+   38. model.layers.24.self_attn.v_proj.weight                      | 形状: (1024, 4096)              | 类型: torch.bfloat16  | 参数量: 4,194,304
+   39. model.layers.25.block_sparse_moe.experts.0.w1.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   40. model.layers.25.block_sparse_moe.experts.0.w2.weight         | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   41. model.layers.25.block_sparse_moe.experts.0.w3.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   42. model.layers.25.block_sparse_moe.experts.1.w1.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   43. model.layers.25.block_sparse_moe.experts.1.w2.weight         | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   44. model.layers.25.block_sparse_moe.experts.1.w3.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   45. model.layers.25.block_sparse_moe.experts.2.w1.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   46. model.layers.25.block_sparse_moe.experts.2.w2.weight         | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   47. model.layers.25.block_sparse_moe.experts.2.w3.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   48. model.layers.25.block_sparse_moe.experts.3.w1.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   49. model.layers.25.block_sparse_moe.experts.3.w2.weight         | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   50. model.layers.25.block_sparse_moe.experts.3.w3.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   51. model.layers.25.block_sparse_moe.gate.weight                 | 形状: (8, 4096)                 | 类型: torch.bfloat16  | 参数量: 32,768
+   52. model.layers.25.self_attn.k_proj.weight                      | 形状: (1024, 4096)              | 类型: torch.bfloat16  | 参数量: 4,194,304
+   53. model.layers.25.self_attn.o_proj.weight                      | 形状: (4096, 4096)              | 类型: torch.bfloat16  | 参数量: 16,777,216
+   54. model.layers.25.self_attn.q_proj.weight                      | 形状: (4096, 4096)              | 类型: torch.bfloat16  | 参数量: 16,777,216
+   55. model.layers.25.self_attn.v_proj.weight                      | 形状: (1024, 4096)              | 类型: torch.bfloat16  | 参数量: 4,194,304
+================================================================================
+
+================================================================================
+正在分析文件: model-00016-of-00019.safetensors
+文件大小: 4752.16 MB
+
+--- 文件元数据 ---
+  format: pt
+
+--- 文件摘要 ---
+总张量数量: 55
+总参数量: 2,491,498,496
+数据类型分布:
+  -  torch.bfloat16: 55 个张量
+
+--- 张量详细列表 ---
+    1. model.layers.25.block_sparse_moe.experts.4.w1.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+    2. model.layers.25.block_sparse_moe.experts.4.w2.weight         | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+    3. model.layers.25.block_sparse_moe.experts.4.w3.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+    4. model.layers.25.block_sparse_moe.experts.5.w1.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+    5. model.layers.25.block_sparse_moe.experts.5.w2.weight         | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+    6. model.layers.25.block_sparse_moe.experts.5.w3.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+    7. model.layers.25.block_sparse_moe.experts.6.w1.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+    8. model.layers.25.block_sparse_moe.experts.6.w2.weight         | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+    9. model.layers.25.block_sparse_moe.experts.6.w3.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   10. model.layers.25.block_sparse_moe.experts.7.w1.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   11. model.layers.25.block_sparse_moe.experts.7.w2.weight         | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   12. model.layers.25.block_sparse_moe.experts.7.w3.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   13. model.layers.25.input_layernorm.weight                       | 形状: (4096,)                   | 类型: torch.bfloat16  | 参数量: 4,096
+   14. model.layers.25.post_attention_layernorm.weight              | 形状: (4096,)                   | 类型: torch.bfloat16  | 参数量: 4,096
+   15. model.layers.26.block_sparse_moe.experts.0.w1.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   16. model.layers.26.block_sparse_moe.experts.0.w2.weight         | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   17. model.layers.26.block_sparse_moe.experts.0.w3.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   18. model.layers.26.block_sparse_moe.experts.1.w1.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   19. model.layers.26.block_sparse_moe.experts.1.w2.weight         | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   20. model.layers.26.block_sparse_moe.experts.1.w3.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   21. model.layers.26.block_sparse_moe.experts.2.w1.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   22. model.layers.26.block_sparse_moe.experts.2.w2.weight         | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   23. model.layers.26.block_sparse_moe.experts.2.w3.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   24. model.layers.26.block_sparse_moe.experts.3.w1.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   25. model.layers.26.block_sparse_moe.experts.3.w2.weight         | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   26. model.layers.26.block_sparse_moe.experts.3.w3.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   27. model.layers.26.block_sparse_moe.experts.4.w1.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   28. model.layers.26.block_sparse_moe.experts.4.w2.weight         | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   29. model.layers.26.block_sparse_moe.experts.4.w3.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   30. model.layers.26.block_sparse_moe.experts.5.w1.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   31. model.layers.26.block_sparse_moe.experts.5.w2.weight         | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   32. model.layers.26.block_sparse_moe.experts.5.w3.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   33. model.layers.26.block_sparse_moe.experts.6.w1.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   34. model.layers.26.block_sparse_moe.experts.6.w2.weight         | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   35. model.layers.26.block_sparse_moe.experts.6.w3.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   36. model.layers.26.block_sparse_moe.experts.7.w1.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   37. model.layers.26.block_sparse_moe.experts.7.w2.weight         | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   38. model.layers.26.block_sparse_moe.experts.7.w3.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   39. model.layers.26.block_sparse_moe.gate.weight                 | 形状: (8, 4096)                 | 类型: torch.bfloat16  | 参数量: 32,768
+   40. model.layers.26.input_layernorm.weight                       | 形状: (4096,)                   | 类型: torch.bfloat16  | 参数量: 4,096
+   41. model.layers.26.post_attention_layernorm.weight              | 形状: (4096,)                   | 类型: torch.bfloat16  | 参数量: 4,096
+   42. model.layers.26.self_attn.k_proj.weight                      | 形状: (1024, 4096)              | 类型: torch.bfloat16  | 参数量: 4,194,304
+   43. model.layers.26.self_attn.o_proj.weight                      | 形状: (4096, 4096)              | 类型: torch.bfloat16  | 参数量: 16,777,216
+   44. model.layers.26.self_attn.q_proj.weight                      | 形状: (4096, 4096)              | 类型: torch.bfloat16  | 参数量: 16,777,216
+   45. model.layers.26.self_attn.v_proj.weight                      | 形状: (1024, 4096)              | 类型: torch.bfloat16  | 参数量: 4,194,304
+   46. model.layers.27.block_sparse_moe.experts.0.w1.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   47. model.layers.27.block_sparse_moe.experts.0.w2.weight         | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   48. model.layers.27.block_sparse_moe.experts.0.w3.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   49. model.layers.27.block_sparse_moe.experts.1.w1.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   50. model.layers.27.block_sparse_moe.experts.1.w2.weight         | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   51. model.layers.27.block_sparse_moe.gate.weight                 | 形状: (8, 4096)                 | 类型: torch.bfloat16  | 参数量: 32,768
+   52. model.layers.27.self_attn.k_proj.weight                      | 形状: (1024, 4096)              | 类型: torch.bfloat16  | 参数量: 4,194,304
+   53. model.layers.27.self_attn.o_proj.weight                      | 形状: (4096, 4096)              | 类型: torch.bfloat16  | 参数量: 16,777,216
+   54. model.layers.27.self_attn.q_proj.weight                      | 形状: (4096, 4096)              | 类型: torch.bfloat16  | 参数量: 16,777,216
+   55. model.layers.27.self_attn.v_proj.weight                      | 形状: (1024, 4096)              | 类型: torch.bfloat16  | 参数量: 4,194,304
+================================================================================
+
+================================================================================
+正在分析文件: model-00017-of-00019.safetensors
+文件大小: 4672.08 MB
+
+--- 文件元数据 ---
+  format: pt
+
+--- 文件摘要 ---
+总张量数量: 48
+总参数量: 2,449,514,496
+数据类型分布:
+  -  torch.bfloat16: 48 个张量
+
+--- 张量详细列表 ---
+    1. model.layers.27.block_sparse_moe.experts.1.w3.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+    2. model.layers.27.block_sparse_moe.experts.2.w1.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+    3. model.layers.27.block_sparse_moe.experts.2.w2.weight         | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+    4. model.layers.27.block_sparse_moe.experts.2.w3.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+    5. model.layers.27.block_sparse_moe.experts.3.w1.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+    6. model.layers.27.block_sparse_moe.experts.3.w2.weight         | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+    7. model.layers.27.block_sparse_moe.experts.3.w3.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+    8. model.layers.27.block_sparse_moe.experts.4.w1.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+    9. model.layers.27.block_sparse_moe.experts.4.w2.weight         | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   10. model.layers.27.block_sparse_moe.experts.4.w3.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   11. model.layers.27.block_sparse_moe.experts.5.w1.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   12. model.layers.27.block_sparse_moe.experts.5.w2.weight         | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   13. model.layers.27.block_sparse_moe.experts.5.w3.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   14. model.layers.27.block_sparse_moe.experts.6.w1.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   15. model.layers.27.block_sparse_moe.experts.6.w2.weight         | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   16. model.layers.27.block_sparse_moe.experts.6.w3.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   17. model.layers.27.block_sparse_moe.experts.7.w1.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   18. model.layers.27.block_sparse_moe.experts.7.w2.weight         | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   19. model.layers.27.block_sparse_moe.experts.7.w3.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   20. model.layers.27.input_layernorm.weight                       | 形状: (4096,)                   | 类型: torch.bfloat16  | 参数量: 4,096
+   21. model.layers.27.post_attention_layernorm.weight              | 形状: (4096,)                   | 类型: torch.bfloat16  | 参数量: 4,096
+   22. model.layers.28.block_sparse_moe.experts.0.w1.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   23. model.layers.28.block_sparse_moe.experts.0.w2.weight         | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   24. model.layers.28.block_sparse_moe.experts.0.w3.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   25. model.layers.28.block_sparse_moe.experts.1.w1.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   26. model.layers.28.block_sparse_moe.experts.1.w2.weight         | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   27. model.layers.28.block_sparse_moe.experts.1.w3.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   28. model.layers.28.block_sparse_moe.experts.2.w1.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   29. model.layers.28.block_sparse_moe.experts.2.w2.weight         | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   30. model.layers.28.block_sparse_moe.experts.2.w3.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   31. model.layers.28.block_sparse_moe.experts.3.w1.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   32. model.layers.28.block_sparse_moe.experts.3.w2.weight         | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   33. model.layers.28.block_sparse_moe.experts.3.w3.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   34. model.layers.28.block_sparse_moe.experts.4.w1.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   35. model.layers.28.block_sparse_moe.experts.4.w2.weight         | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   36. model.layers.28.block_sparse_moe.experts.4.w3.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   37. model.layers.28.block_sparse_moe.experts.5.w1.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   38. model.layers.28.block_sparse_moe.experts.5.w2.weight         | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   39. model.layers.28.block_sparse_moe.experts.5.w3.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   40. model.layers.28.block_sparse_moe.experts.6.w1.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   41. model.layers.28.block_sparse_moe.experts.6.w2.weight         | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   42. model.layers.28.block_sparse_moe.experts.6.w3.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   43. model.layers.28.block_sparse_moe.experts.7.w1.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   44. model.layers.28.block_sparse_moe.gate.weight                 | 形状: (8, 4096)                 | 类型: torch.bfloat16  | 参数量: 32,768
+   45. model.layers.28.self_attn.k_proj.weight                      | 形状: (1024, 4096)              | 类型: torch.bfloat16  | 参数量: 4,194,304
+   46. model.layers.28.self_attn.o_proj.weight                      | 形状: (4096, 4096)              | 类型: torch.bfloat16  | 参数量: 16,777,216
+   47. model.layers.28.self_attn.q_proj.weight                      | 形状: (4096, 4096)              | 类型: torch.bfloat16  | 参数量: 16,777,216
+   48. model.layers.28.self_attn.v_proj.weight                      | 形状: (1024, 4096)              | 类型: torch.bfloat16  | 参数量: 4,194,304
+================================================================================
+
+================================================================================
+正在分析文件: model-00018-of-00019.safetensors
+文件大小: 4752.16 MB
+
+--- 文件元数据 ---
+  format: pt
+
+--- 文件摘要 ---
+总张量数量: 55
+总参数量: 2,491,498,496
+数据类型分布:
+  -  torch.bfloat16: 55 个张量
+
+--- 张量详细列表 ---
+    1. model.layers.28.block_sparse_moe.experts.7.w2.weight         | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+    2. model.layers.28.block_sparse_moe.experts.7.w3.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+    3. model.layers.28.input_layernorm.weight                       | 形状: (4096,)                   | 类型: torch.bfloat16  | 参数量: 4,096
+    4. model.layers.28.post_attention_layernorm.weight              | 形状: (4096,)                   | 类型: torch.bfloat16  | 参数量: 4,096
+    5. model.layers.29.block_sparse_moe.experts.0.w1.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+    6. model.layers.29.block_sparse_moe.experts.0.w2.weight         | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+    7. model.layers.29.block_sparse_moe.experts.0.w3.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+    8. model.layers.29.block_sparse_moe.experts.1.w1.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+    9. model.layers.29.block_sparse_moe.experts.1.w2.weight         | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   10. model.layers.29.block_sparse_moe.experts.1.w3.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   11. model.layers.29.block_sparse_moe.experts.2.w1.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   12. model.layers.29.block_sparse_moe.experts.2.w2.weight         | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   13. model.layers.29.block_sparse_moe.experts.2.w3.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   14. model.layers.29.block_sparse_moe.experts.3.w1.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   15. model.layers.29.block_sparse_moe.experts.3.w2.weight         | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   16. model.layers.29.block_sparse_moe.experts.3.w3.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   17. model.layers.29.block_sparse_moe.experts.4.w1.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   18. model.layers.29.block_sparse_moe.experts.4.w2.weight         | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   19. model.layers.29.block_sparse_moe.experts.4.w3.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   20. model.layers.29.block_sparse_moe.experts.5.w1.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   21. model.layers.29.block_sparse_moe.experts.5.w2.weight         | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   22. model.layers.29.block_sparse_moe.experts.5.w3.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   23. model.layers.29.block_sparse_moe.experts.6.w1.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   24. model.layers.29.block_sparse_moe.experts.6.w2.weight         | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   25. model.layers.29.block_sparse_moe.experts.6.w3.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   26. model.layers.29.block_sparse_moe.experts.7.w1.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   27. model.layers.29.block_sparse_moe.experts.7.w2.weight         | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   28. model.layers.29.block_sparse_moe.experts.7.w3.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   29. model.layers.29.block_sparse_moe.gate.weight                 | 形状: (8, 4096)                 | 类型: torch.bfloat16  | 参数量: 32,768
+   30. model.layers.29.input_layernorm.weight                       | 形状: (4096,)                   | 类型: torch.bfloat16  | 参数量: 4,096
+   31. model.layers.29.post_attention_layernorm.weight              | 形状: (4096,)                   | 类型: torch.bfloat16  | 参数量: 4,096
+   32. model.layers.29.self_attn.k_proj.weight                      | 形状: (1024, 4096)              | 类型: torch.bfloat16  | 参数量: 4,194,304
+   33. model.layers.29.self_attn.o_proj.weight                      | 形状: (4096, 4096)              | 类型: torch.bfloat16  | 参数量: 16,777,216
+   34. model.layers.29.self_attn.q_proj.weight                      | 形状: (4096, 4096)              | 类型: torch.bfloat16  | 参数量: 16,777,216
+   35. model.layers.29.self_attn.v_proj.weight                      | 形状: (1024, 4096)              | 类型: torch.bfloat16  | 参数量: 4,194,304
+   36. model.layers.30.block_sparse_moe.experts.0.w1.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   37. model.layers.30.block_sparse_moe.experts.0.w2.weight         | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   38. model.layers.30.block_sparse_moe.experts.0.w3.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   39. model.layers.30.block_sparse_moe.experts.1.w1.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   40. model.layers.30.block_sparse_moe.experts.1.w2.weight         | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   41. model.layers.30.block_sparse_moe.experts.1.w3.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   42. model.layers.30.block_sparse_moe.experts.2.w1.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   43. model.layers.30.block_sparse_moe.experts.2.w2.weight         | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   44. model.layers.30.block_sparse_moe.experts.2.w3.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   45. model.layers.30.block_sparse_moe.experts.3.w1.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   46. model.layers.30.block_sparse_moe.experts.3.w2.weight         | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   47. model.layers.30.block_sparse_moe.experts.3.w3.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   48. model.layers.30.block_sparse_moe.experts.4.w1.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   49. model.layers.30.block_sparse_moe.experts.4.w2.weight         | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   50. model.layers.30.block_sparse_moe.experts.4.w3.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   51. model.layers.30.block_sparse_moe.gate.weight                 | 形状: (8, 4096)                 | 类型: torch.bfloat16  | 参数量: 32,768
+   52. model.layers.30.self_attn.k_proj.weight                      | 形状: (1024, 4096)              | 类型: torch.bfloat16  | 参数量: 4,194,304
+   53. model.layers.30.self_attn.o_proj.weight                      | 形状: (4096, 4096)              | 类型: torch.bfloat16  | 参数量: 16,777,216
+   54. model.layers.30.self_attn.q_proj.weight                      | 形状: (4096, 4096)              | 类型: torch.bfloat16  | 参数量: 16,777,216
+   55. model.layers.30.self_attn.v_proj.weight                      | 形状: (1024, 4096)              | 类型: torch.bfloat16  | 参数量: 4,194,304
+================================================================================
+
+================================================================================
+正在分析文件: model-00019-of-00019.safetensors
+文件大小: 4026.11 MB
+
+--- 文件元数据 ---
+  format: pt
+
+--- 文件摘要 ---
+总张量数量: 44
+总参数量: 2,110,836,736
+数据类型分布:
+  -  torch.bfloat16: 44 个张量
+
+--- 张量详细列表 ---
+    1. lm_head.weight                                               | 形状: (32000, 4096)             | 类型: torch.bfloat16  | 参数量: 131,072,000
+    2. model.layers.30.block_sparse_moe.experts.5.w1.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+    3. model.layers.30.block_sparse_moe.experts.5.w2.weight         | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+    4. model.layers.30.block_sparse_moe.experts.5.w3.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+    5. model.layers.30.block_sparse_moe.experts.6.w1.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+    6. model.layers.30.block_sparse_moe.experts.6.w2.weight         | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+    7. model.layers.30.block_sparse_moe.experts.6.w3.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+    8. model.layers.30.block_sparse_moe.experts.7.w1.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+    9. model.layers.30.block_sparse_moe.experts.7.w2.weight         | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   10. model.layers.30.block_sparse_moe.experts.7.w3.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   11. model.layers.30.input_layernorm.weight                       | 形状: (4096,)                   | 类型: torch.bfloat16  | 参数量: 4,096
+   12. model.layers.30.post_attention_layernorm.weight              | 形状: (4096,)                   | 类型: torch.bfloat16  | 参数量: 4,096
+   13. model.layers.31.block_sparse_moe.experts.0.w1.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   14. model.layers.31.block_sparse_moe.experts.0.w2.weight         | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   15. model.layers.31.block_sparse_moe.experts.0.w3.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   16. model.layers.31.block_sparse_moe.experts.1.w1.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   17. model.layers.31.block_sparse_moe.experts.1.w2.weight         | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   18. model.layers.31.block_sparse_moe.experts.1.w3.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   19. model.layers.31.block_sparse_moe.experts.2.w1.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   20. model.layers.31.block_sparse_moe.experts.2.w2.weight         | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   21. model.layers.31.block_sparse_moe.experts.2.w3.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   22. model.layers.31.block_sparse_moe.experts.3.w1.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   23. model.layers.31.block_sparse_moe.experts.3.w2.weight         | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   24. model.layers.31.block_sparse_moe.experts.3.w3.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   25. model.layers.31.block_sparse_moe.experts.4.w1.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   26. model.layers.31.block_sparse_moe.experts.4.w2.weight         | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   27. model.layers.31.block_sparse_moe.experts.4.w3.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   28. model.layers.31.block_sparse_moe.experts.5.w1.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   29. model.layers.31.block_sparse_moe.experts.5.w2.weight         | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   30. model.layers.31.block_sparse_moe.experts.5.w3.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   31. model.layers.31.block_sparse_moe.experts.6.w1.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   32. model.layers.31.block_sparse_moe.experts.6.w2.weight         | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   33. model.layers.31.block_sparse_moe.experts.6.w3.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   34. model.layers.31.block_sparse_moe.experts.7.w1.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   35. model.layers.31.block_sparse_moe.experts.7.w2.weight         | 形状: (4096, 14336)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   36. model.layers.31.block_sparse_moe.experts.7.w3.weight         | 形状: (14336, 4096)             | 类型: torch.bfloat16  | 参数量: 58,720,256
+   37. model.layers.31.block_sparse_moe.gate.weight                 | 形状: (8, 4096)                 | 类型: torch.bfloat16  | 参数量: 32,768
+   38. model.layers.31.input_layernorm.weight                       | 形状: (4096,)                   | 类型: torch.bfloat16  | 参数量: 4,096
+   39. model.layers.31.post_attention_layernorm.weight              | 形状: (4096,)                   | 类型: torch.bfloat16  | 参数量: 4,096
+   40. model.layers.31.self_attn.k_proj.weight                      | 形状: (1024, 4096)              | 类型: torch.bfloat16  | 参数量: 4,194,304
+   41. model.layers.31.self_attn.o_proj.weight                      | 形状: (4096, 4096)              | 类型: torch.bfloat16  | 参数量: 16,777,216
+   42. model.layers.31.self_attn.q_proj.weight                      | 形状: (4096, 4096)              | 类型: torch.bfloat16  | 参数量: 16,777,216
+   43. model.layers.31.self_attn.v_proj.weight                      | 形状: (1024, 4096)              | 类型: torch.bfloat16  | 参数量: 4,194,304
+   44. model.norm.weight                                            | 形状: (4096,)                   | 类型: torch.bfloat16  | 参数量: 4,096
+================================================================================
+
