@@ -4,7 +4,7 @@ from time import perf_counter
 from tqdm.auto import tqdm
 from transformers import AutoTokenizer
 import torch.multiprocessing as mp
-
+import torch.distributed as dist
 from electrock_infer.config import Config
 from electrock_infer.sampling_params import SamplingParams
 from electrock_infer.engine.sequence import Sequence
@@ -42,10 +42,46 @@ class LLMEngine:
         atexit.register(self.exit)
 
     def exit(self):
-        self.model_runner.call("exit")
-        del self.model_runner
-        for p in self.ps:
-            p.join()
+        # self.model_runner.call("exit")
+        # del self.model_runner
+        # for p in self.ps:
+        #     p.join()
+        try:
+            self.model_runner.call("exit")
+        except Exception as e:
+            print(f"主进程: 发送 'exit' 指令时发生错误: {e}")
+        shutdown_timeout = 5  # 等待10秒
+        print(f"主进程: 将等待最多 {shutdown_timeout} 秒让子进程自行退出...")
+
+        for i, p in enumerate(self.ps):
+            rank = i + 1  # 我们的子进程 rank 是从1开始的
+            # 等待，但有超时限制
+            p.join(timeout=shutdown_timeout)
+            # 检查子进程是否仍然存活
+            if p.is_alive():
+                # 如果超时后进程仍然存活，就强制终止它
+                print(f"警告: Rank {rank} (PID: {p.pid}) 未能在 {shutdown_timeout} 秒内正常退出，正在强制终止...")
+                p.terminate()  # 发送 SIGTERM 终止信号
+                p.join()       # 等待终止完成
+                print(f"主进程: Rank {rank} 已被强制终止。")
+            else:
+                print(f"主进程: Rank {rank} (PID: {p.pid}) 已成功退出。")
+        
+        print("主进程: 所有子进程均已清理完毕。")
+        # 清理主进程自己的资源
+        if self.model_runner.world_size > 1 and self.model_runner.rank == 0:
+            try:
+                self.model_runner.shm.close()
+                self.model_runner.shm.unlink() # 主进程负责删除共享内存
+            except Exception as e:
+                print(f"主进程: 已清理共享内存")
+        # 在所有进程都结束后，再尝试销毁通信组
+        # 注意：如果子进程是被强制kill的，这步可能会失败，但这是清理的最后一步了
+        try:
+            if dist.is_initialized():
+                 dist.destroy_process_group()
+        except Exception as e:
+            print(f"主进程: 销毁通信组时出错: {e}")
 
     def add_request(self, prompt: str | list[int], sampling_params: SamplingParams):
         if isinstance(prompt, str):

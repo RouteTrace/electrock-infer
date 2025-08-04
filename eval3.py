@@ -7,6 +7,7 @@ import os
 import numpy as np
 import math
 from electrock_infer.llm import LLM
+from electrock_infer.engine.llm_engine import LLMEngine
 from electrock_infer.sampling_params import SamplingParams
 
 MAX_LEN = 512 
@@ -161,16 +162,16 @@ def evaluate_metric_baseline(model_path, texts_combined, max_length, batch_size)
     print(f"Combined Throughput: {thpt:.2f} tokens/second")
 
 def evaluate_metric_my_proj(model_path, sentences):
-    llm = LLM(model_path, enforce_eager=True, max_model_len=4096, tensor_parallel_size=2)
+    engine = LLMEngine(model_path, enforce_eager=True, max_model_len=4096, tensor_parallel_size=2)
 
     prompt_token_ids = sentences[:EVAL_SENTENCE_COUNT]
     sampling_params = [SamplingParams(temperature=1, ignore_eos=False, max_tokens=512, max_total_tokens = 512) for _ in range(EVAL_SENTENCE_COUNT)] # 生成最多(MAX_LEN - 输入长度) 个新tokens
     # warmup
-    llm.generate(["Benchmark: "], SamplingParams())
+    engine.generate(["Benchmark: "], SamplingParams())
     print("Warmup done")
 
     t = time.time()
-    llm.generate(prompt_token_ids, sampling_params, use_tqdm=True)
+    engine.generate(prompt_token_ids, sampling_params, use_tqdm=True)
     t = (time.time() - t)
     latency_per_seq = t / EVAL_SENTENCE_COUNT
     print(f"Optimized Perplexity: {BASELINE_PPL:.4f}")
