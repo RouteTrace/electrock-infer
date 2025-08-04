@@ -1,13 +1,6 @@
 from dataclasses import dataclass
 import torch
-# try:
-#     import flash_attn
-#     version = getattr(flash_attn, "__version__", "0.0.0")
-# except ImportError:
-#     version = "0.0.0"
 
-# from packaging import version as pkg_version
-# enable_block_table_flash_attn = pkg_version.parse(version) >= pkg_version.parse("2.6.1")
 
 @dataclass
 class Context:
@@ -19,8 +12,7 @@ class Context:
     slot_mapping: torch.Tensor | None = None
     context_lens: torch.Tensor | None = None
     block_tables: torch.Tensor | None = None
-    # To support old version of flash-attn
-    enable_block_table: bool = False
+
 
 _CONTEXT = Context()
 

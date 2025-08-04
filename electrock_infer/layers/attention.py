@@ -26,10 +26,6 @@ class Attention(nn.Module):
 
     def forward(self, q: torch.Tensor, k: torch.Tensor, v: torch.Tensor):
         context = get_context() # 获取forward的相关信息
-        if not context.enable_block_table:
-            # 兼容旧版本flash_attn,以支持paged_attention中的block_table功能
-            return self._forward_old_flash_attn(q, k, v, context)
-        
         o: torch.Tensor
         q = q.view(-1, self.num_heads, self.head_dim)
         k = k.view(-1, self.num_kv_heads, self.head_dim)

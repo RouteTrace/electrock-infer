@@ -161,12 +161,20 @@ def evaluate_metric_baseline(model_path, texts_combined, max_length, batch_size)
     print(f"Combined Throughput: {thpt:.2f} tokens/second")
 
 def evaluate_metric_my_proj(model_path, sentences):
-    llm = LLM(path, enforce_eager=True, max_model_len=4096, tensor_parallel_size=2)
+    llm = LLM(model_path, enforce_eager=True, max_model_len=4096, tensor_parallel_size=2)
 
     prompt_token_ids = sentences[:EVAL_SENTENCE_COUNT]
-    sampling_params = [SamplingParams(temperature=1, ignore_eos=False, max_tokens=) for _ in range(num_seqs)] # 生成最多(MAX_LEN - 输入长度) 个新tokens
+    sampling_params = [SamplingParams(temperature=1, ignore_eos=False, max_tokens=512, max_total_tokens = 512) for _ in range(EVAL_SENTENCE_COUNT)] # 生成最多(MAX_LEN - 输入长度) 个新tokens
+    # warmup
+    llm.generate(["Benchmark: "], SamplingParams())
+    print("Warmup done")
+
+    t = time.time()
+    llm.generate(prompt_token_ids, sampling_params, use_tqdm=True)
+    t = (time.time() - t)
+    latency_per_seq = t / EVAL_SENTENCE_COUNT
     print(f"Optimized Perplexity: {BASELINE_PPL:.4f}")
-    print(f"Optimized Average Latency: {latency:.4f} seconds per sentence")
+    print(f"Optimized Average Latency: {latency_per_seq:.4f} seconds per sentence")
 
 def main():
     # GPU 信息
@@ -196,8 +204,7 @@ def main():
 
     # 合并数据集
     texts_combined = texts_original + texts_new
-
-
+    prompt_token_ids = texts_combined[:EVAL_SENTENCE_COUNT]
     # ───────── 原始模型指标 ─────────
     # evaluate_metric_baseline(MODEL_PATH, texts_combined, MAX_LEN, BATCH_SIZE_PERPLEXITY)
     print(f"Combined Average Perplexity: {BASELINE_PPL:.4f}")
