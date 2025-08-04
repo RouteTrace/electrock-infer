@@ -9,7 +9,7 @@ A lightweight Inference Engine implementation built from scratch.
 * ⚡ **Optimization Suite** - Prefix caching, Tensor Parallelism, customized kernel for MoE layer, etc.
 
 ## Install from source
-
+s
 ```bash
 conda create -n electrock python=3.10
 conda activate electrock
