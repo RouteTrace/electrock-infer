@@ -25,11 +25,11 @@ setup(
     install_requires=[            
         "torch>=2.1.0",
         "triton>=2.1.0",
-        "transformers>=4.51.0",
+        "transformers>=4.45.0",
         "xxhash",
-        "numpy==1.26.0",
-        "pyarrow==19.0.1",
-        "datasets==2.16.0"
+        "numpy>=1.24.3",
+        "pyarrow>=18.1.0",
+        "datasets>=2.16.0"
     ],
     packages=find_packages(),
     include_dirs=[
