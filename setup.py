@@ -22,15 +22,15 @@ setup(
     author="Shengguang Zhu", 
     description="a lightweight MoE inference engine implementation built from scratch", 
     python_requires=">=3.10,<3.13", 
-    install_requires=[            
-        "torch>=2.1.0",
-        "triton>=2.1.0",
-        "transformers>=4.45.0",
-        "xxhash",
-        "numpy>=1.24.3",
-        "pyarrow>=18.1.0",
-        "datasets>=2.16.0"
-    ],
+    # install_requires=[            
+    #     "torch>=2.1.0",
+    #     "triton>=2.1.0",
+    #     "transformers>=4.45.0",
+    #     "xxhash",
+    #     "numpy>=1.24.3",
+    #     "pyarrow>=18.1.0",
+    #     "datasets>=2.16.0"
+    # ],
     packages=find_packages(),
     include_dirs=[
         "src/include"

@@ -3,7 +3,6 @@ import torch
 import torch.distributed as dist
 from multiprocessing.synchronize import Event
 from multiprocessing.shared_memory import SharedMemory
-from electrock_infer.models.qwen3 import Qwen3ForCausalLM
 from electrock_infer.config import Config
 from electrock_infer.engine.sequence import Sequence
 from electrock_infer.models.mixtral import MixtralForCausalLM

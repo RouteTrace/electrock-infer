@@ -6,17 +6,17 @@ import time
 import os
 import numpy as np
 import math
-from electrock_infer.llm import LLM
-from electrock_infer.engine.llm_engine import LLMEngine
-from electrock_infer.sampling_params import SamplingParams
 import sys
 import subprocess
 MAX_LEN = 512 
 BATCH_SIZE_INFERENCE = 8  # 推理时一次处理多个句子
 BATCH_SIZE_PERPLEXITY = 8  # 计算困惑度时使用的批次
-MODEL_PATH = "/work/share/data/XDZS2025/Mixtral-8x7B-v0.1"
-DATASET_PATH = "/work/share/data/XDZS2025/wikitext-103-raw-v1/wikitext-test.arrow"
-NEW_DATASET_PATH = "/work/share/data/XDZS2025/wikitext-103-raw-v1/wiki2.csv"  # 使用上传的CSV文件路径
+# MODEL_PATH = "/work/share/data/XDZS2025/Mixtral-8x7B-v0.1"
+# DATASET_PATH = "/work/share/data/XDZS2025/wikitext-103-raw-v1/wikitext-test.arrow"
+# NEW_DATASET_PATH = "/work/share/data/XDZS2025/wikitext-103-raw-v1/wiki2.csv"  # 使用上传的CSV文件路径
+MODEL_PATH = "/work/home/ac1m1kpqy8/zhusg/models/AI-ModelScope/Mixtral-8x7B-v0_1"
+DATASET_PATH = "/work/home/ac1m1kpqy8/zhusg/CODES/data/wikitext-test.arrow"
+NEW_DATASET_PATH = "/work/home/ac1m1kpqy8/zhusg/CODES/data/wiki2.csv"  # 使用上传的CSV文件路径
 EVAL_SENTENCE_COUNT = 100   # 延迟评估的句子数量
 USE_MULTI_GPU = True  # 使用多个GPU进行评估
 BASELINE_PPL=219.9624
@@ -210,6 +210,9 @@ def evaluate_metric_baseline(model_path, texts_combined, max_length, batch_size)
     print(f"Combined Throughput: {thpt:.2f} tokens/second")
 
 def evaluate_metric_my_proj(model_path, sentences):
+    from electrock_infer.llm import LLM
+    from electrock_infer.engine.llm_engine import LLMEngine
+    from electrock_infer.sampling_params import SamplingParams
     engine = LLMEngine(model_path, enforce_eager=True, max_model_len=4096, tensor_parallel_size=2)
 
     prompt_token_ids = sentences[:EVAL_SENTENCE_COUNT]
