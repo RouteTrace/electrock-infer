@@ -41,12 +41,12 @@ class Attention(nn.Module):
             # 2. Not support prefix caching.
             o = _C.flash_attn_causal_varlen_gqa_hip(
                 q.to(torch.float16), k.to(torch.float16), v.to(torch.float16), 
-                max_seqlen_q=ctx.max_seqlen_q, cu_seqlens_q=ctx.cu_seqlens_q,
-                max_seqlen_k=ctx.max_seqlen_k, cu_seqlens_k=ctx.cu_seqlens_k,
+                max_seqlen_q=context.max_seqlen_q, cu_seqlens_q=context.cu_seqlens_q,
+                max_seqlen_k=context.max_seqlen_k, cu_seqlens_k=context.cu_seqlens_k,
                 softmax_scale=self.scale, causal=True).to(torch.bfloat16)
         else:    # decode phrase
             # TODO: flash decoding
-            o = _C.paged_attn_varlen(q, k_cache, v_cache, 0, ctx.context_lens, ctx.block_tables, self.scale)
+            o = _C.paged_attn_varlen(q, k_cache, v_cache, 0, context.context_lens, context.block_tables, self.scale)
             
         o = o.view(-1, self.num_heads * self.head_dim)
         return o
