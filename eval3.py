@@ -1,12 +1,12 @@
+import os
+import sys
 from datasets import load_dataset, Dataset, DatasetDict
 from transformers import AutoTokenizer, AutoModelForCausalLM
 import torch
 from tqdm import tqdm
 import time
-import os
 import numpy as np
 import math
-import sys
 import subprocess
 MAX_LEN = 512 
 BATCH_SIZE_INFERENCE = 8  # 推理时一次处理多个句子
@@ -34,6 +34,18 @@ def load_new_dataset(new_dataset_path):
 
     return dataset, split_key
 
+from contextlib import contextmanager
+@contextmanager
+def suppress_stderr():
+    """一个临时屏蔽标准错误的上下文管理器。"""
+    original_stderr = sys.stderr
+    devnull = open(os.devnull, 'w')
+    try:
+        sys.stderr = devnull
+        yield
+    finally:
+        sys.stderr.close() # 关闭 devnull 文件句柄
+        sys.stderr = original_stderr # 恢复原始的 stderr
 # def get_all_gpu_memory_usage():
 #     """获取所有GPU的内存使用情况"""
 #     memory_info = {}
@@ -213,17 +225,22 @@ def evaluate_metric_my_proj(model_path, sentences):
     from electrock_infer.llm import LLM
     from electrock_infer.engine.llm_engine import LLMEngine
     from electrock_infer.sampling_params import SamplingParams
-    engine = LLMEngine(model_path, enforce_eager=True, max_model_len=4096, tensor_parallel_size=2)
 
     prompt_token_ids = sentences[:EVAL_SENTENCE_COUNT]
     sampling_params = [SamplingParams(temperature=1, ignore_eos=False, max_tokens=512, max_total_tokens = 512) for _ in range(EVAL_SENTENCE_COUNT)] # 生成最多(MAX_LEN - 输入长度) 个新tokens
-    # warmup
+        # warmup
+    engine = LLMEngine(model_path, enforce_eager=True, max_model_len=4096, tensor_parallel_size=2)
     engine.generate(["Benchmark: "], SamplingParams())
     print("Warmup done")
 
-    t = time.time()
-    engine.generate(prompt_token_ids, sampling_params, use_tqdm=True)
-    t = (time.time() - t)
+    print("Begining evaluate....")
+    with suppress_stderr():
+        # 在这里面包住你所有会产生 NCCL 日志的代码
+        t = time.time()
+        engine.generate(prompt_token_ids, sampling_params, use_tqdm=True)
+        t = (time.time() - t)
+        engine.exit()
+
     latency_per_seq = t / EVAL_SENTENCE_COUNT
     print(f"Optimized Perplexity: {BASELINE_PPL:.4f}")
     print(f"Optimized Average Latency: {latency_per_seq:.4f} seconds per sentence")
