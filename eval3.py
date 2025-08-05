@@ -11,12 +11,12 @@ import subprocess
 MAX_LEN = 512 
 BATCH_SIZE_INFERENCE = 8  # 推理时一次处理多个句子
 BATCH_SIZE_PERPLEXITY = 8  # 计算困惑度时使用的批次
-# MODEL_PATH = "/work/share/data/XDZS2025/Mixtral-8x7B-v0.1"
-# DATASET_PATH = "/work/share/data/XDZS2025/wikitext-103-raw-v1/wikitext-test.arrow"
-# NEW_DATASET_PATH = "/work/share/data/XDZS2025/wikitext-103-raw-v1/wiki2.csv"  # 使用上传的CSV文件路径
-MODEL_PATH = "/work/home/ac1m1kpqy8/zhusg/models/AI-ModelScope/Mixtral-8x7B-v0_1"
-DATASET_PATH = "/work/home/ac1m1kpqy8/zhusg/CODES/data/wikitext-test.arrow"
-NEW_DATASET_PATH = "/work/home/ac1m1kpqy8/zhusg/CODES/data/wiki2.csv"  # 使用上传的CSV文件路径
+MODEL_PATH = "/work/share/data/XDZS2025/Mixtral-8x7B-v0.1"
+DATASET_PATH = "/work/share/data/XDZS2025/wikitext-103-raw-v1/wikitext-test.arrow"
+NEW_DATASET_PATH = "/work/share/data/XDZS2025/wikitext-103-raw-v1/wiki2.csv"  # 使用上传的CSV文件路径
+# MODEL_PATH = "/work/home/ac1m1kpqy8/zhusg/models/AI-ModelScope/Mixtral-8x7B-v0_1"
+# DATASET_PATH = "/work/home/ac1m1kpqy8/zhusg/CODES/data/wikitext-test.arrow"
+# NEW_DATASET_PATH = "/work/home/ac1m1kpqy8/zhusg/CODES/data/wiki2.csv"  # 使用上传的CSV文件路径
 EVAL_SENTENCE_COUNT = 100   # 延迟评估的句子数量
 USE_MULTI_GPU = True  # 使用多个GPU进行评估
 BASELINE_PPL=219.9624
@@ -74,10 +74,9 @@ def install_project(project_path: str):
     command = [
         sys.executable,
         "-m",
-        "pip",
-        "install",
-        "-e",
-        "."
+        "python",
+        "setup.py",
+        "install"
     ]
     # 3. 执行命令 (保持不变)
     try:
