@@ -19,6 +19,7 @@ class LLMEngine:
         config_fields = {field.name for field in fields(Config)}
         config_kwargs = {k: v for k, v in kwargs.items() if k in config_fields}
         config = Config(model, **config_kwargs)
+        self.config = config
         # config.__post_init__()
         self.ps = []
         self.events = []
@@ -39,7 +40,7 @@ class LLMEngine:
         
         self.scheduler = Scheduler(config)
 
-        # atexit.register(self.exit)
+        atexit.register(self.exit)
 
     def exit(self):
         self.model_runner.call("exit")
@@ -104,8 +105,9 @@ class LLMEngine:
         self,
         prompts: list[str] | list[list[int]],
         sampling_params: SamplingParams | list[SamplingParams],
-        use_tqdm: bool = True,
+        use_tqdm: bool = False,
     ) -> list[str]:
+        use_tqdm = use_tqdm or not (self.config.disable_tqdm)
         if use_tqdm:
             pbar = tqdm(total=len(prompts), desc="Generating", dynamic_ncols=True)
         if not isinstance(sampling_params, list):

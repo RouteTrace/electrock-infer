@@ -5,8 +5,8 @@ from transformers import AutoTokenizer
 
 def main():
     # path = os.path.expanduser("/work/home/ac1m1kpqy8/zhusg/models/Qwen3-0.6B")
-    path = os.path.expanduser("/work/share/data/XDZS2025/Mixtral-8x7B-v0.1")
-    # path = os.path.expanduser("/work/home/ac1m1kpqy8/zhusg/models/AI-ModelScope/Mixtral-8x7B-v0_1/")
+    # path = os.path.expanduser("/work/share/data/XDZS2025/Mixtral-8x7B-v0.1")
+    path = os.path.expanduser("/work/home/ac1m1kpqy8/zhusg/models/AI-ModelScope/Mixtral-8x7B-v0_1/")
     tokenizer = AutoTokenizer.from_pretrained(path)
     # if tokenizer.chat_template is None:
     #     chat_template = "{{ bos_token }}{% for message in messages %}{% if (message['role'] == 'user') != (loop.index0 % 2 == 0) %}{{ raise_exception('Conversation roles must alternate user/assistant/user/assistant/...') }}{% endif %}{% if message['role'] == 'user' %}{{ '[INST] ' + message['content'] + ' [/INST]' }}{% elif message['role'] == 'assistant' %}{{ message['content'] + eos_token}}{% else %}{{ raise_exception('Only user and assistant roles are supported!') }}{% endif %}{% endfor %}"

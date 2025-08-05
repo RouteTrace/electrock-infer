@@ -10,9 +10,9 @@ def main():
     num_seqs = 100
     max_input_len = 1024 
     max_ouput_len = 256
-
+    path = os.path.expanduser("/work/home/ac1m1kpqy8/zhusg/models/AI-ModelScope/Mixtral-8x7B-v0_1/")
     # path = os.path.expanduser("/work/home/ac1m1kpqy8/zhusg/models/Qwen3-0.6B")
-    path = os.path.expanduser("/work/share/data/XDZS2025/Mixtral-8x7B-v0.1")
+    # path = os.path.expanduser("/work/share/data/XDZS2025/Mixtral-8x7B-v0.1")
     llm = LLM(path, enforce_eager=True, max_model_len=4096, tensor_parallel_size=2 )
 
     prompt_token_ids = [[randint(0, 10000) for _ in range(randint(100, max_input_len))] for _ in range(num_seqs)]
