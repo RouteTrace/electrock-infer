@@ -29,7 +29,7 @@ class ModelRunner:
         self.model = MixtralForCausalLM(self.hf_config)
         # self.model = Qwen3ForCausalLM(self.hf_config)
 
-        load_model(self.model, config.model, self.rank)
+        load_model(self.model, config.model, self.rank, self.config)
         self.sampler = Sampler()
         self.allocate_kv_cache(config.gpu_memory_utilization)
         if not self.enforce_eager:

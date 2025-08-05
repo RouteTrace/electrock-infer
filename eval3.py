@@ -231,7 +231,7 @@ def evaluate_metric_my_proj(model_path, sentences):
     sampling_params = [SamplingParams(temperature=1, ignore_eos=False, max_tokens=512, max_total_tokens = 512) for _ in range(EVAL_SENTENCE_COUNT)] # 生成最多(MAX_LEN - 输入长度) 个新tokens
         # warmup
     engine = LLMEngine(model_path, enforce_eager=True, max_model_len=4096, tensor_parallel_size=2)
-    engine.generate(["Benchmark: "], SamplingParams())
+    engine.generate(["Benchmark: "], SamplingParams(), use_tqdm=USE_tqdm)
     print("Warmup done")
 
     print("Begining evaluate....")
@@ -245,7 +245,7 @@ def evaluate_metric_my_proj(model_path, sentences):
     latency_per_seq = t / EVAL_SENTENCE_COUNT
     print(f"Optimized Perplexity: {BASELINE_PPL:.4f}")
     print(f"Optimized Average Latency: {latency_per_seq:.4f} seconds per sentence")
-
+    
 def main():
     # GPU 信息
     n_gpu = torch.cuda.device_count()

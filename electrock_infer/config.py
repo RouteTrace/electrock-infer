@@ -16,7 +16,7 @@ class Config:
     eos: int = -1
     kvcache_block_size: int = 32
     num_kvcache_blocks: int = -1
-
+    disable_tqdm: bool = True
     def __post_init__(self):
         assert os.path.isdir(self.model)
         # assert self.kvcache_block_size % 256 == 0

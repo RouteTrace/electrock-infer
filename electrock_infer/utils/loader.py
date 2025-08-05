@@ -10,19 +10,19 @@ from transformers import AutoTokenizer
 from electrock_infer.models.mixtral import MixtralForCausalLM
 import torch.multiprocessing as mp
 import tqdm
-
+from electrock_infer.config import Config
 def default_weight_loader(param: nn.Parameter, loaded_weight: torch.Tensor):
     param.data.copy_(loaded_weight)
 
 
-def load_model(model: nn.Module, path: str, rank : int):
+def load_model(model: nn.Module, path: str, rank : int, config : Config):
     packed_modules_mapping = getattr(model, "packed_modules_mapping", {})
     experts_modules_mapping = getattr(model, "experts_modules_mapping", {})
     files = glob(os.path.join(path, "*.safetensors"))
-    for file in tqdm.tqdm(files, desc=f"Rank:{rank} Loading safetensors files"):
+    for file in tqdm.tqdm(files, desc=f"Rank:{rank} Loading safetensors files", disable=config.disable_tqdm):
         with safe_open(file, "pt", "cuda") as f:
             weight_names = list(f.keys())
-            for weight_name in tqdm.tqdm(weight_names, desc=f"Rank:{rank} Loading weights from {os.path.basename(file)}", leave=False):
+            for weight_name in tqdm.tqdm(weight_names, desc=f"Rank:{rank} Loading weights from {os.path.basename(file)}", leave=False, disable=config.disable_tqdm):
                 is_loaded = False # ensure every weight just be  load once
                 for k in packed_modules_mapping:
                     if k in weight_name:
