@@ -38,15 +38,23 @@ def load_new_dataset(new_dataset_path):
 from contextlib import contextmanager
 @contextmanager
 def suppress_stderr():
-    """一个临时屏蔽标准错误的上下文管理器。"""
-    original_stderr = sys.stderr
-    devnull = open(os.devnull, 'w')
+    """一个通过操作系统文件描述符临时屏蔽所有标准错误的上下文管理器。"""
+    original_stderr_fd = sys.stderr.fileno() # 获取原始stderr的文件描述符
+    devnull_fd = os.open(os.devnull, os.O_WRONLY)
+    
+    # 复制原始的stderr文件描述符，以便恢复
+    saved_stderr_fd = os.dup(original_stderr_fd)
+    
     try:
-        sys.stderr = devnull
+        # 将原始的stderr文件描述符重定向到devnull
+        os.dup2(devnull_fd, original_stderr_fd)
         yield
     finally:
-        sys.stderr.close() # 关闭 devnull 文件句柄
-        sys.stderr = original_stderr # 恢复原始的 stderr
+        # 恢复原始的stderr
+        os.dup2(saved_stderr_fd, original_stderr_fd)
+        # 关闭我们打开和复制的文件描述符
+        os.close(devnull_fd)
+        os.close(saved_stderr_fd)
 # def get_all_gpu_memory_usage():
 #     """获取所有GPU的内存使用情况"""
 #     memory_info = {}
@@ -229,22 +237,22 @@ def evaluate_metric_my_proj(model_path, sentences):
 
     prompt_token_ids = sentences[:EVAL_SENTENCE_COUNT]
     sampling_params = [SamplingParams(temperature=1, ignore_eos=False, max_tokens=512, max_total_tokens = 512) for _ in range(EVAL_SENTENCE_COUNT)] # 生成最多(MAX_LEN - 输入长度) 个新tokens
-        # warmup
+    # warmup
+    print("Warmup begin")
     engine = LLMEngine(model_path, enforce_eager=True, max_model_len=4096, tensor_parallel_size=2)
     engine.generate(["Benchmark: "], SamplingParams(), use_tqdm=USE_tqdm)
     print("Warmup done")
 
     print("Begining evaluate....")
-    with suppress_stderr():
-        # 在这里面包住你所有会产生 NCCL 日志的代码
-        t = time.time()
-        engine.generate(prompt_token_ids, sampling_params, use_tqdm=USE_tqdm)
-        t = (time.time() - t)
-        engine.exit()
+    
+
+    t = time.time()
+    engine.generate(prompt_token_ids, sampling_params, use_tqdm=USE_tqdm)
+    t = (time.time() - t)
+    engine.exit()
 
     latency_per_seq = t / EVAL_SENTENCE_COUNT
-    print(f"Optimized Perplexity: {BASELINE_PPL:.4f}")
-    print(f"Optimized Average Latency: {latency_per_seq:.4f} seconds per sentence")
+    return latency_per_seq
     
 def main():
     # GPU 信息
@@ -276,19 +284,24 @@ def main():
     texts_combined = texts_original + texts_new
     prompt_token_ids = texts_combined[:EVAL_SENTENCE_COUNT]
     # ───────── 原始模型指标 ─────────
-    # evaluate_metric_baseline(MODEL_PATH, texts_combined, MAX_LEN, BATCH_SIZE_PERPLEXITY)
-    print(f"Combined Average Perplexity: {BASELINE_PPL:.4f}")
-    print(f"Evaluating original model latency on {EVAL_SENTENCE_COUNT} sentences ...")
-    print(f"Combined Average Latency: {BASELINE_LATENCY_PER_SEQ:.4f} seconds per sentence")
-
+    # origin_metric = evaluate_metric_baseline(MODEL_PATH, texts_combined, MAX_LEN, BATCH_SIZE_PERPLEXITY)
 
     # ───────── Optimized 指标 ─────────
-    evaluate_metric_my_proj(MODEL_PATH, texts_combined)
-
+    latency = evaluate_metric_my_proj(MODEL_PATH, texts_combined)
+    return latency
 
 
 if __name__ == "__main__":
     current_script_dir = os.path.dirname(os.path.abspath(__file__))
     # 调用函数进行安装
     install_project(current_script_dir)
-    main()
+    with suppress_stderr():
+        latency_per_seq = main()
+    # ───────── 原始模型指标 ─────────
+    # evaluate_metric_baseline(MODEL_PATH, texts_combined, MAX_LEN, BATCH_SIZE_PERPLEXITY)
+    print(f"Evaluating original model latency on {EVAL_SENTENCE_COUNT} sentences ...")
+    print(f"Combined Average Perplexity: {BASELINE_PPL:.4f}")
+    print(f"Combined Average Latency: {BASELINE_LATENCY_PER_SEQ:.4f} seconds per sentence")
+    # ───────── Optimized 指标 ─────────
+    print(f"Optimized Perplexity: {BASELINE_PPL:.4f}")
+    print(f"Optimized Average Latency: {latency_per_seq:.4f} seconds per sentence")
