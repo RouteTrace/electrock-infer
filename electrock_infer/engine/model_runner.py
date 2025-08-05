@@ -95,7 +95,7 @@ class ModelRunner:
         used = total - free
         num_kv_heads = self.hf_config.num_key_value_heads // self.world_size
         # BUG fix: head_dim may not exist in hf_config
-        head_dim = self.hf_config.hidden_size // self.hf_config.num_attention_heads if not self.hf_config.head_dim else self.hf_config.head_dim
+        head_dim = self.hf_config.hidden_size // self.hf_config.num_attention_heads
         # 计算一个block_size所需要的字节数，其中block_size = num_token，即block是以token为单位设计的。
         block_bytes = 2 * self.hf_config.num_hidden_layers * self.block_size * num_kv_heads * head_dim * self.hf_config.torch_dtype.itemsize
         assert (total*gpu_memory_utilization - used)>0 , "no memory leaved for allocating kv cache block."
