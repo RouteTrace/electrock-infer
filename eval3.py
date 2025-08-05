@@ -21,6 +21,7 @@ EVAL_SENTENCE_COUNT = 1   # 延迟评估的句子数量
 USE_MULTI_GPU = True  # 使用多个GPU进行评估
 BASELINE_PPL=219.9624
 BASELINE_LATENCY_PER_SEQ=13.0597
+USE_tqdm = False
 def load_new_dataset(new_dataset_path):
     """加载新的CSV数据集，并清理不必要的引号"""
     print("new dataset is ", new_dataset_path)
@@ -77,11 +78,11 @@ def install_project(project_path: str):
     """
     # <--- 改进: 将传入的路径转换为绝对路径，使日志更清晰 ---
     project_path = os.path.abspath(project_path)
-    print(f"--- 准备安装项目: {project_path} ---")
-    # 1. 确认路径存在且包含 setup.py 文件
-    if not os.path.isdir(project_path) or not os.path.exists(os.path.join(project_path, 'setup.py')):
-        print(f"错误：路径 '{project_path}' 不存在或其中没有 setup.py 文件。")
-        return False
+    # print(f"--- 准备安装项目: {project_path} ---")
+    # # 1. 确认路径存在且包含 setup.py 文件
+    # if not os.path.isdir(project_path) or not os.path.exists(os.path.join(project_path, 'setup.py')):
+    #     print(f"错误：路径 '{project_path}' 不存在或其中没有 setup.py 文件。")
+    #     return False
     # 2. 构建 pip 命令 (保持不变)
     command = [
         sys.executable,
@@ -93,7 +94,7 @@ def install_project(project_path: str):
     ]
     # 3. 执行命令 (保持不变)
     try:
-        print(f"将在目录 '{project_path}' 中执行命令: {' '.join(command)}")
+        # print(f"将在目录 '{project_path}' 中执行命令: {' '.join(command)}")
         result = subprocess.run(
             command, 
             check=True, 
@@ -102,10 +103,10 @@ def install_project(project_path: str):
             text=True,
             encoding='utf-8'
         )
-        print("--- 安装成功 ---")
-        print("STDOUT:")
-        print(result.stdout)
-        return True
+        # print("--- 安装成功 ---")
+        # print("STDOUT:")
+        # print(result.stdout)
+        # return True
     except subprocess.CalledProcessError as e:
         print("--- 安装失败 ---")
         print(f"返回码: {e.returncode}")
@@ -237,7 +238,7 @@ def evaluate_metric_my_proj(model_path, sentences):
     with suppress_stderr():
         # 在这里面包住你所有会产生 NCCL 日志的代码
         t = time.time()
-        engine.generate(prompt_token_ids, sampling_params, use_tqdm=True)
+        engine.generate(prompt_token_ids, sampling_params, use_tqdm=USE_tqdm)
         t = (time.time() - t)
         engine.exit()
 
@@ -289,5 +290,5 @@ def main():
 if __name__ == "__main__":
     current_script_dir = os.path.dirname(os.path.abspath(__file__))
     # 调用函数进行安装
-    success = install_project(current_script_dir)
+    install_project(current_script_dir)
     main()
