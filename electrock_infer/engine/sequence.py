@@ -29,6 +29,8 @@ class Sequence:
         self.max_tokens = sampling_params.max_tokens
         self.ignore_eos = sampling_params.ignore_eos
         self.max_total_tokens = sampling_params.max_total_tokens
+        # related to naive_kvcache
+        self.cache_id = -1 # Points to the physical kvcache row 
     def __len__(self):
         return self.num_tokens
 

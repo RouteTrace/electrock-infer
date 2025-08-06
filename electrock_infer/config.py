@@ -7,8 +7,8 @@ from transformers import AutoConfig
 class Config:
     model: str
     max_num_batched_tokens: int = 32768
-    max_num_seqs: int = 128
-    max_model_len: int = 4096
+    max_num_seqs: int = 100
+    max_model_len: int = 512 # 暂时用来控制最大句子长度, 用于分配naive_kvcache
     gpu_memory_utilization: float = 0.9
     tensor_parallel_size: int = 2
     enforce_eager: bool = False
