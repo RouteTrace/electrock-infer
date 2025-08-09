@@ -17,11 +17,11 @@ BATCH_SIZE_PERPLEXITY = 8  # 计算困惑度时使用的批次
 MODEL_PATH = "/work/home/ac1m1kpqy8/zhusg/models/AI-ModelScope/Mixtral-8x7B-v0_1"
 DATASET_PATH = "/work/home/ac1m1kpqy8/zhusg/CODES/data/wikitext-test.arrow"
 NEW_DATASET_PATH = "/work/home/ac1m1kpqy8/zhusg/CODES/data/wiki2.csv"  # 使用上传的CSV文件路径
-EVAL_SENTENCE_COUNT = 100   # 延迟评估的句子数量
+EVAL_SENTENCE_COUNT = 390   # 延迟评估的句子数量
 USE_MULTI_GPU = True  # 使用多个GPU进行评估
 BASELINE_PPL=219.9624
 BASELINE_LATENCY_PER_SEQ=13.0597
-USE_tqdm = True
+USE_tqdm = False
 def load_new_dataset(new_dataset_path):
     """加载新的CSV数据集，并清理不必要的引号"""
     print("new dataset is ", new_dataset_path)
@@ -234,7 +234,7 @@ def evaluate_metric_my_proj(model_path, sentences):
     from electrock_infer.llm import LLM
     from electrock_infer.engine.llm_engine import LLMEngine
     from electrock_infer.sampling_params import SamplingParams
-
+    from electrock_infer.flash_infer.engine_core import EngineCore
     prompts = sentences[:EVAL_SENTENCE_COUNT]
     tokenizer = AutoTokenizer.from_pretrained(model_path)
     prompt_token_ids = [
@@ -242,9 +242,9 @@ def evaluate_metric_my_proj(model_path, sentences):
         for prompt in prompts
     ]
     sampling_params = [SamplingParams(temperature=1, ignore_eos=False, max_tokens=512, max_total_tokens = 512) for _ in range(EVAL_SENTENCE_COUNT)] # 生成最多(MAX_LEN - 输入长度) 个新tokens
+    engine = LLMEngine(model_path, enforce_eager=True, max_model_len=512, tensor_parallel_size=2)
     # warmup
     print("Warmup begin")
-    engine = LLMEngine(model_path, enforce_eager=True, max_model_len=4096, tensor_parallel_size=2)
     engine.generate(["Benchmark: "], SamplingParams(), use_tqdm=USE_tqdm)
     print("Warmup done")
 

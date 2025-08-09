@@ -1,7 +1,7 @@
 import os
 from electrock_infer import LLM, SamplingParams
 from transformers import AutoTokenizer
-
+from electrock_infer.flash_infer.engine_core import EngineCore
 
 def main():
     # path = os.path.expanduser("/work/home/ac1m1kpqy8/zhusg/models/Qwen3-0.6B")
@@ -12,10 +12,15 @@ def main():
     #     chat_template = "{{ bos_token }}{% for message in messages %}{% if (message['role'] == 'user') != (loop.index0 % 2 == 0) %}{{ raise_exception('Conversation roles must alternate user/assistant/user/assistant/...') }}{% endif %}{% if message['role'] == 'user' %}{{ '[INST] ' + message['content'] + ' [/INST]' }}{% elif message['role'] == 'assistant' %}{{ message['content'] + eos_token}}{% else %}{{ raise_exception('Only user and assistant roles are supported!') }}{% endif %}{% endfor %}"
     #     tokenizer.chat_template = chat_template
 
-    llm = LLM(path, 
+    # llm = LLM(path, 
+    #           enforce_eager=True, 
+    #           tensor_parallel_size=2,
+    #           gpu_memory_utilization=0.9)
+    llm = EngineCore(path, 
               enforce_eager=True, 
               tensor_parallel_size=2,
               gpu_memory_utilization=0.9)
+
 
     sampling_params = SamplingParams(temperature=0.9, max_tokens=256)
     prompts = [

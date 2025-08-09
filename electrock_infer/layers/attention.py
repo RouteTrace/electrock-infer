@@ -5,7 +5,7 @@ import triton.language as tl
 from electrock_infer import _C
 from flash_attn import flash_attn_varlen_func, flash_attn_with_kvcache
 from electrock_infer.utils.context import get_context
-from electrock_infer.layers.attention_triton_kernel import store_kvcache
+from electrock_infer.layers.attention_triton_kernel import store_kvcache, store_naive_kvcache
 
 class Attention(nn.Module):
 
@@ -73,7 +73,6 @@ class NaiveKVCacheAttention(nn.Module):
         self.scale = scale
         self.num_kv_heads = num_kv_heads
         self.k_cache = self.v_cache = torch.tensor([])
-        self.current_total_tokens = 0
 
     def forward(self, q: torch.Tensor, k: torch.Tensor, v: torch.Tensor):
         context = get_context() # 获取forward的相关信息
@@ -85,8 +84,8 @@ class NaiveKVCacheAttention(nn.Module):
         k_cache = self.k_cache # (batch_size, max_tokens_num, num_kv_heads, head_dim)
         v_cache = self.v_cache # (batch_size, max_tokens_num, num_kv_heads, head_dim)
         # TODO: store consecutive kvcache
-        store_naive_kvcache(k, v, k_cache, v_cache, context.slot_mapping)
         if context.is_prefill:
+            store_naive_kvcache(k, v, k_cache, v_cache, context.cache_batch_seqlen, context.context_lens, context.cache_batch_idx, context.cu_seqlens_q)
             # TODO:
             o = flash_attn_varlen_func(q, k, v,
                             max_seqlen_q=context.max_seqlen_q, cu_seqlens_q=context.cu_seqlens_q,
@@ -95,8 +94,9 @@ class NaiveKVCacheAttention(nn.Module):
         else:    # decode phrase
             # TODO: flash decoding without block_table
             assert q.size(0)==context.context_lens.size(0)
-            o = flash_attn_with_kvcache(q.unsqueeze(1), k_cache, v_cache,
-                                        cache_seqlens=context.context_lens, block_table=context.block_tables, 
+            o = flash_attn_with_kvcache(q.unsqueeze(1), k_cache, v_cache, k.unsqueeze(1), v.unsqueeze(1),
+                                        cache_seqlens=context.cache_batch_seqlen, 
+                                        cache_batch_idx=context.cache_batch_idx,
                                         softmax_scale=self.scale, causal=True)
             
         o = o.view(-1, self.num_heads * self.head_dim)

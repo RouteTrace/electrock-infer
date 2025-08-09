@@ -226,8 +226,6 @@ class MixtralModel(nn.Module):
         return hidden_states
 
 
-
-
 class MixtralForCausalLM(nn.Module):
 
     packed_modules_mapping = {

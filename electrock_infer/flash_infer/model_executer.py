@@ -100,6 +100,7 @@ class ModelExecuter:
         #TODO: expend batch_size to max capacity on DCU.
         config.num_kvcache_blocks = int(total * config.gpu_memory_utilization - used) // seq_bytes
         print(f"最大支持{config.num_kvcache_blocks}个sequence.")
+        assert config.num_kvcache_blocks > config.max_num_seqs, "config.max_num_seqs exceeds the upper limit that kvcache can allocate"
         self.kv_cache = torch.zeros(2, self.hf_config.num_hidden_layers, config.max_num_seqs, config.max_model_len, num_kv_heads, head_dim)
         layer_id = 0
         for module in self.model.modules():
@@ -115,6 +116,7 @@ class ModelExecuter:
         max_seqlen = 0
         cu_seqlens = [0]
         cache_batch_idx = []
+        cache_batch_seqlen = []
         for seq in seqs:
             seqlen = len(seq)
             input_ids.extend(seq[seq.num_cached_tokens:])
@@ -123,36 +125,39 @@ class ModelExecuter:
             cu_seqlens.append(cu_seqlens[-1] + seqlen) # 记录每个seq_q的长度，进行累加并append——>记录了每个seq的起始索引[ 0, q1, q2, ...]
             max_seqlen = max(seqlen, max_seqlen) # 获得该batch中最长seq长度
             cache_batch_idx.append(seq.cache_id)
-
+            cache_batch_seqlen.append(seq.num_cached_tokens)
+            seq.num_cached_tokens = seqlen
         input_ids = torch.tensor(input_ids, dtype=torch.int64, pin_memory=True).cuda(non_blocking=True)
         positions = torch.tensor(positions, dtype=torch.int64, pin_memory=True).cuda(non_blocking=True)
+        context_lens = torch.tensor(context_lens, dtype=torch.int32, pin_memory=True).cuda(non_blocking=True)
         cu_seqlens = torch.tensor(cu_seqlens, dtype=torch.int32, pin_memory=True).cuda(non_blocking=True)
         cache_batch_idx = torch.tensor(cache_batch_idx, dtype=torch.int32, pin_memory=True).cuda(non_blocking=True)
-        set_context(True, cu_seqlens, cu_seqlens, max_seqlen, max_seqlen, cache_batch_idx=cache_batch_idx)
+        cache_batch_seqlen = torch.tensor(cache_batch_seqlen, dtype=torch.int32, pin_memory=True).cuda(non_blocking=True)
+        set_context(True, cu_seqlens, cu_seqlens, max_seqlen, max_seqlen, context_lens=context_lens, cache_batch_idx=cache_batch_idx, cache_batch_seqlen=cache_batch_seqlen)
         return input_ids, positions
 
     def prepare_decode(self, seqs: list[Sequence]):
         input_ids = []
         positions = []
         context_lens = []
-        cu_seqlens_q = [0]
-        cu_seqlens_k = [0]
         cache_batch_idx = []
+        cache_batch_seqlen = []
         for seq in seqs:
             seqlen = len(seq)
-            seqlen_k = seqlen
-            max_seqlen_k = max(seqlen_k, max_seqlen_k)
             # 都是对单个token进行记录(tensor[1])
             input_ids.append(seq.last_token) 
             positions.append(len(seq))
             context_lens.append(len(seq))
             cache_batch_idx.append(seq.cache_id)
-
+            #TODO record every seq's num_cached_token
+            cache_batch_seqlen.append(seq.num_cached_tokens)
+            seq.num_cached_tokens = seqlen
         input_ids = torch.tensor(input_ids, dtype=torch.int64, pin_memory=True).cuda(non_blocking=True)
         positions = torch.tensor(positions, dtype=torch.int64, pin_memory=True).cuda(non_blocking=True)
         context_lens = torch.tensor(context_lens, dtype=torch.int32, pin_memory=True).cuda(non_blocking=True)
         cache_batch_idx = torch.tensor(cache_batch_idx, dtype=torch.int32, pin_memory=True).cuda(non_blocking=True)
-        set_context(False, context_lens=context_lens, cache_batch_idx=cache_batch_idx)
+        cache_batch_seqlen = torch.tensor(cache_batch_seqlen, dtype=torch.int32, pin_memory=True).cuda(non_blocking=True)
+        set_context(False, context_lens=context_lens, cache_batch_idx=cache_batch_idx, cache_batch_seqlen=cache_batch_seqlen)
         return input_ids, positions
 
     def prepare_sample(self, seqs: list[Sequence]):

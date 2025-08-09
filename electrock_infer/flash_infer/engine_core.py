@@ -7,9 +7,10 @@ import torch.multiprocessing as mp
 import torch.distributed as dist
 from electrock_infer.config import Config
 from electrock_infer.sampling_params import SamplingParams
-from electrock_infer.engine.sequence import Sequence
+from electrock_infer.engine.sequence import Sequence, SequenceStatus
 from electrock_infer.engine.scheduler import Scheduler
 from electrock_infer.flash_infer.model_executer import ModelExecuter
+from electrock_infer.flash_infer.kvcache_manager import KVCacheManager
 
 
 class EngineCore:
@@ -36,7 +37,7 @@ class EngineCore:
         self.tokenizer = AutoTokenizer.from_pretrained(config.model, use_fast=True)
         config.eos = self.tokenizer.eos_token_id
         self.config = config
-        self.kvcache_manager = KVCacheManager()
+        self.kvcache_manager = KVCacheManager(config.max_num_seqs, config.max_model_len)
         self.scheduled_seqs: list[Sequence] = []
         atexit.register(self.exit)
 
@@ -72,7 +73,7 @@ class EngineCore:
                 if use_tqdm:
                     pbar.update(1)
             
-        
+            
         outputs = [outputs[seq_id] for seq_id in sorted(outputs)]
         outputs = [{"text": self.tokenizer.decode(token_ids), "token_ids": token_ids} for token_ids in outputs]
         if use_tqdm:
