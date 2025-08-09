@@ -27,9 +27,11 @@ See `example.py` for usage.
 import os
 from electrock_infer import LLM, SamplingParams
 from transformers import AutoTokenizer
+from electrock_infer.flash_infer.engine_core import EngineCore
 
 path = os.path.expanduser("/work/share/data/XDZS2025/Mixtral-8x7B-v0.1")
 llm = LLM(path, enforce_eager=True, tensor_parallel_size=2, gpu_memory_utilization=0.9)
+# llm = EngineCore(path, enforce_eager=True, tensor_parallel_size=2, gpu_memory_utilization=0.9)
 sampling_params = SamplingParams(temperature=0.9, max_tokens=256)
 prompts = [
     "Hello my name is"
@@ -41,12 +43,33 @@ for prompt, output in zip(prompts, outputs):
     print(f"Prompt: {prompt!r}")
     print(f"Completion: {output['text']!r}")
 ```
-
+By default, PagedAttention is enabled(This generally provides greater throughput). If you want faster multi-batch latency, you can enable continuous kvcache by `from electrock_infer.flash_infer.engine_core import EngineCore`
 ## Benchmark
 
-See `bench.py` for benchmark.
+See `eval3.py` for benchmark.
 ```python
+from electrock_infer.engine.llm_engine import LLMEngine
+from electrock_infer.sampling_params import SamplingParams
+prompts = sentences[:EVAL_SENTENCE_COUNT]
+tokenizer = AutoTokenizer.from_pretrained(model_path)
+prompt_token_ids = [
+    tokenizer.encode(prompt)
+    for prompt in prompts
+]
+sampling_params = [SamplingParams(temperature=1, ignore_eos=False, max_tokens=512, max_total_tokens = 512) for _ in range(EVAL_SENTENCE_COUNT)]
+engine = LLMEngine(model_path, enforce_eager=True, max_model_len=512, tensor_parallel_size=2)
+# warmup
+print("Warmup begin")
+engine.generate(["Benchmark: "], SamplingParams(), use_tqdm=USE_tqdm)
+print("Warmup done")
+print("Begining evaluate....")
+t = time.time()
+engine.generate(prompt_token_ids, sampling_params, use_tqdm=USE_tqdm)
+t = (time.time() - t)
+engine.exit()
 
+latency_per_seq = t / EVAL_SENTENCE_COUNT
+return latency_per_seq
 ```
 
 **Test Configuration:**
@@ -61,6 +84,6 @@ See `bench.py` for benchmark.
 |----------------|-------------|----------|-----------------------|----|
 | baseline  |  none    |   none  |      none        |noen
 | Elect-Rock-Infer| none     | none   | none               |none
-| ERI(flash_attn 2.0.4)|133,966| 111.79| 1198.42tok/s|2.29
+| ERI(flash_attnV2.6.1)|133,966| 111.79| 1198.42tok/s|2.29
 
 
